@@ -21,7 +21,7 @@ def test_ca_001(driver, email, password):
     # 3️⃣ Agent Explorer 클릭
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
 
-    # 4️⃣ Builder 클릭
+    # 4️⃣ create 버튼 클릭
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'))).click()
 
     # 5️⃣ 페이지 전환 확인
