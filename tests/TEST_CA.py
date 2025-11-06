@@ -32,8 +32,8 @@ def test_ca_001(driver, email, password):
 
 
 # 실행
-if __name__ == "__main__":
-    driver = webdriver.Chrome()
-    test_ca_001(driver, "ssunull@daum.net", "dorpw-6Gewk")
+# if __name__ == "__main__":
+#     driver = webdriver.Chrome()
+#     test_ca_001(driver, "ssunull@daum.net", "dorpw-6Gewk")
 
 
