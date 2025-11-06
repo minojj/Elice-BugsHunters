@@ -1,0 +1,18 @@
+=== Core Automation Tools ===
+selenium==4.25.0                # 웹 자동화 핵심 라이브러리
+webdriver-manager==4.0.2        # 브라우저 드라이버 자동 관리
+
+=== Testing Frameworks ===
+pytest==8.3.3                   # 경량화된 테스트 프레임워크
+pytest-html==4.1.1              # 테스트 결과 HTML 리포트 출력
+pytest-cov==6.0.0               # 코드 커버리지 리포트
+pytest-xdist==3.6.1             # 병렬 실행 지원 (테스트 속도 향상)
+junit-xml==1.9                  # Jenkins 등에서 인식 가능한 XML 리포트 포맷
+
+=== Data & Mocking ===
+faker==30.8.2                   # 가짜 데이터 생성 (이메일, 이름, 주소 등)
+requests==2.32.3                # API 테스트 및 HTTP 통신용
+python-dotenv==1.0.1            # 환경변수(.env) 파일 관리
+
+=== Optional Utilities ===
+selenium-wire==5.1.0            # (선택) 네트워크 요청 추적용
