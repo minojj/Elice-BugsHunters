@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from Test_collection import login
 
 driver = webdriver.Chrome()
 wait = WebDriverWait(driver, 10)
@@ -11,12 +12,10 @@ def test_ca_001(driver, email, password):
     wait = WebDriverWait(driver, 10)
 
     # 1️⃣ 접속
-    driver.get("https://qatrack.elice.io/ai-helpy-chat")
+    # driver.get("https://qatrack.elice.io/ai-helpy-chat")
 
     # 2️⃣ 로그인
-    wait.until(EC.presence_of_element_located((By.NAME, "loginId"))).send_keys(email)
-    driver.find_element(By.NAME, "password").send_keys(password)
-    driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]').click()
+    login(driver)
 
     # 3️⃣ Agent Explorer 클릭
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
