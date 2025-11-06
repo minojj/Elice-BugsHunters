@@ -4,9 +4,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+from Test_collection import login
 import time
 
-BASE_URL = "https://qatrack.elice.io/ai-helpy-chat"
+BASE_URL = "https://qaproject.elice.io/ai-helpy-chat"
 
 # 일반 로그인 정보
 USERNAME = "aloe9426@gmail.com"
@@ -19,6 +20,18 @@ NAME = "김준서"
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
+def TEST_AC_001_login():
+    """로그인 테스트"""
+    print("=== AC_001: 로그인 테스트 시작 ===")
+    try:
+        login(driver, USERNAME, PASSWORD)
+        print("✅ 로그인 테스트 성공")
+    except Exception as e:
+        print("❌ 로그인 테스트 실패:", e)
+    finally:
+        input("테스트 완료 후 엔터를 누르면 브라우저가 닫힙니다.")
+        driver.quit()
+        
 def TEST_AC_001():
     print("=== AC_TC_001: 사이트 접속 확인 ===")
     try:
@@ -132,6 +145,7 @@ def TEST_AC_002():
         print("❌ 테스트 실패:", e) 
     
 if __name__ == "__main__":
+    TEST_AC_001_login()
     TEST_AC_001()
     TEST_AC_002()
     
