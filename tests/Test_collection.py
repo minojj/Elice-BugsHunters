@@ -6,11 +6,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 import time
 
-BASE_URL = "https://qatrack.elice.io/ai-helpy-chat"
-
-USERNAME = "aloe9426@gmail.com"
-PASSWORD = "test_password"
-
+BASE_URL = "https://qaproject.elice.io/ai-helpy-chat"
 
 def login(driver, username, password):
     """로그인 공통 함수"""
@@ -34,4 +30,4 @@ def login(driver, username, password):
     )
     login_btn.click()
 
-    print(" 로그인 시도 완료")
+    print("✅ 로그인 시도 완료")
