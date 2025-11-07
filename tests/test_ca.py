@@ -4,6 +4,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from src.pages.agent_page import AgentPage
@@ -66,12 +67,14 @@ def test_ca_002(create_page):
     # 1️⃣ 생성 페이지에서 필드 요소 찾기, name제외 기본 필드 입력
     name_input = wait.until(EC.visibility_of_element_located((By.NAME, "name")))
 
-    description_input = wait.until(EC.element_to_be_clickable((By.NAME, "description")))
+    description_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[name="description"]')))
     description_input.click()
     description_input.send_keys("test description")
+
     rules_input = wait.until(EC.visibility_of_element_located((By.NAME, "systemPrompt")))
     rules_input.click()
     rules_input.send_keys("test system prompt")
+
     starting_conversation_input = wait.until(EC.visibility_of_element_located((By.NAME, "conversationStarters.0.value")))
     starting_conversation_input.click()
     starting_conversation_input.send_keys("test conversation starter")
@@ -81,10 +84,10 @@ def test_ca_002(create_page):
 
     # 2️⃣ name 필드 안내문구 & 버튼 비활성화 확인
     
-    if driver.find_element(By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error").is_displayed():
-        "✅ name 필드 입력 안내문구 정상 출력"
+    if wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"))).is_displayed():
+        print("✅ name 필드 입력 안내문구 정상 출력")
     else:
-        "❌ name 필드 입력 안내문구 미출력"
+        print("❌ name 필드 입력 안내문구 미출력")
 
     assert not create_btn.is_enabled(), "❌ 생성 버튼 활성화상태"
     print("✅ 생성 버튼 비활성화 정상")
@@ -92,10 +95,13 @@ def test_ca_002(create_page):
     # 3️⃣ name 입력 후 systemPrompt 필드 내용 삭제
     name_input.click()
     name_input.send_keys("Test Agent")
-    rules_input.clear()
+    rules_input.send_keys(Keys.CONTROL, "a") 
+    rules_input.send_keys(Keys.DELETE) 
+    WebDriverWait(driver, 5).until(lambda d: rules_input.get_attribute("value") == "")
+    description_input.click()  # 포커스 이동 위해 클릭
 
     # 4️⃣ name 안내문구 사라짐 & systemPrompt 필드 안내문구 출력 & 버튼 비활성화 확인
-    if not driver.find_element(By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error").is_displayed():
+    if wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"))).is_displayed():
         print("✅ name 필드 입력 안내문구 사라짐")
     else:
         print("❌ name 필드 입력 안내문구 여전히 출력")    
