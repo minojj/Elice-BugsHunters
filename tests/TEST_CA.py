@@ -8,14 +8,14 @@ from collection import login
 driver = webdriver.Chrome()
 wait = WebDriverWait(driver, 10)
 
-def test_ca_001(driver, email, password):
+def test_ca_001(driver, username, password):
     wait = WebDriverWait(driver, 10)
 
     # 1️⃣ 접속
     # driver.get("https://qatrack.elice.io/ai-helpy-chat")
 
     # 2️⃣ 로그인
-    login(driver)
+    login(driver, username, password)
 
     # 3️⃣ Agent Explorer 클릭
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
