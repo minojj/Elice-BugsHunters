@@ -1,45 +1,45 @@
 import pytest
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from src.pages.agent_page import AgentPage
 
-
-# @pytest.fixture
-# def driver():
-#     with webdriver.Chrome() as driver:
-#         yield driver
+CHROME_DRIVER_PATH = ChromeDriverManager().install()
 
 @pytest.fixture
 def logged_in_driver():
     #크롬 열고 로그인까지 완료된 드라이버 리턴
-    driver = webdriver.Chrome()
+    service = Service(CHROME_DRIVER_PATH)
+    driver = webdriver.Chrome(service=service)
     page = AgentPage(driver)
-    
     page.open()
     page.login()
     assert page.is_logged_in() is True  # 로그인 성공 검증
-    
     yield driver  # 여기서부터 테스트 함수에 넘김
-    
     driver.quit()  # 테스트 끝나면 자동 종료
-
+    
 
 @pytest.fixture
-def create_page(logged_in_driver):
+def create_page():
     #로그인 된 상태에서 커스텀에이전트 생성페이지로 이동
-    driver = logged_in_driver
+    service = Service(CHROME_DRIVER_PATH)
+    driver = webdriver.Chrome(service=service)
+    page = AgentPage(driver)
+    page.open()
+    page.login()
+    assert page.is_logged_in() is True  # 로그인 성공 검증
     driver.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]').click()
     driver.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]').click()
     yield driver
+    driver.quit()  # 테스트 끝나면 자동 종료
 
 
 
 def test_ca_001(logged_in_driver):
-    
-
     # 1️⃣ 접속 및 로그인
     driver = logged_in_driver
     wait = WebDriverWait(driver, 10)
@@ -62,15 +62,38 @@ def test_ca_002(create_page):
     driver = create_page
     wait = WebDriverWait(driver, 10)
 
-    # 1️⃣ 생성 페이지에서 필드 입력
-    description_input = wait.until(EC.presence_of_element_located((By.NAME, "description")))
-    description_input.send_keys("test description")
-    wait.until(EC.presence_of_element_located((By.NAME, "systemPrompt"))).send_Keys("test system prompt")
-    wait.until(EC.presence_of_element_located((By.NAME, "conversationStarters.0.value"))).send_keys("test conversation starter")
+    # 1️⃣ 생성 페이지에서 필드 요소 찾기, name제외 기본 필드 입력
+    name_input = wait.until(EC.presence_of_element_located((By.NAME, "name")))
 
+    driver.find_element(By.NAME, "description").send_keys("test description")
+    rules_input = driver.find_element(By.NAME, "systemPrompt")
+    rules_input.send_Keys("test system prompt")
+    driver.findelement(By.NAME, "conversationStarters.0.value").send_keys("test conversation starter")
 
-    # 2️⃣ Agent Explorer 클릭
+    create_btn = driver.find_element(By.CSS_SELECTOR, "button.MuiButton-containedPrimary")
 
+    # 2️⃣ name 필드 안내문구 & 버튼 비활성화 확인
+    
+    if driver.find_element(By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error").is_displayed():
+        "✅ name 필드 입력 안내문구 정상 출력"
+    else:
+        "❌ name 필드 입력 안내문구 미출력"
+
+    assert not create_btn.is_enabled(), "❌ 생성 버튼 활성화상태"
+    print("✅ 생성 버튼 비활성화 정상")
+
+    # 3️⃣ name 입력 후 systemPrompt 필드 내용 삭제
+    name_input.send_keys("Test Agent")
+    rules_input.clear()
+
+    # 4️⃣ name 안내문구 사라짐 & systemPrompt 필드 안내문구 출력 & 버튼 비활성화 확인
+    if not driver.find_element(By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error").is_displayed():
+        print("✅ name 필드 입력 안내문구 사라짐")
+    else:
+        print("❌ name 필드 입력 안내문구 여전히 출력")    
+    
+    assert not create_btn.is_enabled(), "❌ 생성 버튼 활성화상태"
+    print("✅ 생성 버튼 비활성화 정상")
 
 
 
