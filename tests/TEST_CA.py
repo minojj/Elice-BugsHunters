@@ -11,19 +11,16 @@ wait = WebDriverWait(driver, 10)
 def test_ca_001(driver, username, password):
     wait = WebDriverWait(driver, 10)
 
-    # 1️⃣ 접속
-    # driver.get("https://qatrack.elice.io/ai-helpy-chat")
-
-    # 2️⃣ 로그인
+    # 1️⃣ 접속 및 로그인
     login(driver, username, password)
 
-    # 3️⃣ Agent Explorer 클릭
+    # 2️⃣ Agent Explorer 클릭
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
 
-    # 4️⃣ create 버튼 클릭
+    # 3️⃣ create 버튼 클릭
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'))).click()
 
-    # 5️⃣ 페이지 전환 확인
+    # 4️⃣ 페이지 전환 확인
     try:
         if wait.until(EC.url_contains("builder#form")):
             print("✅ CA_001_페이지로 이동 완료!")
@@ -31,7 +28,7 @@ def test_ca_001(driver, username, password):
         print("❌ 페이지로 이동 실패!")
 
 
-# 실행
+# 5️⃣실행
 # if __name__ == "__main__":
 #     driver = webdriver.Chrome()
 #     test_ca_001(driver, "ssunull@daum.net", "dorpw-6Gewk")
