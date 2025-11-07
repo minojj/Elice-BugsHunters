@@ -95,7 +95,8 @@ def test_ca_002(create_page):
     # 3️⃣ name 입력 후 systemPrompt 필드 내용 삭제
     name_input.click()
     name_input.send_keys("Test Agent")
-    rules_input.send_keys(Keys.CONTROL, "a") 
+    # rules_input.clear()
+    rules_input.send_keys(Keys.CONTROL + "a")
     rules_input.send_keys(Keys.DELETE) 
     WebDriverWait(driver, 5).until(lambda d: rules_input.get_attribute("value") == "")
     description_input.click()  # 포커스 이동 위해 클릭
