@@ -33,7 +33,7 @@ class LoginFunction:
         )
         print("✅ 사이트 접속 성공")
 
-    def login(self, email="team3@elice.com", password="team3elice!@"):
+    def login(self, email, password):
         # 로그인 수행
         WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located(self.locators["email"])
