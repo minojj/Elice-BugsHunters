@@ -42,7 +42,7 @@ def login(driver, username, password):
     time.sleep(1)
 
 
-def TEST_AC_001(driver,wait,filename):
+def test_ce_001(driver,wait,filename):
     
     try:
         print("\n=== 테스트 시작 ===")
@@ -136,6 +136,10 @@ def TEST_AC_001(driver,wait,filename):
 
 if __name__ == "__main__":
 
+   
+    # driver = webdriver.Chrome()
+    # test_ce_001(driver, "steam3@elice.com", "team3elice!@")
+
 
     driver = None
     
@@ -158,7 +162,7 @@ if __name__ == "__main__":
         login(driver, "team3@elice.com", "team3elice!@")
         
         # 파일 업로드 테스트
-        result = TEST_AC_001(driver, wait, TEST_FILENAME)
+        result = test_ce_001(driver, wait, TEST_FILENAME)
         
         if result:
             print("🎉 테스트 성공!")
