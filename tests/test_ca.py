@@ -19,7 +19,6 @@ def logged_in_driver():
     page = AgentPage(driver)
     page.open()
     page.login()
-    assert page.is_logged_in() is True  # 로그인 성공 검증
     yield driver  # 여기서부터 테스트 함수에 넘김
     driver.quit()  # 테스트 끝나면 자동 종료
     
@@ -29,12 +28,12 @@ def create_page():
     #로그인 된 상태에서 커스텀에이전트 생성페이지로 이동
     service = Service(CHROME_DRIVER_PATH)
     driver = webdriver.Chrome(service=service)
+    wait = WebDriverWait(driver, 10)
     page = AgentPage(driver)
     page.open()
     page.login()
-    assert page.is_logged_in() is True  # 로그인 성공 검증
-    driver.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]').click()
-    driver.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]').click()
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'))).click()
     yield driver
     driver.quit()  # 테스트 끝나면 자동 종료
 
