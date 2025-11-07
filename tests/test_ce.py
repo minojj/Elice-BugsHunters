@@ -134,49 +134,45 @@ def test_ce_001(driver,wait,filename):
         traceback.print_exc()
         return False
 
-if __name__ == "__main__":
+# 5️⃣실행
+# if __name__ == "__main__":
 
-   
-    # driver = webdriver.Chrome()
-    # test_ce_001(driver, "steam3@elice.com", "team3elice!@")
-
-
-    driver = None
+#     driver = None
     
-    try:
-        # Chrome 드라이버 설정
-        options = webdriver.ChromeOptions()
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
+#     try:
+#         # Chrome 드라이버 설정
+#         options = webdriver.ChromeOptions()
+#         options.add_argument('--disable-gpu')
+#         options.add_argument('--no-sandbox')
+#         options.add_argument('--disable-dev-shm-usage')
         
-        driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=options
-        )
-        driver.maximize_window()
+#         driver = webdriver.Chrome(
+#             service=Service(ChromeDriverManager().install()),
+#             options=options
+#         )
+#         driver.maximize_window()
         
-        wait = WebDriverWait(driver, 10)
+#         wait = WebDriverWait(driver, 10)
         
-        # 로그인
-        login(driver, "team3@elice.com", "team3elice!@")
+#         # 로그인
+#         login(driver, "team3@elice.com", "team3elice!@")
         
-        # 파일 업로드 테스트
-        result = test_ce_001(driver, wait, TEST_FILENAME)
+#         # 파일 업로드 테스트
+#         result = test_ce_001(driver, wait, TEST_FILENAME)
         
-        if result:
-            print("🎉 테스트 성공!")
-        else:
-            print("⚠️ 테스트 실패")
+#         if result:
+#             print("🎉 테스트 성공!")
+#         else:
+#             print("⚠️ 테스트 실패")
     
-    except Exception as e:
-        print(f"❌ 전체 테스트 실패: {e}")
-        if driver:
-            driver.save_screenshot("critical_error.png")
+#     except Exception as e:
+#         print(f"❌ 전체 테스트 실패: {e}")
+#         if driver:
+#             driver.save_screenshot("critical_error.png")
     
-    finally:
-        if driver:
-            print("\n🔄 브라우저 종료 중...")
-            time.sleep(2)
-            driver.quit()
-            print("✅ 테스트 종료")
+#     finally:
+#         if driver:
+#             print("\n🔄 브라우저 종료 중...")
+#             time.sleep(2)
+#             driver.quit()
+#             print("✅ 테스트 종료")
