@@ -7,25 +7,42 @@ from selenium.common.exceptions import TimeoutException
 from src.pages.agent_page import AgentPage
 
 
-@pytest.fixture
-def driver():
-    with webdriver.Chrome() as driver:
-        yield driver
+# @pytest.fixture
+# def driver():
+#     with webdriver.Chrome() as driver:
+#         yield driver
 
 @pytest.fixture
-def create_page(driver):
-    login(driver, "team3@elice.com", "team3elice!@")
+def logged_in_driver():
+    #크롬 열고 로그인까지 완료된 드라이버 리턴
+    driver = webdriver.Chrome()
+    page = AgentPage(driver)
+    
+    page.open()
+    page.login()
+    assert page.is_logged_in() is True  # 로그인 성공 검증
+    
+    yield driver  # 여기서부터 테스트 함수에 넘김
+    
+    driver.quit()  # 테스트 끝나면 자동 종료
+
+
+@pytest.fixture
+def create_page(logged_in_driver):
+    #로그인 된 상태에서 커스텀에이전트 생성페이지로 이동
+    driver = logged_in_driver
     driver.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]').click()
     driver.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]').click()
     yield driver
 
 
 
-def test_ca_001(driver):
-    wait = WebDriverWait(driver, 10)
+def test_ca_001(logged_in_driver):
+    
 
     # 1️⃣ 접속 및 로그인
-    login(driver, "team3@elice.com", "team3elice!@")
+    driver = logged_in_driver
+    wait = WebDriverWait(driver, 10)
 
     # 2️⃣ Agent Explorer 클릭
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
@@ -35,8 +52,8 @@ def test_ca_001(driver):
 
     # 4️⃣ 페이지 전환 확인
     try:
-        if wait.until(EC.url_contains("builder#form")):
-            print("✅ CA_001_페이지로 이동 완료!")
+        wait.until(EC.url_contains("builder#form"))
+        print("✅ CA_001_페이지로 이동 완료!")
     except TimeoutException:
         print("❌ 페이지로 이동 실패!")
 
@@ -44,6 +61,7 @@ def test_ca_001(driver):
 def test_ca_002(create_page):
     driver = create_page
     wait = WebDriverWait(driver, 10)
+
     # 1️⃣ 생성 페이지에서 필드 입력
     description_input = wait.until(EC.presence_of_element_located((By.NAME, "description")))
     description_input.send_keys("test description")
