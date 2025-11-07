@@ -1,27 +1,20 @@
 import pytest
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
+from src.utils.helpers import Utils
 from src.pages.agent_page import AgentPage
 import time
 
 
-# TEST 로그인 정보
-testID = "test_user@example.com"
-testPW = "test!9054"
-NAME = "김준서"
+@pytest.mark.usefixtures("driver")
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-
-def test_AC_001_login():
+def test_AC_001_login(driver):
     """로그인 테스트"""
     print("=== AC_001: 로그인 테스트 시작 ===")
+    helper = Utils(driver)
     login_page = AgentPage(driver)
+    
     login_page.open()
     login_page.login()
+    
         
     assert login_page.is_logged_in()
         
