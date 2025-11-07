@@ -1,18 +1,31 @@
+import pytest
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from collection import login
 
-driver = webdriver.Chrome()
-wait = WebDriverWait(driver, 10)
 
-def test_ca_001(driver, username, password):
+@pytest.fixture
+def driver():
+    with webdriver.Chrome() as driver:
+        yield driver
+
+@pytest.fixture
+def create_page(driver):
+    login(driver, "team3@elice.com", "team3elice!@")
+    driver.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]').click()
+    driver.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]').click()
+    yield driver
+
+
+
+def test_ca_001(driver):
     wait = WebDriverWait(driver, 10)
 
     # 1️⃣ 접속 및 로그인
-    login(driver, username, password)
+    login(driver, "team3@elice.com", "team3elice!@")
 
     # 2️⃣ Agent Explorer 클릭
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
@@ -26,6 +39,28 @@ def test_ca_001(driver, username, password):
             print("✅ CA_001_페이지로 이동 완료!")
     except TimeoutException:
         print("❌ 페이지로 이동 실패!")
+
+
+def test_ca_002(create_page):
+    driver = create_page
+    wait = WebDriverWait(driver, 10)
+    # 1️⃣ 생성 페이지에서 필드 입력
+    description_input = wait.until(EC.presence_of_element_located((By.NAME, "description")))
+    description_input.send_keys("test description")
+    wait.until(EC.presence_of_element_located((By.NAME, "systemPrompt"))).send_Keys("test system prompt")
+    wait.until(EC.presence_of_element_located((By.NAME, "conversationStarters.0.value"))).send_keys("test conversation starter")
+
+
+    # 2️⃣ Agent Explorer 클릭
+
+
+
+
+
+
+
+
+
 
 
 # 5️⃣실행
