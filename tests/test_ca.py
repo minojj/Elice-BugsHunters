@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from src.pages.agent_page import AgentPage
+import pyautogui
 
 CHROME_DRIVER_PATH = ChromeDriverManager().install()
 
@@ -67,8 +68,8 @@ def test_ca_002(create_page):
 
     driver.find_element(By.NAME, "description").send_keys("test description")
     rules_input = driver.find_element(By.NAME, "systemPrompt")
-    rules_input.send_Keys("test system prompt")
-    driver.findelement(By.NAME, "conversationStarters.0.value").send_keys("test conversation starter")
+    rules_input.send_keys("test system prompt")
+    driver.find_element(By.NAME, "conversationStarters.0.value").send_keys("test conversation starter")
 
     create_btn = driver.find_element(By.CSS_SELECTOR, "button.MuiButton-containedPrimary")
 
