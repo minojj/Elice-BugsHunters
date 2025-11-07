@@ -34,6 +34,7 @@ def create_page():
     page.login()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'))).click()
+    wait.until(EC.url_contains("builder#form"))
     yield driver
     driver.quit()  # 테스트 끝나면 자동 종료
 
@@ -45,10 +46,10 @@ def test_ca_001(logged_in_driver):
     wait = WebDriverWait(driver, 10)
 
     # 2️⃣ Agent Explorer 클릭
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
+    agent_explorer_btn = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
 
     # 3️⃣ create 버튼 클릭
-    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'))).click()
+    creat_btn = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'))).click()
 
     # 4️⃣ 페이지 전환 확인
     try:
@@ -63,14 +64,20 @@ def test_ca_002(create_page):
     wait = WebDriverWait(driver, 10)
 
     # 1️⃣ 생성 페이지에서 필드 요소 찾기, name제외 기본 필드 입력
-    name_input = wait.until(EC.presence_of_element_located((By.NAME, "name")))
+    name_input = wait.until(EC.visibility_of_element_located((By.NAME, "name")))
 
-    driver.find_element(By.NAME, "description").send_keys("test description")
-    rules_input = driver.find_element(By.NAME, "systemPrompt")
+    description_input = wait.until(EC.element_to_be_clickable((By.NAME, "description")))
+    description_input.click()
+    description_input.send_keys("test description")
+    rules_input = wait.until(EC.visibility_of_element_located((By.NAME, "systemPrompt")))
+    rules_input.click()
     rules_input.send_keys("test system prompt")
-    driver.find_element(By.NAME, "conversationStarters.0.value").send_keys("test conversation starter")
+    starting_conversation_input = wait.until(EC.visibility_of_element_located((By.NAME, "conversationStarters.0.value")))
+    starting_conversation_input.click()
+    starting_conversation_input.send_keys("test conversation starter")
 
-    create_btn = driver.find_element(By.CSS_SELECTOR, "button.MuiButton-containedPrimary")
+    create_btn = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button.MuiButton-containedPrimary")))
+    
 
     # 2️⃣ name 필드 안내문구 & 버튼 비활성화 확인
     
@@ -83,6 +90,7 @@ def test_ca_002(create_page):
     print("✅ 생성 버튼 비활성화 정상")
 
     # 3️⃣ name 입력 후 systemPrompt 필드 내용 삭제
+    name_input.click()
     name_input.send_keys("Test Agent")
     rules_input.clear()
 
