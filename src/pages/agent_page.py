@@ -1,8 +1,10 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.chrome.service import Service
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from src.utils.helpers import wait_for
+from src.utils.helpers import Utils
 
 class AgentPage:
     def __init__(self, driver):
@@ -28,9 +30,9 @@ class AgentPage:
         
     def is_logged_in(self):
         try:
-            # 로그인 성공 후 나타나는 화면 요소 (예시: 채팅창)
+            # 로그인 성공 후 나타나는 화면 요소 
             WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='billing/payments/credit']"))
+                EC.visibility_of_element_located((By.CSS_SELECTOR, "a[href*='billing/payments/credit']"))
             )
             print("✅ 로그인 성공! 테스트 종료합니다.")
             self.driver.quit()  # ✅ 브라우저 종료
