@@ -8,19 +8,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from src.pages.agent_page import AgentPage
+from src.utils.helpers import Utils
 # from src.pages.custom_agent_page import CustomAgentPage
 import pyautogui
 
 CHROME_DRIVER_PATH = ChromeDriverManager().install()
 
-@pytest.fixture(scope="session")
-def logged_in_driver() :
+@pytest.fixture
+def logged_in_driver(driver) :
     #크롬 열고 로그인까지 완료된 드라이버 리턴
-    service = Service(CHROME_DRIVER_PATH)
-    driver = webdriver.Chrome(service=service)
+    # service = Service(CHROME_DRIVER_PATH)
+    # driver = webdriver.Chrome(service=service)
     page = AgentPage(driver)
     page.open()
     page.login()
+    page.wait_for(timeout=15)
     yield driver  # 여기서부터 테스트 함수에 넘김
     # driver.quit()  # 테스트 끝나면 자동 종료용인데, 브라우저 닫지 않고 로그인 유지한채 진행을 위해 주석처리
     # 발표용으로는 적합하지만 실제 테스트용으로는 위험하므로 발표 외에는 주의필요 
