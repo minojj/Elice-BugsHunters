@@ -324,20 +324,6 @@ def test_ht_001(driver):
     # 3) 메시지 전송
     _send_message(driver, "안녕")
 
-    time.sleep(3)  # 메시지 처리 대기
-
-    # 2) 새 대화 클릭 (일부 환경에선 여기서 이미 새 세션 생성)
-    _click_new_chat(driver)
-
-    # 2-1) 클릭 직후 최상단 변경(신규 세션 생성) 여부를 짧게 체크
-    try:
-        wait(driver, 5).until(
-            lambda d: (_top_thread_href(d) is not None) and (_top_thread_href(d) != before_top)
-        )
-    except TimeoutException:
-        pass  # 아직이면 메시지 전송으로 이어감
-    _send_message(driver, "Hello")
-
     # 4) 최상단 쓰레드 변경 검증 (가상 스크롤에서도 안전)
     wait(driver, 20).until(
         lambda d: (_top_thread_href(d) is not None) and (_top_thread_href(d) != before_top)
