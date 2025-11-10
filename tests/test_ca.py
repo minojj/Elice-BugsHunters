@@ -116,7 +116,11 @@ def test_ca_002(create_page):
     print("✅ 생성 버튼 비활성화 정상")
 
 
+def test_ca_003(create_page):
+    driver = create_page
+    wait = WebDriverWait(driver, 10)
 
+    # 1️⃣ 생성 페이지에서 필드 요소 찾고 모든 필드 입력
 
 
 
