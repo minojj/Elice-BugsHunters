@@ -19,7 +19,7 @@ def driver():
     driver = webdriver.Chrome(service=service, options=options)
     
     yield driver
-    driver.quit()
+    # driver.quit()
     
 @pytest.fixture
 def logged_in_driver(driver) :
