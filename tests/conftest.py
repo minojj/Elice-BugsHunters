@@ -1,10 +1,3 @@
-import sys
-from pathlib import Path
-
-# 프로젝트 루트 디렉토리를 Python 경로에 추가
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
-
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -12,7 +5,6 @@ from src.utils.helpers import Utils
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from src.pages.login_page import LoginFunction
-from src.utils.helpers import Utils 
 
 @pytest.fixture(scope="session")
 def driver():
@@ -32,8 +24,8 @@ def driver():
 def logged_in_driver(driver) :
     try :
         login_page = LoginFunction(driver)
-        login_page.open("team3@elice.com","team3elice!@")
-        login_page.login()
+        login_page.open()
+        login_page.login("team3@elice.com", "team3elice!@")
         print("✅ 로그인 성공")
     except TimeoutException :
         print("✅ 현재 로그인 상태")
