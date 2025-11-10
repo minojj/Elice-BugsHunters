@@ -25,7 +25,7 @@ def logged_in_driver(driver) :
     try :
         login_page = LoginFunction(driver)
         login_page.open()
-        login_page.login()
+        login_page.login("team3@elice.com", "team3elice!@")
         print("✅ 로그인 성공")
     except TimeoutException :
         print("✅ 현재 로그인 상태")
