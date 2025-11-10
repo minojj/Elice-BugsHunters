@@ -34,12 +34,12 @@ class Chat_Expance:
         """
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
-        self.test_url = "https://qaproject.elice.io/ai-helpy-chat"
+        self.base_url = "https://qaproject.elice.io/ai-helpy-chat"
     
     def open(self):
         """test URL로 이동"""
-        self.driver.get(self.test_url)
-        print(f"✅ {self.test_url} 로 이동")
+        self.driver.get(self.base_url)
+        print(f"✅ {self.base_url} 로 이동")
     
     def login(self, username, password):
         """
