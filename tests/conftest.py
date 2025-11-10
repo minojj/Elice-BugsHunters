@@ -1,15 +1,12 @@
-import sys
-import os
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from src.utils.helpers import Utils
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
+from src.pages.login_page import LoginFunction
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def driver():
     options = webdriver.ChromeOptions()
     # options.add_argument("--headless")
@@ -22,9 +19,18 @@ def driver():
     
     yield driver
     driver.quit()
-
-
+    
 @pytest.fixture
-def wait(driver):
-    """공용 WebDriverWait 객체"""
-    return WebDriverWait(driver, 10)
+def logged_in_driver(driver) :
+    try :
+        login_page = LoginFunction(driver)
+        login_page.open()
+        login_page.login()
+        print("✅ 로그인 성공")
+    except TimeoutException :
+        print("✅ 현재 로그인 상태")
+        
+    Utils(driver).wait_for(timeout=15)
+    print("✅ 로그인 대기 완료")
+
+    yield driver
