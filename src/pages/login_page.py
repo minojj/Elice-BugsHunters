@@ -1,11 +1,6 @@
 from selenium.webdriver.support.ui import WebDriverWait 
-from selenium.webdriver.chrome.webdriver import WebDriver 
-from selenium.webdriver.chrome.service import Service 
-from selenium import webdriver 
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support import expected_conditions as EC 
-from src.utils.helpers import Utils 
-from tests.conftest import driver
 
 
 class LoginFunction:
@@ -21,6 +16,8 @@ class LoginFunction:
         "create_acc_btn": (By.CSS_SELECTOR, "a[href*='/accounts/signup']"),
         "create_email_btn": (By.XPATH, '//button[@type="button" and contains(@class, "MuiButton-containedPrimary")]'),
         "name": (By.CSS_SELECTOR, "input[name='fullname']"),
+        "email_error": (By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"),
+        "remove_history" : (By.XPATH, "//a[text()='Remove history']")
     }
 
     # === Page Actions ===
@@ -33,7 +30,7 @@ class LoginFunction:
         )
         print("✅ 사이트 접속 성공")
 
-    def login(self, email, password):
+    def login(self, email, password ):
         # 로그인 수행
         WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located(self.locators["email"])
@@ -46,13 +43,13 @@ class LoginFunction:
     def is_logged_in(self):
         # 로그인 성공 여부 확인
         try:
-            WebDriverWait(self.driver, 10).until(
+            WebDriverWait(self.driver, 3).until(
                 EC.visibility_of_element_located(self.locators["billing"])
             )
             print("✅ 로그인 성공! 테스트 종료합니다.")
             return True
         except Exception:
-            print("❌ 로그인 실패 또는 요소 미출력")
+            print("❌ 로그인 실패")
             return False
 
     def create_acc(self):
@@ -78,6 +75,23 @@ class LoginFunction:
         except Exception:
             print("❌ 이름 입력 필드가 표시되지 않았습니다.")
             return False
-
+        
+    def fill_signup_form(self, email):
+        # 회원가입 폼 입력 (이메일만 입력)
+        
+        self.driver.find_element(*self.locators["email"]).send_keys(email)
+        
+        print("✅ 이메일 입력 완료")
     
+    def email_error(self):
+        return self.driver.find_element(*self.locators["email_error"])
     
+    def clear_login_session(self):
+        #브라우저 세션 초기화
+        self.driver.delete_all_cookies()
+        self.driver.refresh()
+        print("로그인 세션 초기화 완료")
+        
+    def remove_history(self):
+        self.driver.find_element(*self.locators["remove_history"]).click()
+        
