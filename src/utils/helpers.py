@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+import pyautogui    #추가 import 파일업로드 창 입력 (pip install pyautogui)
 
 
 class Utils:
