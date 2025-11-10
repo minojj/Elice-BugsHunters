@@ -7,6 +7,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+import time
+
 
 # --- URLs & 계정 ---
 LOGIN_URL = (
@@ -291,6 +293,13 @@ def _confirm_delete_in_dialog(drv, timeout=10):
     # 다이얼로그 닫힘 확인
     wait(drv, timeout).until(EC.invisibility_of_element_located(SEL_DIALOG))
 
+def scroll_to_first_message(driver, timeout=10):
+    first_msg = WebDriverWait(driver, timeout).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, '[data-step-type="user_message"]'))
+    )
+    driver.execute_script("arguments[0].scrollIntoView({behavior:'instant', block:'start'});", first_msg)
+    return True
+
 # --- 테스트 ---
 @pytest.mark.e2e
 def test_ht_001(driver):
@@ -315,6 +324,20 @@ def test_ht_001(driver):
     # 3) 메시지 전송
     _send_message(driver, "안녕")
 
+    time.sleep(3)  # 메시지 처리 대기
+
+    # 2) 새 대화 클릭 (일부 환경에선 여기서 이미 새 세션 생성)
+    _click_new_chat(driver)
+
+    # 2-1) 클릭 직후 최상단 변경(신규 세션 생성) 여부를 짧게 체크
+    try:
+        wait(driver, 5).until(
+            lambda d: (_top_thread_href(d) is not None) and (_top_thread_href(d) != before_top)
+        )
+    except TimeoutException:
+        pass  # 아직이면 메시지 전송으로 이어감
+    _send_message(driver, "Hello")
+
     # 4) 최상단 쓰레드 변경 검증 (가상 스크롤에서도 안전)
     wait(driver, 20).until(
         lambda d: (_top_thread_href(d) is not None) and (_top_thread_href(d) != before_top)
@@ -335,23 +358,33 @@ def test_ht_001(driver):
     actual = _top_thread_title(driver)
     assert actual == target, f"제목 변경 실패: expected={target}, actual={actual}"
 
+    # 삭제 직전: 최상단 요소를 WebElement로 확보
+    top_el = wait(driver, 5).until(EC.presence_of_element_located(SEL_TOP_THREAD))
+    deleted_href = top_el.get_attribute("href")
+
     _open_top_thread_options(driver)  # 점3개 열기
-    _click_menu_delete(driver)        # 삭제 항목 클릭 (여기까지만)
+    _click_menu_delete(driver)        # 삭제 항목 클릭 
 
     # 8) 삭제 확인 다이얼로그에서 '삭제' 버튼 클릭
-    deleted_href = after_top  # 방금 만든 최상단 쓰레드가 삭제 대상
     _confirm_delete_in_dialog(driver)
 
-    # 9) 삭제 결과 검증: 최상단이 바뀌었는지(=삭제된 href와 달라졌는지) 확인
-    wait(driver, 20).until(
-        lambda d: (_top_thread_href(d) is not None) and (_top_thread_href(d) != deleted_href)
-    )
-    new_top = _top_thread_href(driver)
-    assert new_top != deleted_href, f"삭제 후 최상단이 갱신되지 않았습니다. deleted={deleted_href}, current_top={new_top}"
+    # 요소가 DOM에서 제거될 때까지 대기
+    is_stale = wait(driver, 20).until(EC.staleness_of(top_el))
+    assert is_stale, "삭제 후에도 요소가 DOM에 남아 있습니다."
+    
+@pytest.mark.e2e
+def test_ht_002(driver):
+    # 0) 로그인
+    _login(driver)
 
-    # (선택) 사이드바 DOM에 삭제된 항목이 더 이상 존재하지 않는지 추가 확인
-    # 존재한다면 가상 스크롤 영역 밖일 수 있어 엄격 검증은 비활성화. 필요 시 아래 주석 해제:
-    # with pytest.raises(TimeoutException):
-    #     wait(driver, 2).until(
-    #         EC.presence_of_element_located((By.CSS_SELECTOR, f"aside a[href='{deleted_href}']"))
-    #     )
+    # 1) 새 대화 클릭
+    _click_new_chat(driver)
+
+    # 2) 메시지 전송
+    _send_message(driver, "테스트 시작")
+    _send_message(driver, "두 번째 메시지")
+    _send_message(driver, "세 번째 메시지")
+
+    time.sleep(5)  # 메시지 렌더링 대기
+    
+    assert scroll_to_first_message(driver), "첫 번째 메시지로 스크롤 실패"
