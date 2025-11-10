@@ -8,12 +8,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from src.pages.agent_page import AgentPage
+# from src.pages.custom_agent_page import CustomAgentPage
 import pyautogui
 
 CHROME_DRIVER_PATH = ChromeDriverManager().install()
 
-@pytest.fixture
-def logged_in_driver():
+@pytest.fixture(scope="session")
+def logged_in_driver() :
     #크롬 열고 로그인까지 완료된 드라이버 리턴
     service = Service(CHROME_DRIVER_PATH)
     driver = webdriver.Chrome(service=service)
@@ -21,23 +22,20 @@ def logged_in_driver():
     page.open()
     page.login()
     yield driver  # 여기서부터 테스트 함수에 넘김
-    driver.quit()  # 테스트 끝나면 자동 종료
+    # driver.quit()  # 테스트 끝나면 자동 종료용인데, 브라우저 닫지 않고 로그인 유지한채 진행을 위해 주석처리
+    # 발표용으로는 적합하지만 실제 테스트용으로는 위험하므로 발표 외에는 주의필요 
     
 
 @pytest.fixture
-def create_page():
+def create_page(logged_in_driver):
     #로그인 된 상태에서 커스텀에이전트 생성페이지로 이동
-    service = Service(CHROME_DRIVER_PATH)
-    driver = webdriver.Chrome(service=service)
+    driver = logged_in_driver
     wait = WebDriverWait(driver, 10)
-    page = AgentPage(driver)
-    page.open()
-    page.login()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'))).click()
     wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'))).click()
     wait.until(EC.url_contains("builder#form"))
     yield driver
-    driver.quit()  # 테스트 끝나면 자동 종료
+    # driver.quit()  # 테스트 끝나면 자동 종료용인데 이하생략
 
 
 
