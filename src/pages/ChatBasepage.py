@@ -25,8 +25,7 @@ class ChatPage:
         "edit_input_field": (By.CSS_SELECTOR, '#edit-chat-input'),
         "edit_confirm_btn": (By.CSS_SELECTOR, 'button.confirm-edit'),
     }
-
-    # === Page Actions ===
+    
 
     def open(self):
         """페이지 열기"""
@@ -116,7 +115,6 @@ class ChatPage:
         """메시지 복사 버튼 클릭"""
         try:
             if ai_response_element:
-                # 특정 AI 응답 요소 내에서 복사 버튼 찾기
                 try:
                     copy_btn = ai_response_element.find_element(*self.locators["copy_btn"])
                 except NoSuchElementException:
@@ -124,7 +122,6 @@ class ChatPage:
                         EC.element_to_be_clickable(self.locators["copy_btn"])
                     )
             else:
-                # 일반적인 복사 버튼 찾기
                 copy_btn = self.wait.until(
                     EC.element_to_be_clickable(self.locators["copy_btn"])
                 )
@@ -163,7 +160,6 @@ class ChatPage:
             print(" 메시지에 마우스 오버 완료")
             
             # 3. 수정 버튼 클릭 (메시지 내부 또는 근처의 수정 버튼)
-            # 메시지의 부모 요소에서 수정 버튼 찾기
             
             try:
                 edit_btn = self.wait.until(
@@ -213,4 +209,53 @@ class ChatPage:
             return True
         except TimeoutException:
             print(f" 메시지 수정 확인 실패: {new_message}를 찾을 수 없음")
+            return False
+
+    def scroll_to_top(self):
+        """채팅 영역을 최상단으로 스크롤"""
+        try:
+            import time
+            from selenium.webdriver.common.keys import Keys
+            
+            # 방법 1: 첫 번째 메시지로 직접 스크롤
+            first_message = self.driver.find_element(By.XPATH, '(//div[@role="article"])[1]')
+            self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'instant', block: 'start'});", first_message)
+            time.sleep(1)
+            print(" 첫 번째 메시지로 스크롤 완료")
+            return True
+            
+        except NoSuchElementException:
+            print(" 첫 번째 메시지를 찾을 수 없음")
+            return False
+        except Exception as e:
+            print(f" 스크롤 실패: {e}")
+            return False
+
+    def click_scroll_to_latest_button(self):
+        """최신 답변으로 이동하는 버튼 클릭"""
+        try:
+            # 최신 답변으로 이동하는 버튼 찾기
+            scroll_button = self.wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.h-9.w-9.rounded-full'))
+            )
+            scroll_button.click()
+            print(" 최신 답변으로 이동 버튼 클릭 완료")
+            return True
+                
+        except TimeoutException as e:
+            print(f" 최신 답변으로 이동 버튼을 찾을 수 없음: {e}")
+            return False
+        except Exception as e:
+            print(f" 최신 답변으로 이동 버튼 클릭 실패: {e}")
+            return False
+
+    def wait_for_ai_response_complete(self, timeout=30):
+        """AI 응답이 완전히 로딩될 때까지 대기"""
+        try:
+            import time
+            time.sleep(timeout)  # AI 응답 완료 대기
+            print(f" AI 응답 완료 대기 ({timeout}초)")
+            return True
+        except Exception as e:
+            print(f" AI 응답 대기 실패: {e}")
             return False

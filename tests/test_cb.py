@@ -24,19 +24,15 @@ def test_cb_001():
     print("--- TEST_CB_001: 로그인 및 기본 검색 테스트 시작 ---")
 
     try:
-        # 1. 페이지 접속
         if not chat_page.open():
             return False
 
-        # 로그인
         if not chat_page.login(USERNAME, PASSWORD):
             return False
 
-        # 로그인 성공 확인
         if not chat_page.is_logged_in():
             return False
 
-        # 메시지 전송
         search_term = "안녕하세요."
         if not chat_page.send_message(search_term):
             return False
@@ -48,19 +44,16 @@ def test_cb_001():
         return False
 
 
-def test_cb_002():
+def test_cb_005():
     print("\n--- TEST_CB_002: 대화 내용 복사 기능 테스트 시작 ---")
 
     try:
-        # 1. AI 응답 확인
         expected_text = "안녕하세요!"
-        # send_message의 응답을 기다리는 것으로 가정
         ai_response = chat_page.get_ai_response(expected_text)
 
         if not ai_response:
             return False
 
-        # 복사 버튼 클릭
         if not chat_page.copy_message(ai_response):
             return False
 
@@ -72,18 +65,16 @@ def test_cb_002():
         return False
 
 
-def test_cb_003():
+def test_cb_007():
     print("\n--- TEST_CB_003: 메시지 수정 기능 테스트 시작 ---")
 
     try:
-        # 1. '안녕하세요' 메시지를 '내일 뭐해?'로 수정
         original_message = "안녕하세요."
-        new_message = "내일 뭐해?"
+        new_message = "애국가 4절까지 가사 알려줘"
         
         if not chat_page.edit_message(original_message, new_message):
             return False
 
-        # 2. 메시지가 제대로 수정되었는지 확인
         if not chat_page.verify_message_updated(new_message):
             return False
 
@@ -95,12 +86,38 @@ def test_cb_003():
         return False
 
 
+def test_cb_008():
+    print("\n--- TEST_CB_008: 스크롤 및 최신 답변 이동 테스트 시작 ---")
+
+    try:
+        print(" AI 응답 완료 대기 중...")
+        if not chat_page.wait_for_ai_response_complete(timeout=10):
+            return False
+
+        if not chat_page.scroll_to_top():
+            return False
+
+        import time
+        time.sleep(2)
+
+        if not chat_page.click_scroll_to_latest_button():
+            return False
+
+        print("--- TEST_CB_008: 스크롤 및 최신 답변 이동 테스트 완료 ---")
+        return True
+
+    except Exception as e:
+        print(f" TEST_CB_008 실패: 오류 발생: {e}")
+        return False
+
+
 # 메인 실행
 if __name__ == "__main__":
     try:
         if test_cb_001():
-            test_cb_002()
-            test_cb_003()  # 메시지 수정 테스트 추가
+            test_cb_005()
+            test_cb_007()  
+            test_cb_008()  
 
         # 결과 확인을 위해 사용자 입력 대기
         print("\n--- 모든 테스트 스크립트 실행 완료 ---")
