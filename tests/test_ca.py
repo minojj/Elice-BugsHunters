@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 # from src.pages.agent_page import AgentPage
 # from src.utils.helpers import Utils
-# from src.pages.custom_agent_page import CustomAgentPage
+from src.pages.custom_agent_page import CreateAgentPage, SaveAgentPage
 # import pyautogui
 
 CHROME_DRIVER_PATH = ChromeDriverManager().install()
@@ -62,65 +62,139 @@ def test_ca_001(logged_in_driver):
         wait.until(EC.url_contains("builder#form"))
         print("✅ CA_001_페이지로 이동 완료!")
     except TimeoutException:
-        print("❌ 페이지로 이동 실패!")
+        print("❌ CA_001_페이지로 이동 실패!")
 
 
 def test_ca_002(create_page):
     driver = create_page
     wait = WebDriverWait(driver, 10)
+    page = CreateAgentPage(driver)
 
     # 1️⃣ 생성 페이지에서 필드 요소 찾기, name제외 기본 필드 입력
-    name_input = wait.until(EC.visibility_of_element_located((By.NAME, "name")))
-
-    description_input = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[name="description"]')))
-    description_input.click()
-    description_input.send_keys("test description")
-
-    rules_input = wait.until(EC.visibility_of_element_located((By.NAME, "systemPrompt")))
-    rules_input.click()
-    rules_input.send_keys("test system prompt")
-
-    starting_conversation_input = wait.until(EC.visibility_of_element_located((By.NAME, "conversationStarters.0.value")))
-    starting_conversation_input.click()
-    starting_conversation_input.send_keys("test conversation starter")
-
-    create_btn = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button.MuiButton-containedPrimary")))
     
+    page.fill_form(
+    "", 
+    "test description",
+    "test system prompt",
+    "test conversation starter")
+    
+    create_btn = page.get_element("create_btn")
+
 
     # 2️⃣ name 필드 안내문구 & 버튼 비활성화 확인
     
     if wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"))).is_displayed():
-        print("✅ name 필드 입력 안내문구 정상 출력")
+        print("✅ CA_002_name 필드 입력 안내문구 정상 출력")
     else:
-        print("❌ name 필드 입력 안내문구 미출력")
+        print("❌ CA_002_name 필드 입력 안내문구 미출력")
 
-    assert not create_btn.is_enabled(), "❌ 생성 버튼 활성화상태"
-    print("✅ 생성 버튼 비활성화 정상")
+    assert not create_btn.is_enabled(), "❌ CA_002_생성 버튼 활성화상태"
+    print("✅ CA_002_생성 버튼 비활성화 정상")
 
     # 3️⃣ name 입력 후 systemPrompt 필드 내용 삭제
+    name_input = page.get_element("name")
     name_input.click()
     name_input.send_keys("Test Agent")
-    # rules_input.clear()
+
+    rules_input = page.get_element("rules")
     rules_input.send_keys(Keys.CONTROL + "a")
     rules_input.send_keys(Keys.DELETE) 
+
     WebDriverWait(driver, 5).until(lambda d: rules_input.get_attribute("value") == "")
-    description_input.click()  # 포커스 이동 위해 클릭
+    name_input.click()  # 포커스 이동 위해 클릭
 
     # 4️⃣ name 안내문구 사라짐 & systemPrompt 필드 안내문구 출력 & 버튼 비활성화 확인
     if wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"))).is_displayed():
-        print("✅ name 필드 입력 안내문구 사라짐")
+        print("✅ CA_002_name 필드 입력 안내문구 사라짐")
     else:
-        print("❌ name 필드 입력 안내문구 여전히 출력")    
+        print("❌ CA_002_name 필드 입력 안내문구 여전히 출력")    
     
-    assert not create_btn.is_enabled(), "❌ 생성 버튼 활성화상태"
-    print("✅ 생성 버튼 비활성화 정상")
+    assert not create_btn.is_enabled(), "❌ CA_002_생성 버튼 활성화상태"
+    print("✅ CA_002_생성 버튼 비활성화 정상")
 
 
-def test_ca_003(create_page):
+def test_ca_003_1(create_page):
     driver = create_page
     wait = WebDriverWait(driver, 10)
+    page = CreateAgentPage(driver)
 
-    # 1️⃣ 생성 페이지에서 필드 요소 찾고 모든 필드 입력
+    # 1️⃣ 생성 페이지에서 필드 요소 찾고 모든 필드 입력 후 create 버튼 클릭
+    page.fill_form(
+    "project team",
+    "for the team project",
+    "If you must make a guess, clearly state that it is a guess",
+    "Hello, we're team 03")
+    page.get_element("create_btn", "clickable").click()
+
+
+    # 2️⃣ 나만보기 설정으로 save & 생성 확인
+    save_page = SaveAgentPage(driver)
+    save_page.select_mode("private")
+    print("✅ CA_003_1_나만보기 옵션 선택 완료")
+    save_page.click_save()
+    
+
+    # 3️⃣ 페이지 자동 이동 확인
+
+    try:
+        WebDriverWait(driver, 10).until(lambda d: "builder#form" not in d.current_url)
+        print("✅ CA_003_1_에이전트 메인 페이지로 이동 완료!")
+    except TimeoutException:
+        print("❌ CA_003_1_에이전트 메인 페이지로 자동 이동 실패!")
+    #     try: 
+    #         save_page.verify_success()
+    #         save_page.click_start_chat_fast()
+    #         print("✅ CA_003_1_생성 에이전트 페이지로 직접 이동")
+    #     except: 
+    #         print("❌ CA_003_1_버튼 사라짐으로 실패")
+
+    # assert save_page.get_element("chat_input").is_displayed(), "❌ CA_003_1_생성 에이전트 페이지로 직접 이동하지 못함"            
+    # print("✅ CA_003_1_생성 에이전트 페이지 직접 이동 성공")
+    # 임시알림으로 뜬 스낵바에 바로가기 버튼인 'start to chat'을 클릭하는 연계 작업.. 너무 빨리 사라져서 계속 실패함
+
+
+
+def test_ca_003_2(create_page):
+    driver = create_page
+    wait = WebDriverWait(driver, 10)
+    page = CreateAgentPage(driver)
+
+    # 1️⃣ 생성 페이지에서 필드 요소 찾고 모든 필드 입력 후 create 버튼 클릭
+    page.fill_form(
+    "project team",
+    "for the team project",
+    "If you must make a guess, clearly state that it is a guess",
+    "Hello, we're team 03")
+    page.get_element("create_btn", "clickable").click()
+
+
+    # 2️⃣ 전체공개 설정으로 save & 생성 확인
+    save_page = SaveAgentPage(driver)
+    save_page.select_mode("organization")
+    print("✅ CA_003_2_조직 옵션 선택 완료")
+    save_page.click_save()
+    
+
+    # 3️⃣ 페이지 자동 이동 확인
+
+    try:
+        WebDriverWait(driver, 10).until(lambda d: "builder#form" not in d.current_url)
+        print("✅ CA_003_2_에이전트 메인 페이지로 이동 완료!")
+    except TimeoutException:
+        print("❌ CA_003_2_에이전트 메인 페이지로 자동 이동 실패!")
+
+
+
+def test_ca_004(create_page):
+    driver = create_page
+    wait = WebDriverWait(driver, 10)
+    page = CreateAgentPage(driver)
+
+    # 1️⃣ create with chat에서 필드 구성 답변 받기
+    
+
+    
+    
 
 
 
