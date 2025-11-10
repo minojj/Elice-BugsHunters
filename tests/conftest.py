@@ -1,10 +1,10 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from src.utils.helpers import Utils
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
-from src.pages.agent_page import AgentPage
-from src.utils.helpers import Utils
+from src.pages.login_page import LoginFunction
 
 @pytest.fixture(scope="session")
 def driver():
@@ -18,19 +18,19 @@ def driver():
     driver = webdriver.Chrome(service=service, options=options)
     
     yield driver
-
-
+    driver.quit()
+    
 @pytest.fixture
 def logged_in_driver(driver) :
     try :
-        page = AgentPage(driver)
-        page.open()
-        page.login()
+        login_page = LoginFunction(driver)
+        login_page.open()
+        login_page.login()
         print("✅ 로그인 성공")
     except TimeoutException :
         print("✅ 현재 로그인 상태")
+        
     Utils(driver).wait_for(timeout=15)
     print("✅ 로그인 대기 완료")
 
     yield driver
-
