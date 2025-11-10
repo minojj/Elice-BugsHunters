@@ -1,7 +1,4 @@
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.chrome.service import Service
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
@@ -14,9 +11,6 @@ class ChatPage:
 
     locators = {
         "main": "https://qaproject.elice.io/ai-helpy-chat",
-        "email": (By.CSS_SELECTOR, "input[name='loginId']"),
-        "password": (By.CSS_SELECTOR, "input[name='password']"),
-        "submit_btn": (By.CSS_SELECTOR, "button[type='submit']"),
         "chat_submit": (By.ID, "chat-submit"),
         "search_box": (By.CSS_SELECTOR, "div.MuiInputBase-root.MuiInputBase-multiline textarea"),
         "copy_btn": (By.CSS_SELECTOR, 'button[data-state="closed"]'),
@@ -24,58 +18,10 @@ class ChatPage:
         "edit_btn": (By.CSS_SELECTOR, 'button.edit-message'),
         "edit_input_field": (By.CSS_SELECTOR, '#edit-chat-input'),
         "edit_confirm_btn": (By.CSS_SELECTOR, 'button.confirm-edit'),
+        "file_input": (By.CSS_SELECTOR, 'input[type="file"]'),
     }
-    
 
-    def open(self):
-        """페이지 열기"""
-        self.driver.get(self.locators["main"])
-        try:
-            # 로그인 페이지의 핵심 요소인 이메일 입력 필드가 나타날 때까지 기다립니다.
-            self.wait.until(
-                EC.presence_of_element_located(self.locators["email"]) 
-            )
-            print(" 사이트 접속 및 로그인 폼 로딩 성공")
-        except TimeoutException:
-            print(" 사이트 접속은 했으나 로그인 폼 로딩 실패")
-        return True
-    def login(self, email, password):
-        """로그인 수행"""
-        try:
-            # 이메일 입력
-            login_field = self.wait.until(
-                EC.presence_of_element_located(self.locators["email"])
-            )
-            login_field.send_keys(email)
-            
-            # 비밀번호 입력
-            password_field = self.wait.until(
-                EC.presence_of_element_located(self.locators["password"])
-            )
-            password_field.send_keys(password)
-            
-            # 로그인 버튼 클릭
-            login_btn = self.wait.until(
-                EC.element_to_be_clickable(self.locators["submit_btn"])
-            )
-            login_btn.click()
-            print(" 로그인 버튼 클릭 완료")
-            return True
-        except TimeoutException as e:
-            print(f" 로그인 실패: 요소를 찾지 못했거나 시간 초과 - {e}")
-            return False
-
-    def is_logged_in(self):
-        """로그인 성공 여부 확인 (대화 페이지 로딩 확인)"""
-        try:
-            self.wait.until(
-                EC.presence_of_element_located(self.locators["chat_submit"])
-            )
-            print(" 로그인 후 대화 페이지 로딩 완료")
-            return True
-        except TimeoutException:
-            print(" 로그인 실패 또는 대화 페이지 미출력")
-            return False
+    # === Page Actions ===
 
     def send_message(self, message):
         """메시지 입력 및 전송"""
@@ -107,14 +53,41 @@ class ChatPage:
             )
             print(" AI 응답 메시지 확인 완료")
             return last_ai_response
-        except TimeoutException as e:
-            print(f" AI 응답 확인 실패: {e}")
+        except Exception as e:
+            print(f" AI 응답 대기 실패: {e}")
+            return False
+
+    def check_image_exists(self):
+        """AI 응답에 이미지가 있는지 확인"""
+        try:
+            image_element = self.wait.until(
+                EC.presence_of_element_located((By.TAG_NAME, "img"))
+            )
+            print(" 이미지 확인 완료")
+            return image_element
+        except TimeoutException:
+            print(" 이미지를 찾을 수 없음")
             return None
+
+    def upload_file(self, file_path):
+        """파일 업로드"""
+        try:
+            file_input = self.driver.find_element(*self.locators["file_input"])
+            file_input.send_keys(file_path)
+            print(f" 파일 업로드 완료: {file_path}")
+            return True
+        except NoSuchElementException:
+            print(" 파일 입력 요소를 찾을 수 없음")
+            return False
+        except Exception as e:
+            print(f" 파일 업로드 실패: {e}")
+            return False
 
     def copy_message(self, ai_response_element=None):
         """메시지 복사 버튼 클릭"""
         try:
             if ai_response_element:
+                # 특정 AI 응답 요소 내에서 복사 버튼 찾기
                 try:
                     copy_btn = ai_response_element.find_element(*self.locators["copy_btn"])
                 except NoSuchElementException:
@@ -122,6 +95,7 @@ class ChatPage:
                         EC.element_to_be_clickable(self.locators["copy_btn"])
                     )
             else:
+                # 일반적인 복사 버튼 찾기
                 copy_btn = self.wait.until(
                     EC.element_to_be_clickable(self.locators["copy_btn"])
                 )
@@ -160,6 +134,7 @@ class ChatPage:
             print(" 메시지에 마우스 오버 완료")
             
             # 3. 수정 버튼 클릭 (메시지 내부 또는 근처의 수정 버튼)
+            # 메시지의 부모 요소에서 수정 버튼 찾기
             
             try:
                 edit_btn = self.wait.until(
@@ -210,9 +185,7 @@ class ChatPage:
         except TimeoutException:
             print(f" 메시지 수정 확인 실패: {new_message}를 찾을 수 없음")
             return False
-
     def scroll_to_top(self):
-        """채팅 영역을 최상단으로 스크롤"""
         try:
             import time
             from selenium.webdriver.common.keys import Keys
