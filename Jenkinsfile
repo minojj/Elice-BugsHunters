@@ -63,10 +63,30 @@ pipeline {
                                 else
                                   pip install pytest pytest-cov pytest-html
                                 fi
-                                if pytest -q --junitxml=test-results.xml --html=report.html --cov=. --cov-report=xml:coverage.xml; then
-                                  echo 'Tests executed successfully.'
+                                
+                                echo '📂 테스트 파일 찾기...'
+                                find . -name 'test_*.py' -o -name '*_test.py'
+                                
+                                echo '🧪 pytest 실행...'
+                                if pytest -v \
+                                  --junitxml=test-results.xml \
+                                  --html=report.html \
+                                  --self-contained-html \
+                                  --cov=. \
+                                  --cov-report=xml:coverage.xml \
+                                  --cov-report=html \
+                                  --cov-report=term; then
+                                  echo '✅ Tests executed successfully.'
                                 else
-                                  echo 'No tests found or tests failed, check the logs for details.'
+                                  EXIT_CODE=\$?
+                                  echo '⚠️ No tests found or tests failed (exit code: '\$EXIT_CODE')'
+                                  if [ \$EXIT_CODE -eq 5 ]; then
+                                    echo '❌ ERROR: No tests were collected. Check:'
+                                    echo '   1. Test files start with test_ or end with _test.py'
+                                    echo '   2. Test functions start with test_'
+                                    echo '   3. Test files are in the correct location'
+                                  fi
+                                  exit \$EXIT_CODE
                                 fi
                               "
                         '''
@@ -88,9 +108,9 @@ pipeline {
 
     post {
         always {
-            // 테스트 결과와 리포트 수집
-            junit allowEmptyResults: true, testResults: 'test-results.xml'
-            archiveArtifacts artifacts: 'report.html, test-results.xml, coverage.xml', allowEmptyArchive: true
+            // 테스트 결과와 리포트 수집 (경로 수정)
+            junit allowEmptyResults: true, testResults: '**/test-results.xml'
+            archiveArtifacts artifacts: '**/report.html, **/test-results.xml, **/coverage.xml, **/htmlcov/**', allowEmptyArchive: true
         }
     }
 }
