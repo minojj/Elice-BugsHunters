@@ -13,7 +13,7 @@ def driver():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    # ✅ 최신 버전 방식
+    #  최신 버전 방식
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
     
@@ -26,11 +26,11 @@ def logged_in_driver(driver) :
         login_page = LoginFunction(driver)
         login_page.open()
         login_page.login("team3@elice.com", "team3elice!@")
-        print("✅ 로그인 성공")
+        print(" 로그인 성공")
     except TimeoutException :
-        print("✅ 현재 로그인 상태")
+        print(" 현재 로그인 상태")
         
     Utils(driver).wait_for(timeout=15)
-    print("✅ 로그인 대기 완료")
+    print(" 로그인 대기 완료")
 
     yield driver
