@@ -17,7 +17,9 @@ class AgentExplorerPage:
             "create_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'),
             "agent_card_title": (By.CSS_SELECTOR, "p.MuiTypography-body1.MuiTypography-noWrap"),
             "agent_card": (By.CSS_SELECTOR, "a.MuiCard-root, a[class*='MuiCard']"),
-            "agent_chat_input" : (By.CSS_SELECTOR, "textarea[placeholder='Ask anything']")
+            "agent_chat_input" : (By.CSS_SELECTOR, "textarea[placeholder='Ask anything']"),
+            "search_input": (By.CSS_SELECTOR, "input[placeholder='Search AI agents']"),
+            "search_agent_card_spans": (By.CSS_SELECTOR, "span.MuiTypography-root"),
         }
 
     def get_element(self, key, wait_type="visible", timeout=10):
@@ -116,6 +118,26 @@ class AgentExplorerPage:
         
         print(f"❌ '{agent_name}' 카드 탐색 실패")
         return False
+    
+    def enter_search_query(self, query):
+        search_input = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(self.locators["search_input"])
+        )
+        search_input.clear()
+        search_input.send_keys(query)
+
+
+    def get_filtered_search_results(self, query, timeout=10):
+        self.enter_search_query(query)
+        wait = WebDriverWait(self.driver, timeout)
+        wait.until(
+            lambda driver: all(
+                "Organization" in e.text for e in driver.find_elements(*self.locators["search_agent_card_spans"])
+            ) and len(driver.find_elements(*self.locators["search_agent_card_spans"])) > 0
+        )
+        results = self.get_elements("search_agent_card_spans", timeout)
+        filtered = [i.text for i in results if "Organization" not in i.text]
+        return filtered
 
 
 
@@ -128,7 +150,7 @@ class CreateAgentPage:
             "description": (By.CSS_SELECTOR, 'input[name="description"]'),
             "rules": (By.NAME, "systemPrompt"),
             "conversation": (By.NAME, "conversationStarters.0.value"),
-            "create_btn": (By.CSS_SELECTOR, "button.MuiButton-containedPrimary"),
+            "create_btn": (By.CSS_SELECTOR, "button.MuiButton-containedPrimary"), # Create/Publish 공용 버튼
         }
 
     def open(self):
@@ -158,7 +180,24 @@ class CreateAgentPage:
         self.get_element("rules").send_keys(rules)
         self.get_element("conversation").send_keys(conversation)
         self.last_agent_name = name  
-        return name
+        return {
+        "name": name,
+        "description": description,
+        "rules": rules,
+        "conversation": conversation
+        }
+    
+    def get_field_value(self, field_name):
+        return self.get_element(field_name).get_attribute("value")
+
+
+    def get_all_field_values(self):
+        return {
+            "name": self.get_field_value("name"),
+            "description": self.get_field_value("description"),
+            "rules": self.get_field_value("rules"),
+            "conversation": self.get_field_value("conversation")
+        }
 
    
     
@@ -425,7 +464,9 @@ class MyAgentsPage:
             "private_icon": (By.CSS_SELECTOR, "svg[data-icon='lock']"),
             "organization_icon": (By.CSS_SELECTOR, "svg[data-icon='buildings']"),
             "edit_button": (By.CSS_SELECTOR, "button svg[data-icon='pen']"),
-            "delete_button": (By.CSS_SELECTOR, "button svg[data-icon='trash']")
+            "delete_button": (By.CSS_SELECTOR, "button svg[data-icon='trash']"),
+            "confirm_delete_modal_button": (By.CSS_SELECTOR, "button.MuiButton-containedError"),
+            "cancel_delete_modal_button": (By.CSS_SELECTOR, "button.MuiButton-containedInherit")
         }
     
     def click_my_agents_button(self):
@@ -476,6 +517,11 @@ class MyAgentsPage:
         count = self.get_card_count(card_type)
         return count >= minimum
     
+    def scroll_into_view(self, element):
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        WebDriverWait(self.driver, 5).until(lambda d: element.is_displayed())
+    
+    
 
     def click_edit_button_by_card_type(self, card_type, index=0):
   
@@ -495,3 +541,43 @@ class MyAgentsPage:
  
         edit_btn = cards[index].find_element(By.CSS_SELECTOR, "button:has(svg[data-icon='pen'])")
         edit_btn.click()
+
+    def click_delete_button_by_card_type(self, card_type, index=0):
+    
+        if card_type == "private":
+            cards = self.get_private_cards()
+        elif card_type == "draft":
+            cards = self.get_draft_cards()
+        elif card_type == "organization":
+            cards = self.get_organization_cards()
+        else:
+            raise ValueError(f"Invalid card_type: {card_type}")
+        
+        if len(cards) <= index:
+            raise IndexError(f"{card_type} 카드가 {index+1}개 미만입니다.")
+
+        self.scroll_into_view(cards[index])
+  
+        delete_btn = cards[index].find_element(By.CSS_SELECTOR, "button:has(svg[data-icon='trash'])")
+        delete_btn.click()
+        print(f"✅ {card_type} 카드 Delete 버튼 클릭")
+
+    def confirm_delete_modal(self):
+        delete_confirm_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.locators["confirm_delete_modal_button"]))
+        delete_confirm_btn.click()
+        print("✅ 삭제 확인 모달에서 Delete 버튼 클릭")
+
+
+    def cancel_delete_modal(self):
+        cancel_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.locators["cancel_delete_modal_button"]))
+        cancel_btn.click()
+        print("✅ 삭제 확인 모달에서 Cancel 버튼 클릭")
+        WebDriverWait(self.driver, 5, 0.1).until(EC.invisibility_of_element_located(self.locators["confirm_delete_modal_button"]))
+        print("✅ 모달 닫힘")
+
+    def is_delete_modal_visible(self, timeout=2):
+        try:
+            WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(self.locators["confirm_delete_modal_button"]))
+            return True
+        except TimeoutException:
+            return False

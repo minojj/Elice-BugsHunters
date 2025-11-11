@@ -35,3 +35,13 @@ def logged_in_driver(driver) :
     print("✅ 로그인 대기 완료")
 
     yield driver
+
+#서브 계정으로 로그인하는 fixture
+
+@pytest.fixture
+def logged_in_driver_sub_account(driver):
+    login_page = LoginFunction(driver)
+    login_page.open()
+    login_page.login("team3a@elice.com", "team3aelice!@@")
+    yield driver
+    driver.quit()
