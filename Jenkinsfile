@@ -1,63 +1,56 @@
 pipeline {
     agent any
-
+    
     options {
-        timestamps()
-        timeout(time: 30, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
+        timeout(time: 30, unit: 'MINUTES')
+        disableConcurrentBuilds()
     }
-
+    
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-                echo "✅ Repository checked out successfully"
             }
         }
-
+        
         stage('Setup Python Environment') {
             steps {
                 sh '''
-                    echo "🔧 Setting up Python environment..."
-                    python3 --version
+                    python3 -m venv venv
+                    source venv/bin/activate
                     pip install --upgrade pip
+                    pip install -r requirements.txt
                 '''
             }
         }
-
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                    echo "📦 Installing dependencies..."
-                    if [ -f requirements.txt ]; then
-                        pip install -r requirements.txt
-                    else
-                        pip install pytest selenium
-                    fi
-                '''
-            }
-        }
-
+        
         stage('Run Tests') {
             steps {
                 sh '''
-                    echo "🧪 Running acceptance tests..."
-                    pytest tests/TEST_AC.py -v --tb=short --junit-xml=test-results.xml
+                    source venv/bin/activate
+                    pytest --junitxml=test-results.xml \
+                           --html=report.html \
+                           --cov=. \
+                           --cov-report=xml \
+                           -v
                 '''
             }
         }
     }
-
+    
     post {
         always {
-            echo "📊 Publishing test results..."
-            junit(testResults: 'test-results.xml', allowEmptyResults: true)
-        }
-        success {
-            echo "✅ Build successful!"
+            junit 'test-results.xml'
+            publishHTML([
+                reportDir: '.',
+                reportFiles: 'report.html',
+                reportName: 'Test Report'
+            ])
+            publishCoverage adapters: [coberturaAdapter('coverage.xml')]
         }
         failure {
-            echo "❌ Build failed!"
+            echo 'Tests failed!'
         }
     }
 }
