@@ -1,11 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            // Python이 설치된 공식 이미지 사용 (에이전트에 python3가 없음으로 인한 문제 해결)
-            image 'python:3.11-slim'
-            args '-u root:root'
-        }
-    }
+    agent any
     
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
@@ -23,9 +17,14 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 sh '''
-                    # 컨테이너 안에서 실행되므로 venv 불필요
-                    python3 -m pip install --upgrade pip
-                    pip install --no-cache-dir -r requirements.txt
+                    # python3 존재 여부 확인
+                    if command -v python3 >/dev/null 2>&1; then
+                        python3 -m pip install --upgrade pip
+                        pip install --no-cache-dir -r requirements.txt
+                    else
+                        echo "ERROR: python3 not found on this agent. Install Python 3 or run pipeline on an agent with Python (or enable Docker)."
+                        exit 127
+                    fi
                 '''
             }
         }
@@ -33,12 +32,17 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                    # pytest로 리포트와 커버리지 생성
-                    pytest --junitxml=test-results.xml \
-                           --html=report.html \
-                           --cov=. \
-                           --cov-report=xml:coverage.xml \
-                           -v
+                    # python3/pytest 유무 확인 후 실행
+                    if command -v python3 >/dev/null 2>&1 && python3 -m pytest --version >/dev/null 2>&1; then
+                        pytest --junitxml=test-results.xml \
+                               --html=report.html \
+                               --cov=. \
+                               --cov-report=xml:coverage.xml \
+                               -v
+                    else
+                        echo "ERROR: pytest not available. Ensure requirements.txt includes pytest and was installed successfully."
+                        exit 1
+                    fi
                 '''
             }
         }
@@ -46,9 +50,11 @@ pipeline {
     
     post {
         always {
-            // Jenkins에 junit/publishHTML/publishCoverage 플러그인이 없을 수 있으므로 아카이브로 대체
-            archiveArtifacts artifacts: 'report.html, test-results.xml, coverage.xml', allowEmptyArchive: true
-            echo 'Reports archived: report.html, test-results.xml, coverage.xml'
+            // archiveArtifacts는 FilePath(context)가 필요하므로 node 블록에서 실행
+            node {
+                archiveArtifacts artifacts: 'report.html, test-results.xml, coverage.xml', allowEmptyArchive: true
+            }
+            echo 'Reports archived (if present): report.html, test-results.xml, coverage.xml'
         }
         failure {
             echo 'Tests failed!'
