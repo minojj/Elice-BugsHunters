@@ -79,6 +79,22 @@ XPATH_DIALOG_DELETE_BTN = (
     "  .//*[normalize-space()='삭제'] or .//*[normalize-space()='Delete'])]"
 )
 
+# --- [추가] 사이드바 '검색' 버튼 (한/영 대응, role='button' + 텍스트) ---
+SEL_SIDEBAR_SEARCH_BTN = (
+    By.XPATH,
+    "//aside//div[@role='button']"
+    "[.//span[normalize-space()='검색'] or .//span[normalize-space()='Search']]"
+)
+
+# 가장 직관적인 단일 셀렉터 (id 무시, 전체 문서 스코프)
+SEL_SEARCH_INPUT_STRICT = (
+    By.CSS_SELECTOR,
+    "input[cmdk-input][role='combobox'][type='text'][placeholder='대화 검색...']"
+)
+
+# 결과 아이템(포털 렌더링) 셀렉터
+SEL_CMDK_ITEMS = (By.CSS_SELECTOR, "[cmdk-item][role='option']")
+
 # --- 공통 유틸 ---
 def wait(drv, sec=10):
     return WebDriverWait(drv, sec)
@@ -226,8 +242,8 @@ def _rename_top_thread_and_save(drv, new_title: str):
     # 다이얼로그 닫힘 대기(입력창 사라짐)
     wait(drv, 10).until(EC.invisibility_of_element_located(SEL_RENAME_INPUT))
 
-# --- [추가] 메뉴에서 '삭제' 클릭 (확인 다이얼로그 처리 없음) ---
 def _click_menu_delete(drv, timeout=5):
+    """[추가] 메뉴에서 '삭제' 클릭 (확인 다이얼로그 처리 없음)"""
     # 메뉴가 떠 있을 때만 호출하세요 (_open_top_thread_options 이후)
     menu = wait(drv, timeout).until(EC.visibility_of_element_located(SEL_MENU_UL))
 
@@ -286,6 +302,108 @@ def scroll_to_first_message(driver, timeout=10):
     )
     driver.execute_script("arguments[0].scrollIntoView({behavior:'instant', block:'start'});", first_msg)
     return True
+
+def _click_sidebar_search(drv, timeout=5):
+    """
+    사이드바의 '검색' 버튼을 클릭한다.
+    1) 텍스트 기반(검색/Search) 우선
+    2) 폴백: 돋보기 아이콘(magnifying-glassIcon)으로 상위 role=button 추적
+    """
+
+    # 1) 텍스트 매칭으로 클릭
+    try:
+        btn = WebDriverWait(drv, timeout).until(
+            EC.element_to_be_clickable(SEL_SIDEBAR_SEARCH_BTN)
+        )
+        try:
+            btn.click()
+        except Exception:
+            drv.execute_script("arguments[0].click();", btn)
+        return
+    except TimeoutException:
+        pass
+
+    # 2) 폴백: 돋보기 아이콘으로 상위 role=button 추적
+    try:
+        icon = WebDriverWait(drv, timeout).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "aside svg[data-testid='magnifying-glassIcon']")
+            )
+        )
+        btn = icon.find_element(By.XPATH, "./ancestor::div[@role='button'][1]")
+        drv.execute_script("arguments[0].scrollIntoView({block:'center'});", btn)
+        try:
+            WebDriverWait(drv, 2).until(EC.element_to_be_clickable(btn))
+            btn.click()
+        except Exception:
+            drv.execute_script("arguments[0].click();", btn)
+    except Exception:
+        raise AssertionError("사이드바에서 '검색' 버튼을 찾거나 클릭하지 못했습니다.")
+    
+def _type_into_search_input(drv, text="1", timeout=10):
+    # 검색 입력창이 이미 떠 있다고 가정 (안 떠있으면 _click_sidebar_search() 후 호출)
+    inp = WebDriverWait(drv, timeout).until(
+        EC.visibility_of_element_located(SEL_SEARCH_INPUT_STRICT)
+    )
+    # 포커스 & 입력
+    try:
+        inp.click()
+    except Exception:
+        drv.execute_script("arguments[0].click();", inp)
+
+    try:
+        inp.clear()
+    except Exception:
+        pass
+    inp.send_keys(Keys.CONTROL, "a")
+    inp.send_keys(Keys.DELETE)
+    try:
+        inp.send_keys(text)
+    except Exception:
+        # 드물게 키 입력이 막힐 때 JS 폴백
+        drv.execute_script(
+            "arguments[0].value = arguments[1];"
+            "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));",
+            inp, text
+        )
+
+    # 값 반영 확인
+    WebDriverWait(drv, 5).until(lambda d: (inp.get_attribute("value") or "") == text)
+
+def get_search_result_values(drv, timeout=10):
+    """
+    CMDK 검색 결과의 data-value들을 JS로 즉시 쿼리해 리스트로 반환.
+    DOM 갱신에도 안전(엘리먼트 핸들을 보관하지 않음).
+    """
+    end = time.time() + timeout
+    last_vals = []
+    while time.time() < end:
+        vals = drv.execute_script("""
+            const nodes = document.querySelectorAll("[cmdk-item][role='option']");
+            return Array.from(nodes).map(n => (n.getAttribute("data-value") || "").trim()).filter(Boolean);
+        """)
+        last_vals = vals or []
+        if last_vals:
+            return last_vals
+        time.sleep(0.1)
+    return last_vals  # 비었어도 반환 (호출부에서 assert)
+
+def wait_result_has_prefix(drv, prefix: str, timeout=10):
+    """
+    결과 중 data-value가 prefix로 시작하는 항목이 나타날 때까지 대기.
+    JS 폴링으로 stale 회피.
+    """
+    end = time.time() + timeout
+    while time.time() < end:
+        ok = drv.execute_script("""
+            const prefix = arguments[0];
+            const nodes = document.querySelectorAll("[cmdk-item][role='option']");
+            return Array.from(nodes).some(n => (n.getAttribute("data-value") || "").startsWith(prefix));
+        """, prefix)
+        if ok:
+            return
+        time.sleep(0.1)
+    raise TimeoutException(f"검색 결과에 prefix '{prefix}' 항목이 나타나지 않았습니다.")
 
 # --- 테스트 ---
 @pytest.mark.e2e
@@ -361,6 +479,7 @@ def test_ht_002(driver):
     
     assert scroll_to_first_message(driver), "첫 번째 메시지로 스크롤 실패"
 
+@pytest.mark.e2e
 def test_ht_003(driver):
     # 0) 로그인
     _login(driver)
@@ -369,6 +488,21 @@ def test_ht_003(driver):
     _click_new_chat(driver)
 
     # 2) 메시지 전송
-    _send_message(driver, "테스트 시작")
+    _send_message(driver, "1357")
+    time.sleep(2)
+    
+    _click_new_chat(driver)
+
+    _send_message(driver, "9899")
+    time.sleep(2)
+
+    _click_sidebar_search(driver)
+    _type_into_search_input(driver, "1357")
+
+    # 디바운스/렌더 대기
+    wait_result_has_prefix(driver, "1357")
+
+    vals = get_search_result_values(driver)  # JS로 안전 수집
+    assert any(v.startswith("1357") for v in vals), f"검색 결과에 '1357' prefix가 없습니다. values={vals}"
 
     
