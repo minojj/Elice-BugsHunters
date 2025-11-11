@@ -10,11 +10,9 @@ class ChatPage:
         self.wait = WebDriverWait(driver, 30)
 
     locators = {
-        "main": "https://qaproject.elice.io/ai-helpy-chat",
         "chat_submit": (By.ID, "chat-submit"),
         "search_box": (By.CSS_SELECTOR, "div.MuiInputBase-root.MuiInputBase-multiline textarea"),
         "copy_btn": (By.CSS_SELECTOR, 'button[data-state="closed"]'),
-    "user_message_last": (By.CSS_SELECTOR, r'div.bg-accent.rounded-3xl.py-2\.5'),
         "edit_btn": (By.CSS_SELECTOR, 'button.edit-message'),
         "edit_input_field": (By.CSS_SELECTOR, '#edit-chat-input'),
         "edit_confirm_btn": (By.CSS_SELECTOR, 'button.confirm-edit'),
@@ -107,14 +105,6 @@ class ChatPage:
             print(f" 복사 버튼 클릭 실패: {e}")
             return False
 
-    def verify_element_exists(self, locator):
-        """특정 요소 존재 여부 확인"""
-        try:
-            self.wait.until(EC.presence_of_element_located(locator))
-            return True
-        except TimeoutException:
-            return False
-
     def edit_message(self, original_message, new_message):
         """메시지 수정 기능
         Args:
@@ -174,21 +164,9 @@ class ChatPage:
             print(f" 메시지 수정 실패: 예상치 못한 오류 - {e}")
             return False
 
-    def verify_message_updated(self, new_message):
-        """메시지가 성공적으로 수정되었는지 확인"""
-        try:
-            self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, r'div.bg-accent.rounded-3xl.py-2\.5'))
-            )
-            print(f" 메시지 수정 확인 완료: {new_message}")
-            return True
-        except TimeoutException:
-            print(f" 메시지 수정 확인 실패: {new_message}를 찾을 수 없음")
-            return False
     def scroll_to_top(self):
         try:
             import time
-            from selenium.webdriver.common.keys import Keys
             
             # 방법 1: 첫 번째 메시지로 직접 스크롤
             first_message = self.driver.find_element(By.XPATH, '(//div[@role="article"])[1]')
@@ -220,15 +198,4 @@ class ChatPage:
             return False
         except Exception as e:
             print(f" 최신 답변으로 이동 버튼 클릭 실패: {e}")
-            return False
-
-    def wait_for_ai_response_complete(self, timeout=30):
-        """AI 응답이 완전히 로딩될 때까지 대기"""
-        try:
-            import time
-            time.sleep(timeout)  # AI 응답 완료 대기
-            print(f" AI 응답 완료 대기 ({timeout}초)")
-            return True
-        except Exception as e:
-            print(f" AI 응답 대기 실패: {e}")
             return False
