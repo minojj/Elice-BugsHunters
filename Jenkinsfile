@@ -1,11 +1,11 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.11-slim'  // 또는 필요한 버전
-            args '-u 0:0'             // (선택) 퍼미션 이슈 있으면
-        }
+  agent {
+    docker {
+      image 'python:3.11-slim'
+      args '-u 0:0'   // 퍼미션 이슈 피하고 싶으면 유지, 아니면 제거 가능
     }
   }
+  options { timestamps() }
   stages {
     stage('Checkout') {
       steps { checkout scm }
@@ -14,10 +14,10 @@ pipeline {
       steps {
         sh '''
           python3 -V
-          python3 -m venv venv
+          [ ! -d venv ] && python3 -m venv venv
           . venv/bin/activate
           pip install --upgrade pip
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         '''
       }
     }
@@ -25,51 +25,12 @@ pipeline {
       steps {
         sh '''
           . venv/bin/activate
-          pytest -q
+          pytest -q || { echo "Tests failed"; exit 1; }
         '''
       }
     }
   }
-
-
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                    if [ ! -d venv ]; then
-                        python3 -m venv venv
-                    fi
-                    . venv/bin/activate
-                    pip install --upgrade pip
-                    if [ -f requirements.txt ]; then
-                        pip install -r requirements.txt
-                    fi
-                    pip install pytest selenium
-                '''
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh '''
-                    . venv/bin/activate
-                    pytest tests/test_ac.py -v
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            echo "Build finished"
-        }
-    }
-
-    
+  post {
+    always { echo 'Build finished' }
+  }
+}
