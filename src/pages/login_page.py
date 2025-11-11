@@ -8,9 +8,7 @@ class LoginFunction:
     def __init__(self, driver):
         self.driver = driver
 
-    def __init__(self, driver):
-        self.driver = driver
-        self.locators = {
+    locators = {
             "main": "https://qaproject.elice.io/ai-helpy-chat",
             "email": (By.CSS_SELECTOR, "input[name='loginId']"),
             "password": (By.CSS_SELECTOR, "input[name='password']"),
@@ -122,15 +120,24 @@ class LoginFunction:
         
     def fill_signup_form(self, email):
         # 회원가입 폼 입력 (현재는 이메일만 입력하지만, 추가 입력 필드가 있을 경우 확장 가능)
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located(self.locators["email"])
+        )
         
         self.driver.find_element(*self.locators["email"]).send_keys(email)
         
         print("✅ 이메일 입력 완료")
     
     def email_error(self):
+        # 중복 이메일 에러 메시지 확인
         try:
-            return self.driver.find_element(*self.locators["email_error"])
-        except NoSuchElementException:
+            WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located(self.locators["email_error"])
+            )
+            print("✅ 중복 이메일 에러 메시지 표시 확인")
+            return True
+        except Exception:
+            print("❌ 중복 이메일 에러 메시지 표시 확인 실패")
             return None
     
     def clear_login_session(self):
@@ -150,19 +157,16 @@ class LoginFunction:
     def logout(self):
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.presence_of_element_located(self.locators["avatar_btn"])).click()
-        
-        self.driver.find_element(*self.locators["logout_btn"]).click()
+        wait.until(EC.presence_of_element_located(self.locators["logout_btn"])).click()
+        print("✅ 로그아웃 클릭 완료")
         
     def logout_check(self):
-        email_locator = self.locators.get("email")
-        password_locator = self.locators.get("password")
-
         try:
-            # 이메일 입력 필드 등장 대기
+            # 이메일이나 비밀번호 입력 필드 등장 대기
             WebDriverWait(self.driver, 10).until(
                 EC.any_of(
-                    EC.visibility_of_element_located(email_locator),
-                    EC.visibility_of_element_located(password_locator)
+                    EC.visibility_of_element_located(self.locators["email"]),
+                    EC.visibility_of_element_located(self.locators["password"])
                 )
             
             )
