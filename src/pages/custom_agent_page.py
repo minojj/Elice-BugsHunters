@@ -3,10 +3,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.chrome.service import Service
 # from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import TimeoutException
+# StaleElementReferenceException,
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
 # from src.utils.helpers import Utils
+
+
 
 class AgentExplorerPage:
     def __init__(self, driver):
@@ -53,91 +56,19 @@ class AgentExplorerPage:
         
         wait.until(EC.presence_of_all_elements_located(self.locators["agent_card_title"]))
 
-    def click_agent_card_by_name(self, agent_name, timeout=10):
-        from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
-        
-        locator = self.locators["agent_card_title"]
-        wait = WebDriverWait(self.driver, timeout)
-        
-        # ✅ 초기 요소 로딩 대기
-        wait.until(EC.presence_of_all_elements_located(locator))
-        
-        scroll_attempts = 10
-        last_height = 0
-        
-        for i in range(scroll_attempts):
-            try:
-                titles = wait.until(EC.presence_of_all_elements_located(locator))
-                current_count = len(titles)
-                
-                for title in titles:
-                    try:
-                        text = title.text.strip()
-                        
-                        if agent_name.strip() == text:
-                            card = title.find_element(By.XPATH, 
-                                "./ancestor::a[contains(@class, 'MuiCard-root')]")
-
-                            self.driver.execute_script(
-                                "arguments[0].scrollIntoView({block: 'center'});", 
-                                card
-                            )
-
-                            clickable_card = WebDriverWait(self.driver, 5).until(
-                                EC.element_to_be_clickable(card)
-                            )
-                            clickable_card.click()
-                            print(f"✅ '{agent_name}' 카드 클릭 성공")
-                            return True
-                            
-                    except StaleElementReferenceException:
-                        print(f"⚠️ Stale element 발생, 다음 스크롤에서 재시도")
-                        continue
-                    except Exception as e:
-                        print(f"⚠️ 요소 처리 중 에러: {e}")
-                        continue
-
-                self.driver.execute_script("window.scrollBy(0, window.innerHeight * 0.8);")
-
-                try:
-                    WebDriverWait(self.driver, 3).until(
-                        lambda driver: len(driver.find_elements(*locator)) > current_count
-                    )
-                except TimeoutException:
-                    pass
-
-                current_height = self.driver.execute_script("return window.pageYOffset;")
-                if current_height == last_height:
-                    print("⚠️ 더 이상 스크롤할 수 없음")
-                    break
-                last_height = current_height
-                
-            except TimeoutException:
-                print(f"⚠️ 타임아웃 발생 (스크롤 {i+1})")
-                break
-        
-        print(f"❌ '{agent_name}' 카드 탐색 실패")
-        return False
-    
-    def enter_search_query(self, query):
-        search_input = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.locators["search_input"])
+    def click_agent_card_by_id(self, agent_id):
+        locator = (By.CSS_SELECTOR, f'a[href="/ai-helpy-chat/agent/{agent_id}"]')
+        card = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(locator)
         )
-        search_input.clear()
-        search_input.send_keys(query)
+        self.driver.execute_script("arguments[0].scrollIntoView(true);", card)
+        card.click()
+        print(f"✅ 에이전트 카드 클릭 완료 (ID: {agent_id})")
+        return True
 
 
-    def get_filtered_search_results(self, query, timeout=10):
-        self.enter_search_query(query)
-        wait = WebDriverWait(self.driver, timeout)
-        wait.until(
-            lambda driver: all(
-                "Organization" in e.text for e in driver.find_elements(*self.locators["search_agent_card_spans"])
-            ) and len(driver.find_elements(*self.locators["search_agent_card_spans"])) > 0
-        )
-        results = self.get_elements("search_agent_card_spans", timeout)
-        filtered = [i.text for i in results if "Organization" not in i.text]
-        return filtered
+
+
 
 
 
@@ -198,6 +129,17 @@ class CreateAgentPage:
             "rules": self.get_field_value("rules"),
             "conversation": self.get_field_value("conversation")
         }
+
+
+    def get_agent_id_from_url(self):
+        """현재 페이지의 URL에서 agent UUID 추출"""
+        current_url = self.driver.current_url
+        try:
+            agent_id = current_url.split("/agent/")[1].split("/")[0]
+            print(f"🆔 생성된 agent ID: {agent_id}")
+            return agent_id
+        except IndexError:
+            raise AssertionError(f"❌ URL에서 agent ID 추출 실패 (현재 URL: {current_url})")
 
    
     

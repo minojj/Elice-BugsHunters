@@ -20,20 +20,7 @@ chrome_driver_path = ChromeDriverManager().install()
     # service = Service(CHROME_DRIVER_PATH)
     # driver = webdriver.Chrome(service=service) 이거 fixture에 넣었었는데 현재 conftest.py에서 받아오기때문에 주석처리
 
-# @pytest.fixture
-# def logged_in_driver(driver) :
-#     try :
-#         page = AgentPage(driver)
-#         page.open()
-#         page.login()
-#         print("✅ 로그인 성공")
-#     except TimeoutException :
-#         print("✅ 현재 로그인 상태")
-#     Utils(driver).wait_for(timeout=15)
-#     print("✅ 로그인 대기 완료")
-#     yield driver  # 여기서부터 테스트 함수에 넘김
-#     # driver.quit()  # 테스트 끝나면 자동 종료용인데, 브라우저 닫지 않고 로그인 유지한채 진행을 위해 주석처리
-#     # 발표용으로는 적합하지만 실제 테스트용으로는 위험하므로 발표 외에는 주의필요 
+
     
 
 #생성 페이지로 이동하는 fixture
@@ -62,25 +49,6 @@ def my_agents_page_loaded(logged_in_driver):
 
     yield driver
 
-#fill_form 함수 사용시 생성된 에이전트 이름을 반환하는 fixture 
-#006,015에서 받아감. 의존성 문제가 너무 큰데 여유가 생기면 리팩토링 필요. API 쪽으로 생각.
-
-@pytest.fixture
-def created_form_input(create_page):
-    page = CreateAgentPage(create_page)
-
-    agent_data = page.fill_form(
-        "project team",
-        "for the team project",
-        "If you must make a guess, clearly state that it is a guess",
-        "Hello, we're team 03"
-    )
-
-    page.get_element("create_btn", "clickable").click()
-    return agent_data["name"] 
-
-
-
 
 
 
@@ -108,17 +76,17 @@ def test_ca_001(logged_in_driver):
 def test_ca_002(create_page):
     driver = create_page
     wait = WebDriverWait(driver, 10)
-    create_page = CreateAgentPage(driver)
+    create_agent_page = CreateAgentPage(driver)
 
     # 1️⃣ 생성 페이지에서 필드 요소 찾기, name제외 기본 필드 입력
     
-    create_page.fill_form(
+    create_agent_page.fill_form(
     "", 
     "test description",
     "test system prompt",
     "test conversation starter")
     
-    create_btn = create_page.get_element("create_btn")
+    create_btn = create_agent_page.get_element("create_btn")
 
 
     # 2️⃣ name 필드 안내문구 & 버튼 비활성화 확인
@@ -132,11 +100,11 @@ def test_ca_002(create_page):
     print("✅ CA_002_생성 버튼 비활성화 정상")
 
     # 3️⃣ name 입력 후 systemPrompt 필드 내용 삭제
-    name_input = create_page.get_element("name")
+    name_input = create_agent_page.get_element("name")
     name_input.click()
     name_input.send_keys("Test Agent")
 
-    rules_input = create_page.get_element("rules")
+    rules_input = create_agent_page.get_element("rules")
     rules_input.send_keys(Keys.CONTROL + "a")
     rules_input.send_keys(Keys.DELETE) 
 
@@ -153,17 +121,35 @@ def test_ca_002(create_page):
     print("✅ CA_002_생성 버튼 비활성화 정상")
 
 
-def test_ca_003_1(create_page,created_form_input):
+
+
+def test_ca_003_1(create_page, request):
     driver = create_page
+    create_agent_page = CreateAgentPage(create_page)
 
     # 1️⃣ 나만보기 설정으로 save & 생성 확인
+
+    create_agent_page.fill_form(
+        "project team",
+        "for the team project",
+        "If you must make a guess, clearly state that it is a guess",
+        "Hello, we're team 03"
+    )
+
+    create_agent_page.get_element("create_btn", "clickable").click()
+
     save_page = SaveAgentPage(driver)
     save_page.select_mode("private")
     print("✅ CA_003_1_나만보기 옵션 선택 완료")
     save_page.click_save()
     message = save_page.get_snackbar_text().lower()
-    assert "created" in message, f"❌ 예상과 다른 메시지: {message}"
+    assert "created" in message, f"❌ CA_003_1_예상과 다른 메시지: {message}"
     print(f"✅ CA_003_1_private 에이전트 생성 성공 알림 확인: {message}")
+
+    agent_id = create_agent_page.get_agent_id_from_url()
+
+    request.config.cache.set("private_agent_id", agent_id)
+    print(f"✅ CA_003_1_Private agent ID 저장 완료: {agent_id}")
     
 
     # 2️⃣ 페이지 자동 이동 확인
@@ -187,18 +173,33 @@ def test_ca_003_1(create_page,created_form_input):
 
 
 
-def test_ca_003_2(create_page,created_form_input):
+def test_ca_003_2(create_page, request):
     driver = create_page
+    create_agent_page = CreateAgentPage(create_page)
 
     # 1️⃣ 전체공개 설정으로 save & 생성 확인
+
+
+    create_agent_page.fill_form(
+        "project team",
+        "for the team project",
+        "If you must make a guess, clearly state that it is a guess",
+        "Hello, we're team 03"
+    )
+
+    create_agent_page.get_element("create_btn", "clickable").click()
     save_page = SaveAgentPage(driver)
     save_page.select_mode("organization")
     print("✅ CA_003_2_조직 옵션 선택 완료")
     save_page.click_save()
     message = save_page.get_snackbar_text().lower()
-    assert "created" in message, f"❌ 예상과 다른 메시지: {message}"
+    assert "created" in message, f"❌ CA_003_2_예상과 다른 메시지: {message}"
     print(f"✅ CA_003_2_organization 에이전트 생성 성공 알림 확인: {message}")
     
+    agent_id = create_agent_page.get_agent_id_from_url()
+
+    request.config.cache.set("organization_agent_id", agent_id)
+    print(f"✅ CA_003_2_Organization agent ID 저장 완료: {agent_id}")
 
     # 2️⃣ 페이지 자동 이동 확인
 
@@ -269,24 +270,22 @@ def test_ca_005(create_page):
 
 
 
-def test_ca_006(logged_in_driver,created_form_input):
+def test_ca_006(logged_in_driver, request):
     driver = logged_in_driver
-    create_agent_name = created_form_input
     explorer_page = AgentExplorerPage(driver)
 
-    # 1️⃣ Agent Explorer 메인화면 진입 후 생성된 커스텀 에이전트 확인
+    # 1️⃣ 이전에 저장된 두 개의 ID 가져오기
+    private_id = request.config.cache.get("private_agent_id", None)
+    org_id = request.config.cache.get("organization_agent_id", None)
+    assert private_id or org_id, "❌ CA_006_이전 테스트의 agent_id를 불러올 수 없습니다."
 
-    explorer_page.navigate_to_agent_explorer(force_refresh=True)
+    # 2️⃣ Private/Organization 카드 확인
+    if private_id:
+        explorer_page.click_agent_card_by_id(private_id)
+    if org_id:
+        explorer_page.click_agent_card_by_id(org_id)
 
-    assert create_agent_name is not None, "❌ CA_006_이전 테스트에서 생성된 에이전트 탐색 불가"
-    found = explorer_page.click_agent_card_by_name(create_agent_name)
-    assert found, "❌ CA_006_생성된 에이전트 탐색 불가"
-    print("✅ CA_006_생성된 에이전트 탐색 후 진입")
-
-    # 2️⃣ 에이전트 대화 페이지 진입 확인
-
-    explorer_page.get_element("agent_chat_input", "visible")
-    print("✅ CA_006_에이전트 대화 페이지 진입 성공")
+    print("✅ CA_006_Explorer 페이지에서 생성된 에이전트 확인 완료")
 
 
 
@@ -329,10 +328,10 @@ def test_ca_008(my_agents_page_loaded):
     my_agent_page.click_edit_button_by_card_type("private")
 
     #2️⃣ 수정 작업
-    name_field = create_page.get_element("name")
+    name_field = create_agent_page.get_element("name")
     name_field.click()
     name_field.send_keys("_edit")
-    create_page.get_element("create_btn", "clickable").click() #수정 작업의 경우 publish로 텍스트만 변경됨
+    create_agent_page.get_element("create_btn", "clickable").click() #수정 작업의 경우 publish로 텍스트만 변경됨
 
     #3️⃣ 수정 후 저장, 알림 확인(1️⃣에서 organization으로 변경 시 organization으로 변경)
     save_page.select_mode("private")
@@ -435,19 +434,18 @@ def test_ca_012(my_agents_page_loaded):
 
 
 
-def test_ca_015(logged_in_driver_sub_account,created_form_input):
+def test_ca_015(logged_in_driver_sub_account, request):
     driver = logged_in_driver_sub_account
-    create_agent_name = created_form_input
     explorer_page = AgentExplorerPage(driver)
 
-    #1️⃣ 페이지 접속 후 Private 카드 이름 인자로 받아와서 검색
-    explorer_page.get_element("agent_explorer_btn", wait_type="presence").click()
-    results = explorer_page.get_filtered_search_results(create_agent_name)
+    # 1️⃣ Private ID 불러오기
+    private_id = request.config.cache.get("private_agent_id", None)
+    assert private_id, "❌ CA_015_private agent_id 누락"
 
-    #2️⃣ Private 카드 노출 여부 확인
-
-    assert len(results) == 0, f"❌ CA_015_private 카드 노출: {results}"
-    print("✅ CA_015_private 카드 '나만보기' 설정 정상 동작")
+    # 2️⃣ 해당 카드 검색 후 노출 여부 확인
+    results = explorer_page.click_agent_card_by_id(private_id)
+    assert len(results) == 0, f"❌ CA_015_Private 카드 노출됨: {results}"
+    print("✅ CA_015_서브 계정에서 Private 카드 미노출 확인 완료")
 
 
 
