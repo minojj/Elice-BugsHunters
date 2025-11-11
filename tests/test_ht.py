@@ -95,6 +95,12 @@ SEL_SEARCH_INPUT_STRICT = (
 # 결과 아이템(포털 렌더링) 셀렉터
 SEL_CMDK_ITEMS = (By.CSS_SELECTOR, "[cmdk-item][role='option']")
 
+# 2번째 세션( data-index='1' ) 앵커
+SEL_SECOND_THREAD = (
+    By.CSS_SELECTOR,
+    "aside a[href^='/ai-helpy-chat/thread/'][data-index='1']",
+)
+
 # --- 공통 유틸 ---
 def wait(drv, sec=10):
     return WebDriverWait(drv, sec)
@@ -405,6 +411,11 @@ def wait_result_has_prefix(drv, prefix: str, timeout=10):
         time.sleep(0.1)
     raise TimeoutException(f"검색 결과에 prefix '{prefix}' 항목이 나타나지 않았습니다.")
 
+def click_second_session(driver, timeout=10):
+    WebDriverWait(driver, timeout).until(
+        EC.element_to_be_clickable(SEL_SECOND_THREAD)
+    ).click()
+
 # --- 테스트 ---
 def test_ht_001(driver):
     # 0) 로그인
@@ -504,8 +515,11 @@ def test_ht_005(driver):
 
     _click_new_chat(driver)
     _send_message(driver, "테스트2")
+    time.sleep(2)
 
-    
+    click_second_session(driver)
+    time.sleep(2)  # 세션 전환 대기
+
     assert scroll_to_first_message(driver), "첫 번째 메시지로 스크롤 실패"
 
 
