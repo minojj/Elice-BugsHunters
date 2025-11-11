@@ -14,7 +14,7 @@ class ChatPage:
         "chat_submit": (By.ID, "chat-submit"),
         "search_box": (By.CSS_SELECTOR, "div.MuiInputBase-root.MuiInputBase-multiline textarea"),
         "copy_btn": (By.CSS_SELECTOR, 'button[data-state="closed"]'),
-        "user_message_last": (By.CSS_SELECTOR, 'div.bg-accent.rounded-3xl.py-2\.5'),
+    "user_message_last": (By.CSS_SELECTOR, r'div.bg-accent.rounded-3xl.py-2\.5'),
         "edit_btn": (By.CSS_SELECTOR, 'button.edit-message'),
         "edit_input_field": (By.CSS_SELECTOR, '#edit-chat-input'),
         "edit_confirm_btn": (By.CSS_SELECTOR, 'button.confirm-edit'),
@@ -124,7 +124,7 @@ class ChatPage:
         try:
             # 1. 수정할 메시지 찾기
             message_element = self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'div.bg-accent.rounded-3xl.py-2\.5'))
+                EC.presence_of_element_located((By.CSS_SELECTOR, r'div.bg-accent.rounded-3xl.py-2\.5'))
             )
             print(f" 수정할 메시지 찾기 완료: {original_message}")
             
@@ -178,7 +178,7 @@ class ChatPage:
         """메시지가 성공적으로 수정되었는지 확인"""
         try:
             self.wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'div.bg-accent.rounded-3xl.py-2\.5'))
+                EC.presence_of_element_located((By.CSS_SELECTOR, r'div.bg-accent.rounded-3xl.py-2\.5'))
             )
             print(f" 메시지 수정 확인 완료: {new_message}")
             return True
