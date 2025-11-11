@@ -27,6 +27,16 @@ class Chat_Expance:
     BACKDROP = (By.CSS_SELECTOR, ".MuiBackdrop-root")
     CHAT_INPUT = (By.CSS_SELECTOR, 'div.MuiInputBase-root.MuiInputBase-multiline textarea')
     
+    QUIZ_CREATE_MENU = (By.XPATH, "//div[text()='퀴즈 생성']")
+    QUIZ_CREATE_MENU_ALT = (By.XPATH, "//div[contains(@class, 'MuiTypography-root') and contains(text(), '퀴즈 생성')]")    
+    
+    #PPT 생성 관련 로케이터
+    PPT_CREATE_MENU = (By.XPATH, "//span[contains(text(), 'PPT 생성')]")
+    PPT_SLIDE_INPUT = (By.CSS_SELECTOR, "input.MuiInputBase-input.MuiOutlinedInput-input[type='number'][min='3'][max='50']")
+    PPT_SECTION_INPUT = (By.CSS_SELECTOR, "input.MuiInputBase-input.MuiOutlinedInput-input[type='number'][min='1'][max='8']")
+    PPT_GENERATE_BUTTON = (By.XPATH, "//button[contains(@class, 'MuiButton') and contains(., '생성')]")
+    PPT_CANCEL_BUTTON = (By.XPATH, "//button[contains(., '취소')]")
+
     def __init__(self, driver):
         """
         Args:
@@ -173,7 +183,7 @@ class Chat_Expance:
         """현재 URL 반환"""
         return self.driver.current_url
     
-    def upload_file_and_send(self, filepath, wait_time=40):
+    def upload_file_and_send(self, filepath, wait_time=30):
         """
         파일 업로드 및 전송 프로세스 (통합 메서드)
         
@@ -226,3 +236,233 @@ class Chat_Expance:
             import traceback
             traceback.print_exc()
             return False
+        
+    def click_quiz_create_menu(self):
+        """퀴즈 생성 메뉴 클릭 (여러 방법 시도)"""
+        print("퀴즈 생성 메뉴 찾는 중...")
+        self.driver.save_screenshot("before_quiz_menu.png")
+        
+        #XPath로 정확히 찾기
+        try:
+            print("   XPath 방법 시도...")
+            quiz_btn = WebDriverWait(self.driver, 3).until(
+                EC.element_to_be_clickable((By.XPATH, "//div[@role='button' and contains(@class, 'MuiListItemButton') and .//span[contains(text(), '퀴즈')]]"))
+            )
+            print("   ✅ 퀴즈 생성 메뉴 발견 (XPath)")
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", quiz_btn)
+            time.sleep(0.3)
+            quiz_btn.click()
+            time.sleep(0.5)
+            return True
+        except Exception as e:
+            print(f"   ⚠️ 방법 2 실패: {str(e)}")
+                
+        print("   ❌ 모든 방법 실패")
+        self.driver.save_screenshot("quiz_menu_not_found.png")
+        return False
+
+    def create_quiz_and_send(self, wait_time=10):
+        """
+        퀴즈 생성 및 전송 프로세스 (통합 메서드)
+        
+        Args:
+            wait_time: AI 응답 대기 시간
+            
+        Returns:
+            bool: 성공 여부
+        """
+        try:
+            print("\n=== 퀴즈 생성 테스트 시작 ===")
+            print(f"현재 URL: {self.driver.current_url}")
+            
+            # 1. 플러스 버튼 클릭
+            print("\n1. 플러스 버튼 클릭")
+            self.click_plus_button()
+            time.sleep(2)  # 메뉴가 완전히 나타날 때까지 대기
+            
+            # 2. 퀴즈 생성 메뉴 클릭
+            print("\n2. 퀴즈 생성 메뉴 클릭")
+            if not self.click_quiz_create_menu():
+                raise Exception("퀴즈 생성 메뉴를 클릭할 수 없습니다.")
+            
+            print("✅ 퀴즈 생성 메뉴 클릭 완료")
+            time.sleep(1)
+            
+            # 3. 백드롭 사라질 때까지 대기
+            self.wait_for_backdrop_disappear()
+            
+            # 4. 퀴즈 내용 입력
+            print("\n3. 퀴즈 질문 입력")
+            quiz_question = "다음 중 파이썬 데이터 타입이 아닌것을 고르시오를 난이도 중 객관식 버전으로 만들어줘."
+            chat_input = self.wait.until(EC.presence_of_element_located(self.CHAT_INPUT))
+            chat_input.clear()
+            chat_input.send_keys(quiz_question)
+            print(f"✅ 입력 완료: {quiz_question[:30]}...")
+            time.sleep(0.5)
+            
+            # 5. 엔터키로 전송
+            print("\n4. 메시지 전송")
+            self.send_message_with_enter()
+            
+            # 6. 응답 대기
+            print(f"\n5. AI 응답 대기 ({wait_time}초)")
+            time.sleep(wait_time)
+        
+            self.driver.save_screenshot("after_quiz_send.png")
+            print("\n✅ 퀴즈 생성 및 전송 완료")
+            print("=== 테스트 성공 ===\n")
+            return True
+            
+        except TimeoutException as e:
+            print(f"\n❌ 타임아웃 오류: {str(e)}")
+            print(f"   현재 URL: {self.driver.current_url}")
+            self.driver.save_screenshot("timeout_error.png")
+            return False
+            
+        except NoSuchElementException as e:
+            print(f"\n❌ 요소를 찾을 수 없음: {str(e)}")
+            self.driver.save_screenshot("element_error.png")
+            return False
+            
+        except Exception as e:
+            print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            self.driver.save_screenshot("test_error.png")
+            import traceback
+            traceback.print_exc()
+            return False
+    
+    def create_quiz_and_send_empty(self, wait_time=10):
+        """
+        퀴즈 생성 및 전송 프로세스 - 빈칸 입력 예외케이스 (통합 메서드)
+        
+        Args:
+            wait_time: AI 응답 대기 시간
+            
+        Returns:
+            bool: 성공 여부
+        """
+        try:
+            print("\n=== 퀴즈 생성 테스트 (빈칸 입력) 시작 ===")
+            print(f"현재 URL: {self.driver.current_url}")
+            
+            # 1. 플러스 버튼 클릭
+            print("\n1. 플러스 버튼 클릭")
+            self.click_plus_button()
+            time.sleep(2)  # 메뉴가 완전히 나타날 때까지 대기
+            
+            # 2. 퀴즈 생성 메뉴 클릭
+            print("\n2. 퀴즈 생성 메뉴 클릭")
+            if not self.click_quiz_create_menu():
+                raise Exception("퀴즈 생성 메뉴를 클릭할 수 없습니다.")
+            
+            print("✅ 퀴즈 생성 메뉴 클릭 완료")
+            time.sleep(1)
+            
+            # 3. 백드롭 사라질 때까지 대기
+            self.wait_for_backdrop_disappear()
+            
+            # 4. 퀴즈 내용 입력 (빈칸)
+            print("\n3. 퀴즈 질문 입력 (빈칸)")
+            chat_input = self.wait.until(EC.presence_of_element_located(self.CHAT_INPUT))
+            chat_input.clear()
+            print("✅ 빈칸 입력 완료")
+            time.sleep(0.5)
+            
+            # 5. 엔터키로 전송
+            print("\n4. 메시지 전송")
+            self.send_message_with_enter()
+            
+            # 6. 응답 대기
+            print(f"\n5. AI 응답 대기 ({wait_time}초)")
+            time.sleep(wait_time)
+        
+            self.driver.save_screenshot("after_quiz_send_empty.png")
+            print("\n✅ 퀴즈 생성 및 전송 완료 (빈칸 입력)")
+            print("=== 테스트 성공 ===\n")
+            return True
+            
+        except TimeoutException as e:
+            print(f"\n❌ 타임아웃 오류: {str(e)}")
+            print(f"   현재 URL: {self.driver.current_url}")
+            self.driver.save_screenshot("timeout_error.png")
+            return False
+            
+        except NoSuchElementException as e:
+            print(f"\n❌ 요소를 찾을 수 없음: {str(e)}")
+            self.driver.save_screenshot("element_error.png")
+            return False
+    
+    def create_quiz_and_send_special_chars(self, wait_time=10):
+        """
+        퀴즈 생성 및 전송 프로세스 - 특수문자 입력 예외케이스 (통합 메서드)
+        
+        Args:
+            wait_time: AI 응답 대기 시간
+            
+        Returns:
+            bool: 성공 여부
+        """
+        try:
+            print("\n=== 퀴즈 생성 테스트 (특수문자 입력) 시작 ===")
+            print(f"현재 URL: {self.driver.current_url}")
+            
+            # 1. 플러스 버튼 클릭
+            print("\n1. 플러스 버튼 클릭")
+            self.click_plus_button()
+            time.sleep(2)  # 메뉴가 완전히 나타날 때까지 대기
+            
+            # 2. 퀴즈 생성 메뉴 클릭
+            print("\n2. 퀴즈 생성 메뉴 클릭")
+            if not self.click_quiz_create_menu():
+                raise Exception("퀴즈 생성 메뉴를 클릭할 수 없습니다.")
+            
+            print("✅ 퀴즈 생성 메뉴 클릭 완료")
+            time.sleep(1)
+            
+            # 3. 백드롭 사라질 때까지 대기
+            self.wait_for_backdrop_disappear()
+            
+            # 4. 퀴즈 내용 입력 (특수문자)
+            print("\n3. 퀴즈 질문 입력 (특수문자)")
+            special_chars = "!@#$%^&*()_+{}|:\"<>?-=[]\\;',./`~"
+            chat_input = self.wait.until(EC.presence_of_element_located(self.CHAT_INPUT))
+            chat_input.clear()
+            chat_input.send_keys(special_chars)
+            print(f"✅ 특수문자 입력 완료: {special_chars}")
+            time.sleep(0.5)
+            
+            # 5. 엔터키로 전송
+            print("\n4. 메시지 전송")
+            self.send_message_with_enter()
+            
+            # 6. 응답 대기
+            print(f"\n5. AI 응답 대기 ({wait_time}초)")
+            time.sleep(wait_time)
+        
+            self.driver.save_screenshot("after_quiz_send_special_chars.png")
+            print("\n✅ 퀴즈 생성 및 전송 완료 (특수문자 입력)")
+            print("=== 테스트 성공 ===\n")
+            return True
+            
+        except TimeoutException as e:
+            print(f"\n❌ 타임아웃 오류: {str(e)}")
+            print(f"   현재 URL: {self.driver.current_url}")
+            self.driver.save_screenshot("timeout_error.png")
+            return False
+            
+        except NoSuchElementException as e:
+            print(f"\n❌ 요소를 찾을 수 없음: {str(e)}")
+            self.driver.save_screenshot("element_error.png")
+            return False
+            
+        except Exception as e:
+            print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            self.driver.save_screenshot("test_error.png")
+            import traceback
+            traceback.print_exc()
+            return False
+        
+
+  
+    
+      
