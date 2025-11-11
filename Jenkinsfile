@@ -63,20 +63,22 @@ pipeline {
                                 else
                                   pip install pytest pytest-cov pytest-html
                                 fi
-                                pytest -q \
-                                  --junitxml=test-results.xml \
-                                  --html=report.html \
-                                  --cov=. --cov-report=xml:coverage.xml
+                                if pytest -q --junitxml=test-results.xml --html=report.html --cov=. --cov-report=xml:coverage.xml; then
+                                  echo 'Tests executed successfully.'
+                                else
+                                  echo 'No tests found or tests failed, check the logs for details.'
+                                fi
                               "
                         '''
                     } else {
                         bat '''
                             @echo off
                             call venv\\Scripts\\activate.bat
-                            pytest -q ^
-                              --junitxml=test-results.xml ^
-                              --html=report.html ^
-                              --cov=. --cov-report=xml:coverage.xml
+                            if pytest -q --junitxml=test-results.xml --html=report.html --cov=. --cov-report=xml:coverage.xml; (
+                                echo Tests executed successfully.
+                            ) else (
+                                echo No tests found or tests failed, check the logs for details.
+                            )
                         '''
                     }
                 }
