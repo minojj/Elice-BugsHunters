@@ -1,7 +1,4 @@
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.chrome.service import Service
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
@@ -27,56 +24,6 @@ class ChatPage:
     }
 
     # === Page Actions ===
-
-    def open(self):
-        """페이지 열기"""
-        self.driver.get(self.locators["main"])
-        try:
-            # 로그인 페이지의 핵심 요소인 이메일 입력 필드가 나타날 때까지 기다립니다.
-            self.wait.until(
-                EC.presence_of_element_located(self.locators["email"]) 
-            )
-            print(" 사이트 접속 및 로그인 폼 로딩 성공")
-        except TimeoutException:
-            print(" 사이트 접속은 했으나 로그인 폼 로딩 실패")
-        return True
-    def login(self, email, password):
-        """로그인 수행"""
-        try:
-            # 이메일 입력
-            login_field = self.wait.until(
-                EC.presence_of_element_located(self.locators["email"])
-            )
-            login_field.send_keys(email)
-            
-            # 비밀번호 입력
-            password_field = self.wait.until(
-                EC.presence_of_element_located(self.locators["password"])
-            )
-            password_field.send_keys(password)
-            
-            # 로그인 버튼 클릭
-            login_btn = self.wait.until(
-                EC.element_to_be_clickable(self.locators["submit_btn"])
-            )
-            login_btn.click()
-            print(" 로그인 버튼 클릭 완료")
-            return True
-        except TimeoutException as e:
-            print(f" 로그인 실패: 요소를 찾지 못했거나 시간 초과 - {e}")
-            return False
-
-    def is_logged_in(self):
-        """로그인 성공 여부 확인 (대화 페이지 로딩 확인)"""
-        try:
-            self.wait.until(
-                EC.presence_of_element_located(self.locators["chat_submit"])
-            )
-            print(" 로그인 후 대화 페이지 로딩 완료")
-            return True
-        except TimeoutException:
-            print(" 로그인 실패 또는 대화 페이지 미출력")
-            return False
 
     def send_message(self, message):
         """메시지 입력 및 전송"""
