@@ -50,10 +50,7 @@ pipeline {
     
     post {
         always {
-            // archiveArtifacts는 FilePath(context)가 필요하므로 node 블록에서 실행
-            node {
-                archiveArtifacts artifacts: 'report.html, test-results.xml, coverage.xml', allowEmptyArchive: true
-            }
+            archiveArtifacts artifacts: 'report.html, test-results.xml, coverage.xml', allowEmptyArchive: true
             echo 'Reports archived (if present): report.html, test-results.xml, coverage.xml'
         }
         failure {
