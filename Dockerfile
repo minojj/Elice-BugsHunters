@@ -1,15 +1,35 @@
+# 테스트 컨테이너 이미지 (python 3.10)
 FROM python:3.10-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
 WORKDIR /app
 
+# 종속성 캐시 최적화: 먼저 requirements만 복사
 COPY requirements.txt /app/requirements.txt
-RUN pip install --upgrade pip && \
-    if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+# 빌드 필수 패키지가 필요하면 여기에 추가(예: gcc, libpq-dev 등)
+# RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+
+RUN python -m pip install --upgrade pip && \
+    pip install -r requirements.txt || true
+
+# 소스/테스트 복사
 COPY src /app/src
 COPY tests /app/tests
 
-# pytest 설치 (requirements.txt에 없다면)
-RUN pip install pytest
+# pytest가 requirements에 없을 수도 있으니 보강
+RUN pip install pytest pytest-cov
 
-CMD ["pytest", "-q"]
+# 테스트 결과를 꺼낼 경로
+RUN mkdir -p /reports
+VOLUME ["/reports"]
+
+# 컨테이너 실행 시 pytest가 기본 동작
+CMD ["pytest", "-q", \
+     "--junitxml=/reports/test-results.xml", \
+     "--cov=src", "--cov-report=xml:/reports/coverage.xml"]
+
+
