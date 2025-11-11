@@ -7,16 +7,36 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build Docker Image') {
+
+        stage('Install Dependencies') {
             steps {
-                sh 'docker build -t elice-bugshunters:test .'
+                sh '''
+                    if [ ! -d venv ]; then
+                        python3 -m venv venv
+                    fi
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    if [ -f requirements.txt ]; then
+                        pip install -r requirements.txt
+                    fi
+                    pip install pytest selenium
+                '''
             }
         }
+
         stage('Run Tests') {
             steps {
-                sh 'docker run --rm elice-bugshunters:test'
+                sh '''
+                    . venv/bin/activate
+                    pytest tests/TEST_AC.py -v
+                '''
             }
         }
-        // 필요하다면 아래에 배포 스테이지 추가
+    }
+
+    post {
+        always {
+            echo "Build finished"
+        }
     }
 }
