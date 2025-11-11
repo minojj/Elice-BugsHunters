@@ -101,11 +101,26 @@ SEL_SECOND_THREAD = (
     "aside a[href^='/ai-helpy-chat/thread/'][data-index='1']",
 )
 
+# Agent Explorer 버튼 (사이드바)
+SEL_AGENT_EXPLORER = (
+    By.CSS_SELECTOR,
+    "aside a[href='/ai-helpy-chat/agent']"
+)
+
+SEL_AGENT_SEARCH_INPUT = (
+    By.CSS_SELECTOR,
+    "input[placeholder='Search AI agents'][type='text']"
+)
+
+SEL_AGENT_RESULT_CARD = (By.CSS_SELECTOR, "[data-testid='virtuoso-item-list'] a[href^='/ai-helpy-chat/agent/']")
+
+SEL_AGENT_TITLE_IN_CARD = (By.CSS_SELECTOR, "p.MuiTypography-body1")
+
 # --- 공통 유틸 ---
 def wait(drv, sec=10):
     return WebDriverWait(drv, sec)
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def driver():
     opts = Options()
     # 필요하면 headless 사용
@@ -114,11 +129,11 @@ def driver():
     opts.add_argument("--disable-gpu")
     opts.add_argument("--no-sandbox")
     # 테스트 동작 눈으로 보려면 detach 유지
-    opts.add_experimental_option("detach", True)
+    # opts.add_experimental_option("detach", True)
     drv = webdriver.Chrome(options=opts)
     yield drv
     # 눈으로 확인하려면 종료 막기
-    # drv.quit()
+    drv.quit()
 
 def _login(drv):
     drv.get(LOGIN_URL)
@@ -416,6 +431,56 @@ def click_second_session(driver, timeout=10):
         EC.element_to_be_clickable(SEL_SECOND_THREAD)
     ).click()
 
+def click_agent_explorer(driver, timeout=10):
+    # 가장 단순 + 안전: 클릭 가능 상태까지 기다렸다가 클릭
+    WebDriverWait(driver, timeout).until(
+        EC.element_to_be_clickable(SEL_AGENT_EXPLORER)
+    ).click()
+
+    # 이동 확인(선택)
+    WebDriverWait(driver, timeout).until(
+        EC.url_contains("/ai-helpy-chat/agent")
+    )
+
+def type_agent_search(driver, text="엘리스", timeout=10):
+    inp = WebDriverWait(driver, timeout).until(
+        EC.element_to_be_clickable(SEL_AGENT_SEARCH_INPUT)
+    )
+    inp.click()
+    try:
+        inp.clear()
+    except Exception:
+        pass
+    from selenium.webdriver.common.keys import Keys
+    inp.send_keys(Keys.CONTROL, "a")
+    inp.send_keys(Keys.DELETE)
+    inp.send_keys(text)
+    # 값 반영 확인(선택)
+    WebDriverWait(driver, 5).until(lambda d: inp.get_attribute("value") == text)
+
+def assert_agent_search_all(driver, query: str, timeout: int = 10):
+    """
+    Agent Explorer 결과 카드의 '제목'이 모두 query를 포함해야 통과(대소문자 무시).
+    """
+    q = (query or "").strip().lower()
+    sel_titles = "[data-testid='virtuoso-item-list'] a[href^='/ai-helpy-chat/agent/'] p.MuiTypography-body1"
+
+    end = time.time() + timeout
+    last = []
+
+    while time.time() < end:
+        titles = [el.text.strip() for el in driver.find_elements(By.CSS_SELECTOR, sel_titles)]
+        if titles and all(q in t.lower() for t in titles):
+            return  # ✅ 전부 포함
+        if titles:
+            last = titles
+        time.sleep(0.15)
+
+    raise AssertionError(f"전부 포함 실패: query='{query}', titles={last}")
+
+
+
+
 # --- 테스트 ---
 def test_ht_001(driver):
     # 0) 로그인
@@ -424,17 +489,12 @@ def test_ht_001(driver):
     # 2) 새 대화 클릭 (일부 환경에선 여기서 이미 새 세션 생성)
     _click_new_chat(driver)
 
-    # 3) 메시지 전송
-    _send_message(driver, "before")
-    time.sleep(2)  # 메시지 처리 대기
-
-    # 1) 최상단 스냅샷
+    #  최상단 스냅샷
     before_top = _top_thread_href(driver)
-    
-    _click_new_chat(driver)
 
-    _send_message(driver, "after")
-    time.sleep(2)  # 메시지 처리 대기
+    # 3) 메시지 전송
+    _send_message(driver, "안녕")
+    time.sleep(2)
 
     # 4) 최상단 쓰레드 변경 검증 (가상 스크롤에서도 안전)
     wait(driver, 20).until(
@@ -442,7 +502,6 @@ def test_ht_001(driver):
     )
     after_top = _top_thread_href(driver)
     assert after_top and after_top != before_top, f"최상단 세션 갱신 실패: before={before_top}, after={after_top}"
-
 
 def test_ht_002(driver):
     # 0) 로그인
@@ -453,13 +512,11 @@ def test_ht_002(driver):
 
     # 2) 메시지 전송
     _send_message(driver, "1357")
-    time.sleep(2)
-    
+   
     _click_new_chat(driver)
 
     _send_message(driver, "9899")
-    time.sleep(2)
-
+   
     _click_sidebar_search(driver)
     _type_into_search_input(driver, "1357")
 
@@ -469,10 +526,13 @@ def test_ht_002(driver):
     vals = get_search_result_values(driver)  # JS로 안전 수집
     assert any(v.startswith("1357") for v in vals), f"검색 결과에 '1357' prefix가 없습니다. values={vals}"
 
-
 def test_ht_003(driver):
-    pass
+    # 0) 로그인
+    _login(driver)
 
+    click_agent_explorer(driver)
+    type_agent_search(driver, "엘리스")
+    assert_agent_search_all(driver, "엘리스")
 
 def test_ht_004(driver):
     # 0) 로그인
@@ -483,7 +543,6 @@ def test_ht_004(driver):
 
     # 2) 메시지 전송
     _send_message(driver, "before")
-    time.sleep(2)
     
     # 5) 최상단 옵션 열고, '이름 변경' 클릭
     _open_top_thread_options(driver)
@@ -498,7 +557,6 @@ def test_ht_004(driver):
     actual = _top_thread_title(driver)
     assert actual == target, f"제목 변경 실패: expected={target}, actual={actual}"
 
-
 def test_ht_005(driver):
     # 0) 로그인
     _login(driver)
@@ -510,7 +568,6 @@ def test_ht_005(driver):
     _send_message(driver, "테스트 시작")
     _send_message(driver, "두 번째 메시지")
     _send_message(driver, "세 번째 메시지")
-
     time.sleep(2)  # 메시지 렌더링 대기
 
     _click_new_chat(driver)
@@ -521,7 +578,6 @@ def test_ht_005(driver):
     time.sleep(2)  # 세션 전환 대기
 
     assert scroll_to_first_message(driver), "첫 번째 메시지로 스크롤 실패"
-
 
 def test_ht_006(driver):
     # 0) 로그인
@@ -547,4 +603,28 @@ def test_ht_006(driver):
     is_stale = wait(driver, 20).until(EC.staleness_of(top_el))
     assert is_stale, "삭제 후에도 요소가 DOM에 남아 있습니다."
 
+def test_ht_007(driver):
+    # 0) 로그인
+    _login(driver)
+
+    # 1) 새 대화 클릭
+    _click_new_chat(driver)
+
+    # 2) 메시지 전송
+    _send_message(driver, "before")
+    time.sleep(2)
+
+    # 최상단 스냅샷
+    before_top = _top_thread_href(driver)
+
+    _click_new_chat(driver)
+    _send_message(driver, "after")
+    time.sleep(2)
+
+    # 최상단 쓰레드 변경 검증 (가상 스크롤에서도 안전)
+    wait(driver, 20).until(
+        lambda d: (_top_thread_href(d) is not None) and (_top_thread_href(d) != before_top)
+    )
+    after_top = _top_thread_href(driver)
+    assert after_top and after_top != before_top, f"최상단 세션 갱신 실패: before={before_top}, after={after_top}"
     
