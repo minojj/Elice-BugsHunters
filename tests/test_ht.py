@@ -20,9 +20,6 @@ MAIN_URL = "https://qaproject.elice.io/ai-helpy-chat"
 EMAIL = "team3@elice.com"
 PASSWORD = "team3elice!@"
 
-# --- 셀렉터 (안정성 중심) ---
-SEL_BURGER = (By.CSS_SELECTOR, "header button svg[data-testid='barsIcon']")
-
 # 사이드바 '새 대화' 버튼 : role="button" + 텍스트 매칭
 SEL_NEW_CHAT_BTN = (
     By.XPATH,
@@ -101,14 +98,6 @@ def driver():
     # 눈으로 확인하려면 종료 막기
     # drv.quit()
 
-def _open_sidebar_if_collapsed(drv):
-    # 아이콘 버튼이 보이면 클릭(접힘 → 펼치기)
-    try:
-        burger = wait(drv, 2).until(EC.element_to_be_clickable(SEL_BURGER))
-        burger.find_element(By.XPATH, "./ancestor::button").click()
-    except TimeoutException:
-        pass  # 이미 열려 있음
-
 def _login(drv):
     drv.get(LOGIN_URL)
 
@@ -132,7 +121,6 @@ def _login(drv):
     assert MAIN_URL in drv.current_url, f"메인 페이지로 이동 실패: {drv.current_url}"
 
 def _click_new_chat(drv):
-    _open_sidebar_if_collapsed(drv)
     btn = wait(drv).until(EC.element_to_be_clickable(SEL_NEW_CHAT_BTN))
     btn.click()
 
@@ -173,7 +161,6 @@ def _top_thread_title(drv):
 
 def _open_top_thread_options(drv):
     """사이드바 최상단 대화 항목 위에 호버 → 우측 옵션 버튼 클릭"""
-    _open_sidebar_if_collapsed(drv)
 
     top = wait(drv).until(EC.presence_of_element_located(SEL_TOP_THREAD))
     drv.execute_script("arguments[0].scrollIntoView({block:'center'});", top)
@@ -307,7 +294,6 @@ def test_ht_001(driver):
     _login(driver)
 
     # 1) 최상단 스냅샷
-    _open_sidebar_if_collapsed(driver)
     before_top = _top_thread_href(driver)
 
     # 2) 새 대화 클릭 (일부 환경에선 여기서 이미 새 세션 생성)
@@ -374,3 +360,15 @@ def test_ht_002(driver):
     time.sleep(5)  # 메시지 렌더링 대기
     
     assert scroll_to_first_message(driver), "첫 번째 메시지로 스크롤 실패"
+
+def test_ht_003(driver):
+    # 0) 로그인
+    _login(driver)
+
+    # 1) 새 대화 클릭
+    _click_new_chat(driver)
+
+    # 2) 메시지 전송
+    _send_message(driver, "테스트 시작")
+
+    
