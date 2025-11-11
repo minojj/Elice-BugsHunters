@@ -1,5 +1,27 @@
 version: '3.8'
+
 services:
-  test:
-    build: .
-    command: pytest -q
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: elice-jenkins
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins_home:/var/jenkins_home
+      - /usr/bin/docker:/usr/bin/docker
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
+      CASC_JENKINS_CONFIG: /var/jenkins_home/casc.yaml
+    networks:
+      - elice-network
+    restart: unless-stopped
+
+networks:
+  elice-network:
+    driver: bridge
+
+volumes:
+  jenkins_home:
+    driver: local
