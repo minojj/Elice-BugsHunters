@@ -406,27 +406,24 @@ def wait_result_has_prefix(drv, prefix: str, timeout=10):
     raise TimeoutException(f"검색 결과에 prefix '{prefix}' 항목이 나타나지 않았습니다.")
 
 # --- 테스트 ---
-@pytest.mark.e2e
 def test_ht_001(driver):
     # 0) 로그인
     _login(driver)
 
-    # 1) 최상단 스냅샷
-    before_top = _top_thread_href(driver)
-
     # 2) 새 대화 클릭 (일부 환경에선 여기서 이미 새 세션 생성)
     _click_new_chat(driver)
 
-    # 2-1) 클릭 직후 최상단 변경(신규 세션 생성) 여부를 짧게 체크
-    try:
-        wait(driver, 5).until(
-            lambda d: (_top_thread_href(d) is not None) and (_top_thread_href(d) != before_top)
-        )
-    except TimeoutException:
-        pass  # 아직이면 메시지 전송으로 이어감
-
     # 3) 메시지 전송
-    _send_message(driver, "안녕")
+    _send_message(driver, "before")
+    time.sleep(2)  # 메시지 처리 대기
+
+    # 1) 최상단 스냅샷
+    before_top = _top_thread_href(driver)
+    
+    _click_new_chat(driver)
+
+    _send_message(driver, "after")
+    time.sleep(2)  # 메시지 처리 대기
 
     # 4) 최상단 쓰레드 변경 검증 (가상 스크롤에서도 안전)
     wait(driver, 20).until(
@@ -435,52 +432,8 @@ def test_ht_001(driver):
     after_top = _top_thread_href(driver)
     assert after_top and after_top != before_top, f"최상단 세션 갱신 실패: before={before_top}, after={after_top}"
 
-    # 5) 최상단 옵션 열고, '이름 변경' 클릭
-    _open_top_thread_options(driver)
-    _click_menu_rename(driver)
 
-    # 6) 제목을 '안녕123'으로 변경 후 저장
-    target = "안녕123"
-    _rename_top_thread_and_save(driver, target)
-
-    # 7) 사이드바 최상단 제목이 기대값으로 갱신됐는지 검증
-    wait(driver, 10).until(lambda d: _top_thread_title(d) == target)
-    actual = _top_thread_title(driver)
-    assert actual == target, f"제목 변경 실패: expected={target}, actual={actual}"
-
-    # 삭제 직전: 최상단 요소를 WebElement로 확보
-    top_el = wait(driver, 5).until(EC.presence_of_element_located(SEL_TOP_THREAD))
-    deleted_href = top_el.get_attribute("href")
-
-    _open_top_thread_options(driver)  # 점3개 열기
-    _click_menu_delete(driver)        # 삭제 항목 클릭 
-
-    # 8) 삭제 확인 다이얼로그에서 '삭제' 버튼 클릭
-    _confirm_delete_in_dialog(driver)
-
-    # 요소가 DOM에서 제거될 때까지 대기
-    is_stale = wait(driver, 20).until(EC.staleness_of(top_el))
-    assert is_stale, "삭제 후에도 요소가 DOM에 남아 있습니다."
-    
-@pytest.mark.e2e
 def test_ht_002(driver):
-    # 0) 로그인
-    _login(driver)
-
-    # 1) 새 대화 클릭
-    _click_new_chat(driver)
-
-    # 2) 메시지 전송
-    _send_message(driver, "테스트 시작")
-    _send_message(driver, "두 번째 메시지")
-    _send_message(driver, "세 번째 메시지")
-
-    time.sleep(5)  # 메시지 렌더링 대기
-    
-    assert scroll_to_first_message(driver), "첫 번째 메시지로 스크롤 실패"
-
-@pytest.mark.e2e
-def test_ht_003(driver):
     # 0) 로그인
     _login(driver)
 
@@ -504,5 +457,80 @@ def test_ht_003(driver):
 
     vals = get_search_result_values(driver)  # JS로 안전 수집
     assert any(v.startswith("1357") for v in vals), f"검색 결과에 '1357' prefix가 없습니다. values={vals}"
+
+
+def test_ht_003(driver):
+    pass
+
+
+def test_ht_004(driver):
+    # 0) 로그인
+    _login(driver)
+
+    # 1) 새 대화 클릭
+    _click_new_chat(driver)
+
+    # 2) 메시지 전송
+    _send_message(driver, "before")
+    time.sleep(2)
+    
+    # 5) 최상단 옵션 열고, '이름 변경' 클릭
+    _open_top_thread_options(driver)
+    _click_menu_rename(driver)
+
+    # 6) 제목을 'after-rename'으로 변경 후 저장
+    target = "after-rename"
+    _rename_top_thread_and_save(driver, target)
+
+    # 7) 사이드바 최상단 제목이 기대값으로 갱신됐는지 검증
+    wait(driver, 10).until(lambda d: _top_thread_title(d) == target)
+    actual = _top_thread_title(driver)
+    assert actual == target, f"제목 변경 실패: expected={target}, actual={actual}"
+
+
+def test_ht_005(driver):
+    # 0) 로그인
+    _login(driver)
+
+    # 1) 새 대화 클릭
+    _click_new_chat(driver)
+
+    # 2) 메시지 전송
+    _send_message(driver, "테스트 시작")
+    _send_message(driver, "두 번째 메시지")
+    _send_message(driver, "세 번째 메시지")
+
+    time.sleep(2)  # 메시지 렌더링 대기
+
+    _click_new_chat(driver)
+    _send_message(driver, "테스트2")
+
+    
+    assert scroll_to_first_message(driver), "첫 번째 메시지로 스크롤 실패"
+
+
+def test_ht_006(driver):
+    # 0) 로그인
+    _login(driver)
+
+    # 1) 새 대화 클릭
+    _click_new_chat(driver)
+
+    # 2) 메시지 전송
+    _send_message(driver, "delete-test")
+
+    # 삭제 직전: 최상단 요소를 WebElement로 확보
+    top_el = wait(driver, 5).until(EC.presence_of_element_located(SEL_TOP_THREAD))
+    deleted_href = top_el.get_attribute("href")
+
+    _open_top_thread_options(driver)  # 점3개 열기
+    _click_menu_delete(driver)        # 삭제 항목 클릭 
+
+    # 8) 삭제 확인 다이얼로그에서 '삭제' 버튼 클릭
+    _confirm_delete_in_dialog(driver)
+
+    # 요소가 DOM에서 제거될 때까지 대기
+    is_stale = wait(driver, 20).until(EC.staleness_of(top_el))
+    assert is_stale, "삭제 후에도 요소가 DOM에 남아 있습니다."
 
     
