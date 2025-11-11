@@ -17,29 +17,31 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        // Mac/Linux: Docker 사용
+                        // Mac/Linux: Docker로 의존성 설치 (호스트의 워크스페이스를 컨테이너에 마운트)
                         sh '''
-                            docker run --rm -v $WORKSPACE:/workspace python:3.11 bash -c "
-                                cd /workspace
-                                pip install --upgrade pip
+                            docker run --rm \
+                              -v "$WORKSPACE":/workspace \
+                              -w /workspace \
+                              python:3.11 bash -lc "
+                                python -m pip install --upgrade pip
                                 if [ -f requirements.txt ]; then
-                                    pip install -r requirements.txt
+                                  pip install -r requirements.txt
                                 else
-                                    pip install pytest
+                                  pip install pytest pytest-cov pytest-html
                                 fi
-                            "
+                              "
                         '''
                     } else {
-                        // Windows: venv 사용 (Docker 대신)
+                        // Windows: 로컬 venv 사용
                         bat '''
                             @echo off
                             py -3 -m venv venv || python -m venv venv
                             call venv\\Scripts\\activate.bat
-                            python -m pip install --upgrade pip
+                            python -m pip install -U pip
                             if exist requirements.txt (
                                 pip install -r requirements.txt
                             ) else (
-                                pip install pytest
+                                pip install pytest pytest-cov pytest-html
                             )
                         '''
                     }
@@ -47,28 +49,34 @@ pipeline {
             }
         }
 
-        stage('Run pytest') {
+        stage('Run Tests') {
             steps {
                 script {
                     if (isUnix()) {
-                        // Mac/Linux: Docker 사용
                         sh '''
-                            docker run --rm -v $WORKSPACE:/workspace python:3.11 bash -c "
-                                cd /workspace
+                            docker run --rm \
+                              -v "$WORKSPACE":/workspace \
+                              -w /workspace \
+                              python:3.11 bash -lc "
                                 if [ -f requirements.txt ]; then
-                                    pip install -r requirements.txt
+                                  pip install -r requirements.txt
                                 else
-                                    pip install pytest
+                                  pip install pytest pytest-cov pytest-html
                                 fi
-                                pytest tests/ --junitxml=pytest-report.xml
-                            "
+                                pytest -q \
+                                  --junitxml=test-results.xml \
+                                  --html=report.html \
+                                  --cov=. --cov-report=xml:coverage.xml
+                              "
                         '''
                     } else {
-                        // Windows: venv 사용
                         bat '''
                             @echo off
                             call venv\\Scripts\\activate.bat
-                            pytest tests/ --junitxml=pytest-report.xml
+                            pytest -q ^
+                              --junitxml=test-results.xml ^
+                              --html=report.html ^
+                              --cov=. --cov-report=xml:coverage.xml
                         '''
                     }
                 }
@@ -78,13 +86,9 @@ pipeline {
 
     post {
         always {
-            junit allowEmptyResults: true, testResults: 'pytest-report.xml'
-        }
-        success {
-            echo '테스트 자동화가 성공적으로 완료되었습니다!'
-        }
-        failure {
-            echo '테스트 자동화 중 일부 테스트가 실패했습니다. 리포트를 확인해주세요.'
+            // 테스트 결과와 리포트 수집
+            junit allowEmptyResults: true, testResults: 'test-results.xml'
+            archiveArtifacts artifacts: 'report.html, test-results.xml, coverage.xml', allowEmptyArchive: true
         }
     }
 }

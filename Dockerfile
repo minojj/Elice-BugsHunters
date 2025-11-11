@@ -1,5 +1,5 @@
-# 테스트 컨테이너 이미지 (python 3.10)
-FROM python:3.10-slim
+# 테스트 컨테이너 이미지 (python 3.11)
+FROM python:3.11
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
