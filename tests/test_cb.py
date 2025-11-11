@@ -1,6 +1,5 @@
 from time import sleep
 from src.pages.ChatBasepage import ChatPage
-import os
 
 
 def test_cb_001(logged_in_driver):
@@ -10,7 +9,7 @@ def test_cb_001(logged_in_driver):
     chat_page.send_message("안녕하세요")
 
     sleep(5)
-    print("✅ 테스트 완료")
+    print("테스트 완료")
 
 
 def test_cb_005(logged_in_driver):
@@ -20,6 +19,8 @@ def test_cb_005(logged_in_driver):
     sleep(2)
     chat_page.copy_message(ai_response)
     sleep(2)
+    # 복사한 내용을 입력창에 붙여넣고 원문과 동일한지 검증
+    assert chat_page.verify_copied_equals_paste(ai_response), "복사/붙여넣기 내용이 원문과 일치하지 않습니다"
 
 
 def test_cb_007(logged_in_driver):
@@ -60,5 +61,5 @@ def test_cb_003(logged_in_driver):
     chat_page.upload_file(r"C:\Users\97min\OneDrive\바탕 화면\dog.png")
     sleep(2)
     chat_page.send_message("이 사진을 애니매이션화해서 그려줘")
-    sleep(15)
+    sleep(20)
     input("\n테스트 완료. 종료하려면 Enter를 누르세요...")
