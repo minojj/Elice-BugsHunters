@@ -19,7 +19,6 @@ def test_cb_005(logged_in_driver):
     sleep(2)
     chat_page.copy_message(ai_response)
     sleep(2)
-    # 복사한 내용을 입력창에 붙여넣고 원문과 동일한지 검증
     assert chat_page.verify_copied_equals_paste(ai_response), "복사/붙여넣기 내용이 원문과 일치하지 않습니다"
 
 
