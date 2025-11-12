@@ -13,7 +13,7 @@ TEST_EXENAME = r"C:\Users\josun\Downloads\Docker Desktop Installer.exe"
 TEST_USERNAME = "team3@elice.com"
 TEST_PASSWORD = "team3elice!@"
 
-
+@pytest.mark.gui_test
 def test_ce_001(logged_in_driver):
   
     # Page Object 생성
@@ -24,7 +24,8 @@ def test_ce_001(logged_in_driver):
     # 검증
     assert result, "❌ 파일 업로드 및 전송 프로세스 실패"
     print("✅ CE-001 테스트 통과!")   
-    
+
+@pytest.mark.gui_test
 def test_ce_002(logged_in_driver):
   
     # Page Object 생성
@@ -117,16 +118,7 @@ def test_ce_006(logged_in_driver):
     print("✅ CE-006 테스트 통과!")
 
 def test_ce_007(logged_in_driver):
-    """
-    CE-007: 심층 조사 테스트
-    테스트 시나리오
-    1.로그인
-    2.플러스 버튼 클릭
-    3.심층 조사 메뉴 선택
-    4.조사 주제 입력
-    5.엔터키로 전송
-    6.AI 응답 대기
-    """
+
     # Page Object 생성
     page = Chat_Expance(logged_in_driver)
     
@@ -135,4 +127,6 @@ def test_ce_007(logged_in_driver):
     # 검증
     assert result, "❌ 심층 조사 및 전송 프로세스 실패"
     print("✅ CE-007 테스트 통과!")
+
+#####심층 조사 생성하기 버튼 오류 수정 필요#####
     
