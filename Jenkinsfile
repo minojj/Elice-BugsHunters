@@ -9,12 +9,11 @@ pipeline {
     environment {
         PYTHONUNBUFFERED = "1"
         HEADLESS = "true"
-        // ↓ webdriver-manager가 다운로드 안 하도록 + 캐시 경로 고정
         WDM_LOCAL = "1"
         WDM_CACHE = "${WORKSPACE}/.wdm"
-        // 혹시 HOME이 비어 있을 경우 대비
         HOME = "${WORKSPACE}"
         PYTHONPATH = "${WORKSPACE}:${PYTHONPATH}"
+        CHROMEDRIVER = "/usr/bin/chromedriver" // 시스템 드라이버 고정
     }
 
     stages {
