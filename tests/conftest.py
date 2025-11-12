@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from src.utils.helpers import Utils
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
+from dotenv import load_dotenv
 from src.pages.login_page import LoginFunction
 
 def pytest_configure(config):
@@ -25,6 +26,9 @@ def pytest_runtest_setup(item):
         # GUI 환경이 필요하지만 DISPLAY 변수가 없으므로 테스트를 건너뜁니다.
         pytest.skip("Requires X DISPLAY (GUI). Skipping test in headless environment.", allow_module_level=False)
 
+
+
+
 @pytest.fixture(scope="session")
 def driver():
     options = webdriver.ChromeOptions()
@@ -40,19 +44,26 @@ def driver():
     
     yield driver
     driver.quit()
-    
+
+
 @pytest.fixture(scope="session")
-def logged_in_driver(driver) :
-    try :
+def logged_in_driver(driver):
+    try:
         login_page = LoginFunction(driver)
         login_page.open()
-        login_page.login("team3@elice.com", "team3elice!@")
+        login_page.login(
+            os.getenv("MAIN_EMAIL"),
+            os.getenv("MAIN_PASSWORD")
+        )
         print("✅ 로그인 성공")
-    except TimeoutException :
+    except TimeoutException:
         Utils(driver).wait_for(timeout=15)
     
-
     yield driver
+
+
+    
+
 
 #서브 계정으로 로그인하는 fixture
 
@@ -64,12 +75,17 @@ def logged_in_driver_sub_account():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
+
     service = Service(ChromeDriverManager().install())
     sub_driver = webdriver.Chrome(service=service, options=options)
     login_page = LoginFunction(sub_driver)
     login_page.open()
-    login_page.login("team3a@elice.com", "team3aelice!@@")
+    login_page.login(
+        os.getenv("SUB_EMAIL"),
+        os.getenv("SUB_PASSWORD")
+    )
     print("✅ 서브 계정 로그인 성공")
 
     yield sub_driver
-    sub_driver.quit()  # 여기서 닫아도 main driver 영향 없음
+    sub_driver.quit()
+
