@@ -14,6 +14,7 @@ pipeline {
         WDM_CACHE = "${WORKSPACE}/.wdm"
         // 혹시 HOME이 비어 있을 경우 대비
         HOME = "${WORKSPACE}"
+        PYTHONPATH = "${WORKSPACE}:${PYTHONPATH}"
     }
 
     stages {
