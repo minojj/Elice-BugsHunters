@@ -1,6 +1,9 @@
 import time
 import pytest
+import os
 from src.pages.login_page import LoginFunction
+from dotenv import load_dotenv
+
 
 @pytest.mark.usefixtures("driver")
 
@@ -40,13 +43,13 @@ def test_AC_003_negative_login(driver):
     # 2️⃣ negative 로그인 수행
     login_page.login("test_user@example.com", "test_password")
     # 3️⃣ 로그인 확인
-    login_page.is_logged_in()
+    assert not login_page.is_logged_in(), "로그인에 성공하면 안 됩니다."
     
 def test_AC_004_positive_login(logged_in_driver):
     print("=== test_AC_004_positive_login 테스트 시작 ===")
     login_page = LoginFunction(logged_in_driver)
     # 로그인 확인
-    login_page.is_logged_in()
+    assert login_page.is_logged_in(), "로그인에 실패했습니다."
     
 def test_AC_005_login_with_non_email_format(driver):
     print("=== test_AC_005_login_with_non_email_format 테스트 시작 ===")
@@ -56,7 +59,7 @@ def test_AC_005_login_with_non_email_format(driver):
     # 2️⃣ 이메일 형식이 아닌 로그인 수행
     login_page.login("test_user", "test_password")
     # 3️⃣ 로그인 확인
-    login_page.is_logged_in()
+    assert not login_page.is_logged_in(), "로그인에 성공하면 안 됩니다."
     
 def test_AC_006_login_with_spaces(driver):
     print("=== test_AC_006_login_with_spaces 테스트 시작 ===")
@@ -74,9 +77,8 @@ def test_AC_007_logout(driver):
     # 1️⃣ 메인 페이지 접속
     login_page.open()
     # 2️⃣ 로그인
-    login_page.login("team3@elice.com", "team3elice!@")
+    login_page.login(os.getenv("MAIN_EMAIL"),os.getenv("MAIN_PASSWORD"))
     # 3️⃣ 프로필 -> 로그아웃 버튼 클릭 
-    time.sleep(2)
     login_page.logout()
     # 4️⃣ 로그아웃 검증
     assert login_page.logout_check(), "로그아웃 후 로그인 화면으로 돌아오지 않았습니다."
