@@ -28,9 +28,11 @@ def pytest_runtest_setup(item):
 @pytest.fixture(scope="session")
 def driver():
     options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
+    options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")           # GPU 가속 비활성화 (헤드리스 환경 필수)
+    options.add_argument("--window-size=1920,1080")
 
     # ✅ 최신 버전 방식
     service = Service(ChromeDriverManager().install())
