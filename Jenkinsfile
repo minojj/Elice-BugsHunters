@@ -139,6 +139,7 @@ pipeline {
             steps {
                 sh '''
                     set +e
+                    . .venv/bin/activate
                     mkdir -p reports
                     pytest tests -v \
                         --junitxml=reports/test-results.xml \
@@ -153,17 +154,19 @@ pipeline {
                 always {
                     junit allowEmptyResults: true, testResults: 'reports/test-results.xml'
                     publishHTML([
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
                         reportDir: 'reports',
                         reportFiles: 'report.html',
-                        reportName: 'Pytest Report',
-                        keepAll: true,
-                        allowMissing: true
+                        reportName: 'Pytest Report'
                     ])
                     archiveArtifacts artifacts: 'reports/**/*,**/screenshots/**/*.png',
-                                     allowEmptyArchive: true, fingerprint: true
+                                     allowEmptyArchive: true,
+                                     fingerprint: true
                 }
-                success { echo '✅ 성공' }
-                failure { echo '❌ 실패' }
+                success { echo '✅ 테스트 성공' }
+                failure { echo '❌ 테스트 실패' }
             }
         }
     }
