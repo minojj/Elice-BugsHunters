@@ -1,13 +1,14 @@
 import os, pytest
 if os.name == "posix" and not os.environ.get("DISPLAY"):
     pytest.skip("Requires X DISPLAY (GUI). Skipping in headless CI.", allow_module_level=True)
-import pytest
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from src.utils.helpers import Utils
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from src.pages.login_page import LoginFunction
+
 
 @pytest.fixture(scope="session")
 def driver():
@@ -31,9 +32,7 @@ def logged_in_driver(driver) :
         login_page.login("team3@elice.com","team3elice!@")
         print("✅ 로그인 성공")
     except TimeoutException :
-        print("✅ 현재 로그인 상태")
-        
-    Utils(driver).wait_for(timeout=15)
-    print("✅ 로그인 대기 완료")
+        Utils(driver).wait_for(timeout=15)
+    
 
     yield driver
