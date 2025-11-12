@@ -11,30 +11,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 레포지토리 체크아웃 (필수)
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Python 환경 설정 (필수)
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.11" # 사용하려는 Python 버전에 맞게 수정
 
+      # 3. 의존성 설치 (pytest, pyautogui, xvfbwrapper 등) (필수)
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-html pyautogui xvfbwrapper
 
-      - name: Run tests with Xvfb (headless display)
+      # 4. Xvfb 환경 설정 및 DISPLAY 변수 자동 처리
+      - name: Set up Xvfb Headless Environment
+        # GabrielBB/xvfb-action@v1 액션이 Xvfb를 시작하고 DISPLAY=:99를 설정합니다.
+        uses: GabrielBB/xvfb-action@v1 
+        with:
+          # run: | 에 pytest 명령을 넣는 대신, 환경 설정이 되었음을 확인하는 간단한 메시지만 출력합니다.
+          # 실제 테스트는 다음 스텝에서 DISPLAY가 설정된 상태로 실행됩니다.
+          run: |
+            echo "Xvfb 환경 설정 완료. DISPLAY 변수가 준비되었습니다."
+            
+      # 5. Pytest GUI 테스트 실행
+      - name: Run Pytest GUI Tests
         run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb
-          # 화면 해상도 1920x1080x24 비트 설정
-          Xvfb :99 -screen 0 1920x1080x24 &
-          export DISPLAY=:99
-          echo "DISPLAY 환경 설정 완료: $DISPLAY"
           pytest --html=reports/report.html --self-contained-html
-
+          
+      # 6. 보고서 아티팩트 업로드
       - name: Upload report
         uses: actions/upload-artifact@v4
         with:
