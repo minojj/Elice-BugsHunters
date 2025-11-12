@@ -3,6 +3,11 @@ selenium==4.25.0                # 웹 자동화 핵심 라이브러리
 webdriver-manager==4.0.2        # 브라우저 드라이버 자동 관리
 
 # Testing Frameworks 
+# Core Automation Tools
+selenium==4.25.0                # 웹 자동화 핵심 라이브러리
+webdriver-manager==4.0.2        # 브라우저 드라이버 자동 관리
+
+# Testing Frameworks
 pytest==8.3.3                   # 경량화된 테스트 프레임워크
 pytest-html==4.1.1              # 테스트 결과 HTML 리포트 출력
 pytest-cov==6.0.0               # 코드 커버리지 리포트
@@ -17,6 +22,6 @@ python-dotenv==1.0.1            # 환경변수(.env) 파일 관리
 # Optional Utilities 
 selenium-wire==5.1.0            # (선택) 네트워크 요청 추적용
 
-# 파일탐색창 검색기능            # filename 부분 (중복되어 충돌 날 수 있음 , 변경 요망)  ex) TEST_FILENAME = r"C:\Users\dol_ph\Downloads\git.pdf" 변경 (중복되어 충돌날수있으니 ,변경요망) 
-pyautogui                       #pyautogui.write(filename, interval=0.1)    interval = 입력속도  
-                                #pyautogui.press('enter')
+# # 파일탐색창 검색기능            # filename 부분 (중복되어 충돌 날 수 있음 , 변경 요망)  ex) TEST_FILENAME = r"C:\Users\dol_ph\Downloads\git.pdf" 변경 (중복되어 충돌날수있으니 ,변경요망) 
+# pyautogui                       #pyautogui.write(filename, interval=0.1)    interval = 입력속도  
+#                                 #pyautogui.press('enter')
