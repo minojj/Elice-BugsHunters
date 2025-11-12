@@ -1,17 +1,17 @@
-# import pytest
-# # from selenium import webdriver
-# from webdriver_manager.chrome import ChromeDriverManager
-# # from selenium.webdriver.chrome.service import Service
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
-# from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.common.by import By
-# from selenium.common.exceptions import TimeoutException
-# # from src.pages.agent_page import AgentPage
-# # from src.utils.helpers import Utils
-# from src.pages.login_page import LoginFunction
-# from src.pages.custom_agent_page import AgentExplorerPage, CreateAgentPage, SaveAgentPage, ChatCreatePage, MyAgentsPage
-# # import pyautogui
+import pytest
+# from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+# from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+# from src.pages.agent_page import AgentPage
+# from src.utils.helpers import Utils
+from src.pages.login_page import LoginFunction
+from src.pages.custom_agent_page import AgentExplorerPage, CreateAgentPage, SaveAgentPage, ChatCreatePage, MyAgentsPage
+# import pyautogui
 
 
 # chrome_driver_path = ChromeDriverManager().install()
@@ -53,24 +53,24 @@
 
 
 
-# def test_ca_001(logged_in_driver):
-#     # 1️⃣ 접속 및 로그인
-#     driver = logged_in_driver
-#     wait = WebDriverWait(driver, 10)
-#     explorer_page = AgentExplorerPage(driver)
+def test_ca_001(logged_in_driver):
+    # 1️⃣ 접속 및 로그인
+    driver = logged_in_driver
+    wait = WebDriverWait(driver, 10)
+    explorer_page = AgentExplorerPage(driver)
 
-#     # 2️⃣ Agent Explorer 클릭
-#     explorer_page.get_element("agent_explorer_btn", wait_type="presence").click()
+    # 2️⃣ Agent Explorer 클릭
+    explorer_page.get_element("agent_explorer_btn", wait_type="presence").click()
     
-#     # 3️⃣ create 버튼 클릭
-#     explorer_page.get_element("create_btn", wait_type="presence").click()
+    # 3️⃣ create 버튼 클릭
+    explorer_page.get_element("create_btn", wait_type="presence").click()
 
-#     # 4️⃣ 페이지 전환 확인
-#     try:
-#         wait.until(EC.url_contains("builder#form"))
-#         print("✅ CA_001_페이지로 이동 완료!")
-#     except TimeoutException:
-#         print("❌ CA_001_페이지로 이동 실패!")
+    # 4️⃣ 페이지 전환 확인
+    try:
+        wait.until(EC.url_contains("builder#form"))
+        print("✅ CA_001_페이지로 이동 완료!")
+    except TimeoutException:
+        print("❌ CA_001_페이지로 이동 실패!")
 
 
 # def test_ca_002(create_page):
