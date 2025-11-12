@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.11'
-            args '-u root:root --shm-size=2g'
+            image 'selenium/standalone-chrome:latest'
+            args '--shm-size=2g'
         }
     }
 
@@ -19,141 +19,31 @@ pipeline {
             }
         }
 
-        stage('Setup Environment') {
-            steps {
-                script {
-                    echo '🔧 환경 설정 중...'
-                    sh '''
-                        echo "🐧 운영체제: $(uname -a)"
-                        echo "🐍 Python 버전: $(python3 --version)"
-                        echo "📂 현재 디렉토리: $(pwd)"
-                    '''
-                }
-            }
-        }
-
-        stage('Install Chrome & ChromeDriver') {
-            steps {
-                script {
-                    echo '🌐 Chrome 및 ChromeDriver 설치 중...'
-                    sh '''
-                        # 패키지 업데이트
-                        apt-get update
-                        
-                        # Chromium 및 ChromeDriver 설치 (ARM64 지원)
-                        apt-get install -y \
-                            chromium \
-                            chromium-driver \
-                            wget \
-                            gnupg \
-                            ca-certificates \
-                            fonts-liberation \
-                            libasound2 \
-                            libatk-bridge2.0-0 \
-                            libatk1.0-0 \
-                            libc6 \
-                            libcairo2 \
-                            libcups2 \
-                            libdbus-1-3 \
-                            libexpat1 \
-                            libfontconfig1 \
-                            libgbm1 \
-                            libglib2.0-0 \
-                            libgtk-3-0 \
-                            libnspr4 \
-                            libnss3 \
-                            libpango-1.0-0 \
-                            libpangocairo-1.0-0 \
-                            libstdc++6 \
-                            libx11-6 \
-                            libx11-xcb1 \
-                            libxcb1 \
-                            libxcomposite1 \
-                            libxcursor1 \
-                            libxdamage1 \
-                            libxext6 \
-                            libxfixes3 \
-                            libxi6 \
-                            libxrandr2 \
-                            libxrender1 \
-                            libxss1 \
-                            libxtst6 \
-                            xdg-utils
-                        
-                        # Chromium 심볼릭 링크 생성
-                        ln -sf /usr/bin/chromium /usr/bin/google-chrome || true
-                        ln -sf /usr/bin/chromedriver /usr/local/bin/chromedriver || true
-                        
-                        # 버전 확인
-                        chromium --version
-                        chromedriver --version
-                        
-                        # 권한 설정
-                        chmod +x /usr/bin/chromedriver
-                        
-                        echo "✅ Chromium 및 ChromeDriver 설치 완료"
-                    '''
-                }
-            }
-        }
-
-        stage('Install Python Dependencies') {
+        stage('Install Python & Dependencies') {
             steps {
                 sh '''
-                    set -eu
-                    python -c "import sys; print('Python:', sys.version)"
+                    # Python 설치 확인
+                    python3 --version || (apt-get update && apt-get install -y python3 python3-pip python3-venv)
                     
-                    # venv 재생성
-                    rm -rf .venv
-                    python -m venv .venv
+                    # venv 생성
+                    python3 -m venv .venv
                     . .venv/bin/activate
                     
-                    # pip 업그레이드
-                    python -m pip install --upgrade pip
-                    
-                    # 의존성 설치
+                    # pip 업그레이드 및 의존성 설치
+                    pip install --upgrade pip
                     pip install -r requirements.txt
                     
-                    # 설치 확인
-                    pip list | grep -E 'selenium|pytest' || true
+                    echo "✅ Python 환경 설정 완료"
                 '''
             }
         }
         
-        stage('Verify Project Structure') {
-            steps {
-                script {
-                    echo '🔍 프로젝트 구조 확인 중...'
-                    sh '''
-                        echo "📂 프로젝트 루트:"
-                        ls -la
-                        
-                        echo ""
-                        echo "📂 tests 디렉토리:"
-                        if [ -d "tests" ]; then
-                            ls -la tests/
-                            echo ""
-                            echo "🔎 발견된 테스트 파일:"
-                            find tests -name "test_*.py" -type f
-                        else
-                            echo "❌ tests 디렉토리가 없습니다!"
-                            exit 1
-                        fi
-                    '''
-                }
-            }
-        }
-              
         stage('Run Tests') {
             steps {
                 sh '''
                     set +e
                     . .venv/bin/activate
                     mkdir -p reports
-                    
-                    # Chrome 경로 확인
-                    export CHROME_BIN=$(which google-chrome || which chromium)
-                    echo "Chrome 경로: $CHROME_BIN"
                     
                     pytest tests -v \
                         --junitxml=reports/test-results.xml \

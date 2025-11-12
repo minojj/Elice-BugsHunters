@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -21,6 +21,7 @@ COPY tests ./tests
 
 ENV CHROME_BIN=/usr/bin/chromium \
     CHROMEDRIVER=/usr/bin/chromedriver
+
 
 # headless 기본
 CMD ["bash","-lc","pytest tests -v \
