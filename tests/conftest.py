@@ -1,4 +1,7 @@
-import pytest
+import os, pytest
+if os.name == "posix" and not os.environ.get("DISPLAY"):
+    pytest.skip("Requires X DISPLAY (GUI). Skipping in headless CI.", allow_module_level=True)
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from src.utils.helpers import Utils
