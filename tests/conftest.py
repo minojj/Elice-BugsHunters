@@ -1,4 +1,3 @@
-import os
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -6,11 +5,6 @@ from src.utils.helpers import Utils
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from src.pages.login_page import LoginFunction
-
-@pytest.mark.skipif(os.environ.get("CI") == "true", reason="GUI not available in CI")
-def test_file_upload_via_gui():
-    from src.utils.helpers import Utils
-    Utils.upload_via_gui("example.txt")
 
 
 @pytest.fixture(scope="session")
