@@ -56,7 +56,6 @@ pipeline {
                             libexpat1 \
                             libfontconfig1 \
                             libgbm1 \
-                            libgcc1 \
                             libglib2.0-0 \
                             libgtk-3-0 \
                             libnspr4 \
@@ -78,20 +77,29 @@ pipeline {
                             libxss1 \
                             libxtst6 \
                             lsb-release \
-                            xdg-utils
+                            xdg-utils \
+                            unzip \
+                            curl
                         
-                        # Google Chrome 설치
-                        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-                        echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
-                        apt-get update
-                        apt-get install -y google-chrome-stable
+                        # Google Chrome 설치 (최신 방식)
+                        wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+                        apt-get install -y /tmp/google-chrome.deb || true
+                        rm /tmp/google-chrome.deb
                         
                         # 설치 확인
-                        google-chrome --version
-                        which google-chrome
+                        google-chrome --version || echo "⚠️  Chrome 설치 실패 (ARM64 아키텍처)"
                         
-                        # ChromeDriver는 selenium이 자동으로 관리하도록 설정
-                        echo "✅ Chrome 설치 완료"
+                        # ARM64용 Chromium 설치 (대안)
+                        if ! command -v google-chrome &> /dev/null; then
+                            echo "🔄 Chromium 설치 중 (ARM64 대안)..."
+                            apt-get install -y chromium chromium-driver
+                            
+                            # chromium 심볼릭 링크 생성
+                            ln -sf /usr/bin/chromium /usr/bin/google-chrome || true
+                            chromium --version
+                        fi
+                        
+                        echo "✅ 브라우저 설치 완료"
                     '''
                 }
             }
@@ -113,9 +121,6 @@ pipeline {
                     
                     # 의존성 설치
                     pip install -r requirements.txt
-                    
-                    # selenium-manager가 ChromeDriver를 자동으로 다운로드할 수 있도록 webdriver-manager 제거
-                    # (selenium 4.6+ 는 자동 드라이버 관리 기능 내장)
                     
                     # 설치 확인
                     pip list | grep -E 'selenium|pytest' || true
@@ -155,7 +160,7 @@ pipeline {
                     mkdir -p reports
                     
                     # Chrome 경로 확인
-                    export CHROME_BIN=$(which google-chrome)
+                    export CHROME_BIN=$(which google-chrome || which chromium)
                     echo "Chrome 경로: $CHROME_BIN"
                     
                     pytest tests -v \
