@@ -8,8 +8,6 @@ from selenium.common.exceptions import TimeoutException
 from src.pages.login_page import LoginFunction
 
 
-
-
 @pytest.fixture(scope="session")
 def driver():
     options = webdriver.ChromeOptions()
