@@ -25,3 +25,5 @@ htmlcov/
 .vscode/
 Thumbs.db
 .DS_Store
+
+report.html
