@@ -385,18 +385,24 @@ def test_ca_010(my_agents_page_loaded):
     "",
     "If you must make a guess, clearly state that it is a guess",
     "")
+
+    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return document.readyState") == "complete")
+    
     driver.back()
+    my_agent_page.scroll_down_up()
     driver.refresh()
-    print("✅ CA_010_뒤로가기 실행")
+    print("✅ CA_010_뒤로가기 후 새로고침 실행")
 
     # 3️⃣ 재진입 후 필드 내용 임시저장 여부 확인
     my_agent_page.click_edit_button_by_card_type("draft")
+
+    WebDriverWait(driver, 10).until(lambda d: d.find_element(By.NAME, "name").get_attribute("value") != "")
+
     actual_values = create_agent_page.get_all_field_values()
 
-    assert actual_values["name"] == expected_values["name"], f"❌ CA_010_name 불일치: 예상 '{expected_values['name']}', 실제 '{actual_values['name']}'"
-    assert actual_values["rules"] == expected_values["rules"], f"❌ CA_010_rules 불일치: 예상 '{expected_values['rules']}', 실제 '{actual_values['rules']}'"
+    assert actual_values["name"] == expected_values["name"], (f"❌ CA_010_name 불일치: 예상 '{expected_values['name']}', 실제 '{actual_values['name']}'")
+    assert actual_values["rules"] == expected_values["rules"], (f"❌ CA_010_rules 불일치: 예상 '{expected_values['rules']}', 실제 '{actual_values['rules']}'")
     print(f"✅ CA_010_임시저장 성공")
-
 
 
 def test_ca_011(my_agents_page_loaded):

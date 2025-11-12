@@ -19,11 +19,12 @@ class AgentExplorerPage:
             "agent_explorer_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'),
             "create_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'),
             "agent_card_title": (By.CSS_SELECTOR, "p.MuiTypography-body1.MuiTypography-noWrap"),
-            "agent_card": (By.CSS_SELECTOR, "a.MuiCard-root, a[class*='MuiCard']"),
-            "agent_chat_input" : (By.CSS_SELECTOR, "textarea[placeholder='Ask anything']"),
+            "agent_card": (By.CSS_SELECTOR, "a.MuiCard-root, a[class*='MuiCard'], a[href*='/agent/']"),
+            "agent_chat_input": (By.CSS_SELECTOR, "textarea[placeholder='Ask anything']"),
             "search_input": (By.CSS_SELECTOR, "input[placeholder='Search AI agents']"),
             "search_agent_card_spans": (By.CSS_SELECTOR, "span.MuiTypography-root"),
         }
+
 
     def get_element(self, key, wait_type="visible", timeout=10):
         """요소 키워드(agent_explorer_btn, create_btn 등)를 받아 element 반환"""
@@ -57,23 +58,44 @@ class AgentExplorerPage:
         wait.until(EC.presence_of_all_elements_located(self.locators["agent_card_title"]))
 
     def click_agent_card_by_id(self, agent_id):
-        cards_locator = (By.CSS_SELECTOR, ".MuiCard-root")
-        WebDriverWait(self.driver, 10).until(
-            lambda d: all(card.is_displayed() for card in d.find_elements(*cards_locator))
-        )
 
-        locator = (By.CSS_SELECTOR, f'a[href="/ai-helpy-chat/agent/{agent_id}"]')
-        card = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(locator)
-        )
+        cards_locator = (By.CSS_SELECTOR, ".MuiCard-root")
+        try:
+            WebDriverWait(self.driver, 10).until(
+                lambda d: len(d.find_elements(*cards_locator)) > 0
+            )
+        except TimeoutException:
+            print("⚠️ 카드 리스트가 로드되지 않았습니다.")
+            return []
+        
+        patterns = [
+            f'a[href="/ai-helpy-chat/agent/{agent_id}"]',
+            f'a[href$="/{agent_id}"]',
+            f'a[href*="{agent_id}"]',
+            f'a[href*="/agent/{agent_id}"]',
+        ]
+
+        card = None
+        for css in patterns:
+            elements = self.driver.find_elements(By.CSS_SELECTOR, css)
+            if elements:
+                card = elements[0]
+                break
+
+        if not card:
+            print(f"⚠️ 에이전트 카드 미노출 (ID: {agent_id})")
+            return []
 
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", card)
-
         WebDriverWait(self.driver, 5).until(lambda d: card.is_displayed())
 
-        card.click()
-        print(f"✅ 에이전트 카드 클릭 완료 (ID: {agent_id})")
-        return True
+        if EC.element_to_be_clickable(card)(self.driver):
+            card.click()
+            print(f"✅ 에이전트 카드 클릭 완료 (ID: {agent_id})")
+            return [card]
+
+        print(f"⚠️ 카드가 클릭 불가능한 상태입니다. (ID: {agent_id})")
+        return []
 
 
 
@@ -467,6 +489,13 @@ class MyAgentsPage:
         count = self.get_card_count(card_type)
         return count >= minimum
     
+
+    def scroll_down_up(self, driver):
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        WebDriverWait(driver, 1).until(lambda d: True)
+        self.driver.execute_script("window.scrollTo(0, 0);")
+
+
     def scroll_into_view(self, element):
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
         WebDriverWait(self.driver, 5).until(lambda d: element.is_displayed())
@@ -496,7 +525,6 @@ class MyAgentsPage:
         WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(edit_btn))
         WebDriverWait(self.driver, 5).until(lambda d: edit_btn.is_displayed())
 
-        # 7️⃣ 클릭 실행
         edit_btn.click()
         print(f"✅ {card_type} 카드 {index + 1}번째 Edit 버튼 클릭 완료")
 
