@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.service import Service
 from src.utils.helpers import Utils 
 from tests.conftest import driver
 import time
-import pyautogui
+
 
 
 class Chat_Expance:
@@ -100,6 +100,7 @@ class Chat_Expance:
         file_upload_btn.click()
         print("✅ 파일 업로드 메뉴 클릭 완료")
  
+
     def upload_file_via_dialog(self, filepath):
         """
         시스템 파일 대화상자를 통한 파일 업로드
@@ -107,6 +108,7 @@ class Chat_Expance:
         Args:
             filepath: 업로드할 파일의 전체 경로
         """
+        import pyautogui  # 'pyautogui' 임포트 시점을 함수 호출 순간으로 늦춤
         print(f"📂 파일 탐색창 대기 중...")
         self.driver.save_screenshot("before_file_input.png")
         
@@ -807,6 +809,14 @@ class Chat_Expance:
         print(f"✅ 입력 완료: {topic}")
         time.sleep(0.5)   
 
+    def click_create_deep_dive_button(self):
+        """심층 조사 생성하기 버튼 클릭"""
+        create_button = self.wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[normalize-space(text())='시작']"))
+        )
+        create_button.click()
+        print("✅ 심층 조사 생성하기 버튼 클릭 완료")
+
     def deep_dive_and_send(self, wait_time=30):
         """
         심층 조사 및 전송 프로세스 (통합 메서드)
@@ -840,10 +850,14 @@ class Chat_Expance:
             print("\n3. 심층 조사 주제 입력")
             deep_dive_topic = "인공지능의 윤리적 문제"
             self.input_deep_dive_topic(deep_dive_topic)
-    
-            # 5. 엔터키로 전송
+            print(f"✅ 입력 완료: {deep_dive_topic}")
+
             print("\n4. 메시지 전송")
             self.send_message_with_enter()
+
+            # 5. 심층 조사 생성하기 버튼 클릭
+            print("\n5. 심층 조사 생성하기 버튼 클릭")
+            self.click_create_deep_dive_button()
             
             # 6. 응답 대기
             print(f"\n5. AI 응답 대기 ({wait_time}초)")
