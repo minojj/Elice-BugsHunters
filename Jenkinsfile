@@ -81,46 +81,25 @@ pipeline {
                     if (isUnix()) {
                         sh '''
                             echo "🐍 Python 의존성 설치 (Unix/Mac)..."
-                            
-                            # Python 명령어 확인
-                            if command -v python3 &> /dev/null; then
-                                PYTHON_CMD=python3
-                            else
-                                PYTHON_CMD=python
-                            fi
-                            
-                            echo "Python 명령어: $PYTHON_CMD"
-                            $PYTHON_CMD --version
-                            
-                            # venv 생성
+                            if command -v python3 &> /dev/null; then PYTHON_CMD=python3; else PYTHON_CMD=python; fi
                             rm -rf .venv
                             $PYTHON_CMD -m venv .venv
-                            
-                            # 활성화 및 설치
                             . .venv/bin/activate
                             pip install --upgrade pip
                             pip install -r requirements.txt
-                            
-                            echo "✅ 설치된 패키지:"
-                            pip list | grep -E 'selenium|pytest'
+                            # webdriver-manager 강제 제거
+                            pip uninstall -y webdriver-manager || true
                         '''
                     } else {
                         bat '''
                             echo 🐍 Python 의존성 설치 (Windows)...
-                            
-                            python --version
-                            
-                            REM venv 생성
                             if exist .venv rmdir /s /q .venv
                             python -m venv .venv
-                            
-                            REM 활성화 및 설치
                             call .venv\\Scripts\\activate.bat
                             python -m pip install --upgrade pip
                             pip install -r requirements.txt
-                            
-                            echo ✅ 설치된 패키지:
-                            pip list | findstr /i "selenium pytest"
+                            REM webdriver-manager 강제 제거
+                            pip uninstall -y webdriver-manager || exit /b 0
                         '''
                     }
                 }
