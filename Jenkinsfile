@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.11-bookworm'   // 다중 아키텍처 지원
+            args '-u root:root'            // root 로 패키지 설치
+        }
+    }
 
     environment {
         PYTHONPATH = "${WORKSPACE}"
