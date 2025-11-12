@@ -5,7 +5,16 @@ from src.utils.helpers import Utils
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from src.pages.login_page import LoginFunction
-from src.utils.helpers import Utils 
+
+import sys
+from unittest.mock import MagicMock
+
+@pytest.fixture(scope="session", autouse=True)
+def mock_pyautogui_if_headless(monkeypatch):
+    if "pyautogui" in sys.modules:
+        monkeypatch.setattr(sys.modules["pyautogui"], "click", MagicMock())
+        monkeypatch.setattr(sys.modules["pyautogui"], "write", MagicMock())
+        monkeypatch.setattr(sys.modules["pyautogui"], "screenshot", MagicMock())
 
 @pytest.fixture(scope="session")
 def driver():
