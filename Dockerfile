@@ -1,4 +1,3 @@
-# 테스트 컨테이너 이미지 (python 3.11)
 FROM python:3.11
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -7,35 +6,37 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# 종속성 캐시 최적화: 먼저 requirements만 복사
-COPY requirements.txt /app/requirements.txt
-
-# 빌드 필수 패키지가 필요하면 여기에 추가(예: gcc, libpq-dev 등)
-# RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
-
+# 시스템 패키지: chromium + 폰트/헤드리스 의존성
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    chromium \
-    && rm -rf /var/lib/apt/lists/*
+      chromium \
+      fonts-liberation \
+      libnss3 \
+      libasound2 \
+      libatk-bridge2.0-0 \
+      libx11-6 libxcomposite1 libxdamage1 libxext6 libxfixes3 \
+      libxrandr2 libgbm1 libgtk-3-0 \
+      ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
 
+# 파이썬 의존성
+COPY requirements.txt .
 RUN python -m pip install --upgrade pip && \
-    pip install -r requirements.txt || true
+    if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-# 소스/테스트 복사
-COPY src /app/src
-COPY tests /app/tests
+# 테스트 툴
+RUN pip install pytest pytest-cov pytest-html webdriver-manager
 
-# pytest가 requirements에 없을 수도 있으니 보강
-RUN pip install pytest pytest-cov
+# 소스/테스트
+COPY src ./src
+COPY tests ./tests
 
-# 테스트 결과를 꺼낼 경로
+# 리포트 디렉토리
 RUN mkdir -p /reports
 VOLUME ["/reports"]
 
-# 컨테이너 실행 시 pytest가 기본 동작
-CMD ["pytest", "-q", \
-     "--junitxml=/reports/test-results.xml", \
+# 기본 실행: 헤드리스 pytest
+ENV CHROME_BIN=/usr/bin/chromium
+CMD ["pytest", "-q",
+     "--junitxml=/reports/test-results.xml",
+     "--html=/reports/report.html", "--self-contained-html",
      "--cov=src", "--cov-report=xml:/reports/coverage.xml"]
-
-
