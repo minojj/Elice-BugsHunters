@@ -25,7 +25,7 @@ chrome_driver_path = ChromeDriverManager().install()
 
 #생성 페이지로 이동하는 fixture
     
-@pytest.fixture(scope="session")
+@pytest.fixture
 def create_page(logged_in_driver):
     driver = logged_in_driver
     explorer_page = AgentExplorerPage(driver)

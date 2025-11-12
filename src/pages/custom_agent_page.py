@@ -57,15 +57,23 @@ class AgentExplorerPage:
         wait.until(EC.presence_of_all_elements_located(self.locators["agent_card_title"]))
 
     def click_agent_card_by_id(self, agent_id):
+        cards_locator = (By.CSS_SELECTOR, ".MuiCard-root")
+        WebDriverWait(self.driver, 10).until(
+            lambda d: all(card.is_displayed() for card in d.find_elements(*cards_locator))
+        )
+
         locator = (By.CSS_SELECTOR, f'a[href="/ai-helpy-chat/agent/{agent_id}"]')
         card = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable(locator)
         )
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", card)
+
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", card)
+
+        WebDriverWait(self.driver, 5).until(lambda d: card.is_displayed())
+
         card.click()
         print(f"✅ 에이전트 카드 클릭 완료 (ID: {agent_id})")
         return True
-
 
 
 
@@ -482,7 +490,16 @@ class MyAgentsPage:
         self.scroll_into_view(cards[index])
  
         edit_btn = cards[index].find_element(By.CSS_SELECTOR, "button:has(svg[data-icon='pen'])")
+
+        WebDriverWait(self.driver, 5).until_not(EC.presence_of_element_located((By.CSS_SELECTOR, ".MuiDialog-container")))
+
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(edit_btn))
+        WebDriverWait(self.driver, 5).until(lambda d: edit_btn.is_displayed())
+
+        # 7️⃣ 클릭 실행
         edit_btn.click()
+        print(f"✅ {card_type} 카드 {index + 1}번째 Edit 버튼 클릭 완료")
+
 
     def click_delete_button_by_card_type(self, card_type, index=0):
     

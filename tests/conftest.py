@@ -21,7 +21,7 @@ def driver():
     yield driver
     driver.quit()
     
-@pytest.fixture(scope="session")
+@pytest.fixture
 def logged_in_driver(driver) :
     try :
         login_page = LoginFunction(driver)
@@ -29,16 +29,13 @@ def logged_in_driver(driver) :
         login_page.login("team3@elice.com","team3elice!@")
         print("✅ 로그인 성공")
     except TimeoutException :
-        print("✅ 현재 로그인 상태")
+        Utils(driver).wait_for(timeout=15)
         
-    Utils(driver).wait_for(timeout=15)
-    print("✅ 로그인 대기 완료")
-
     yield driver
 
 #서브 계정으로 로그인하는 fixture
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def logged_in_driver_sub_account():
     options = webdriver.ChromeOptions()
     options.add_argument("--no-sandbox")
