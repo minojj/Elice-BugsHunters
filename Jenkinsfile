@@ -40,8 +40,10 @@ pipeline {
                         # 패키지 업데이트
                         apt-get update
                         
-                        # Chrome 관련 의존성 설치
+                        # Chromium 및 ChromeDriver 설치 (ARM64 지원)
                         apt-get install -y \
+                            chromium \
+                            chromium-driver \
                             wget \
                             gnupg \
                             ca-certificates \
@@ -76,30 +78,20 @@ pipeline {
                             libxrender1 \
                             libxss1 \
                             libxtst6 \
-                            lsb-release \
-                            xdg-utils \
-                            unzip \
-                            curl
+                            xdg-utils
                         
-                        # Google Chrome 설치 (최신 방식)
-                        wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-                        apt-get install -y /tmp/google-chrome.deb || true
-                        rm /tmp/google-chrome.deb
+                        # Chromium 심볼릭 링크 생성
+                        ln -sf /usr/bin/chromium /usr/bin/google-chrome || true
+                        ln -sf /usr/bin/chromedriver /usr/local/bin/chromedriver || true
                         
-                        # 설치 확인
-                        google-chrome --version || echo "⚠️  Chrome 설치 실패 (ARM64 아키텍처)"
+                        # 버전 확인
+                        chromium --version
+                        chromedriver --version
                         
-                        # ARM64용 Chromium 설치 (대안)
-                        if ! command -v google-chrome &> /dev/null; then
-                            echo "🔄 Chromium 설치 중 (ARM64 대안)..."
-                            apt-get install -y chromium chromium-driver
-                            
-                            # chromium 심볼릭 링크 생성
-                            ln -sf /usr/bin/chromium /usr/bin/google-chrome || true
-                            chromium --version
-                        fi
+                        # 권한 설정
+                        chmod +x /usr/bin/chromedriver
                         
-                        echo "✅ 브라우저 설치 완료"
+                        echo "✅ Chromium 및 ChromeDriver 설치 완료"
                     '''
                 }
             }
