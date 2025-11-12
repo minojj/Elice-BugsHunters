@@ -148,7 +148,7 @@ pipeline {
                   . .venv/bin/activate
                   pip install --upgrade pip
                   pip install -r requirements.txt
-                  python -c "import pyautogui,sys;print('pyautogui OK')" || echo "pyautogui 사용 불가(HEADLESS)"
+                  # python -c "import pyautogui..." 라인 삭제
                 '''
             }
         }

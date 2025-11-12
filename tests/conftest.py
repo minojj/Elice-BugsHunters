@@ -1,4 +1,3 @@
-import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from src.utils.helpers import Utils
@@ -6,6 +5,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from src.pages.login_page import LoginFunction
 
+
+# if os.name == "posix" and not os.environ.get("DISPLAY"):
+#     pytest.skip("Requires X DISPLAY (GUI). Skipping in headless CI.", allow_module_level=True)
+    
 @pytest.fixture(scope="session")
 def driver():
     options = webdriver.ChromeOptions()
@@ -31,3 +34,4 @@ def logged_in_driver(driver) :
         Utils(driver).wait_for(timeout=15)
 
     yield driver
+    
