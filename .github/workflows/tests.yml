@@ -40,6 +40,11 @@ jobs:
 
       # 5. Pytest GUI 테스트 실행
       - name: Run Pytest GUI Tests
+        run: |
+           # ✅ 프로젝트 루트를 PYTHONPATH에 추가하여 'src' 경로 임포트 오류를 해결합니다.
+            export PYTHONPATH=$GITHUB_WORKSPACE:$PYTHONPATH
+            pytest --html=reports/report.html --self-contained-html --maxfail=0 --disable-warnings || true
+
         run: | # ✅ 프로젝트 루트를 PYTHONPATH에 추가하여 'src' 경로 임포트 오류를 해결합니다.
           export PYTHONPATH=$GITHUB_WORKSPACE:$PYTHONPATH
           pytest --html=reports/report.html --self-contained-html --maxfail=0 --disable-warnings || true
