@@ -1,51 +1,46 @@
-name: Run GUI Tests with Xvfb
+name: Pytest CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main", "feature/**" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    
     steps:
-      # 1. 레포지토리 체크아웃 (필수)
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2. Python 환경 설정 (필수)
-      - name: Set up Python
+      # 1. Python 설정
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11" # 사용하려는 Python 버전에 맞게 수정
-
-      # 3. 의존성 설치 (pytest, pyautogui, xvfbwrapper 등) (필수)
+          python-version: '3.11'
+          
+      # 2. Chrome 설치 (Selenium 요구 사항)
+      - name: Install Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install google-chrome-stable
+          
+      # 3. Xvfb 설정 (GUI 테스트 필수)
+      - name: Setup Xvfb (Virtual Display)
+        uses: GabrielBB/xvfb-action@v1.0
+        with:
+          run: true
+          
+      # 4. 의존성 설치
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-html pyautogui xvfbwrapper
+          pip install pytest pytest-html
 
-      # 4. Xvfb 환경 설정 및 DISPLAY 변수 자동 처리
-      - name: Set up Xvfb Headless Environment
-        # GabrielBB/xvfb-action@v1 액션이 Xvfb를 시작하고 DISPLAY=:99를 설정합니다.
-        uses: GabrielBB/xvfb-action@v1 
-        with:
-          # run: | 에 pytest 명령을 넣는 대신, 환경 설정이 되었음을 확인하는 간단한 메시지만 출력합니다.
-          # 실제 테스트는 다음 스텝에서 DISPLAY가 설정된 상태로 실행됩니다.
-          run: |
-            echo "Xvfb 환경 설정 완료. DISPLAY 변수가 준비되었습니다."
-            
       # 5. Pytest GUI 테스트 실행
       - name: Run Pytest GUI Tests
         run: |
+          # ✅ 프로젝트 루트를 PYTHONPATH에 추가하여 'src' 경로 임포트 오류를 해결합니다.
+          export PYTHONPATH=$GITHUB_WORKSPACE:$PYTHONPATH
           pytest --html=reports/report.html --self-contained-html
-          
-      # 6. 보고서 아티팩트 업로드
-      - name: Upload report
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-report
-          path: reports/report.html
