@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    agent {
+         dockerfile {
+            filename 'Dockerfile'
+            args '--shm-size=2g'
+     }
+   }
+    
 
     environment {
         PYTHONUNBUFFERED = "1"
