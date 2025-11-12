@@ -16,3 +16,5 @@ python-dotenv==1.0.1            # 환경변수(.env) 파일 관리
 
 # Optional Utilities 
 selenium-wire==5.1.0            # (선택) 네트워크 요청 추적용
+pyautogui==0.9.54       # GUI 자동화 (스크린샷, 마우스/키보드 제어)
+pillow==10.4.0         # (pyautogui 스크린샷 의존)

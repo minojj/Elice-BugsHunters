@@ -140,51 +140,36 @@ pipeline {
                 }
             }
         }
-
+        stage('Python Env') {
+            steps {
+                sh '''
+                  set -eux
+                  python -m venv .venv
+                  . .venv/bin/activate
+                  pip install --upgrade pip
+                  pip install -r requirements.txt
+                  python -c "import pyautogui,sys;print('pyautogui OK')" || echo "pyautogui 사용 불가(HEADLESS)"
+                '''
+            }
+        }
         stage('Run Tests') {
             steps {
                 script {
                     echo '🧪 테스트 실행 중...'
                     sh '''
-                        set +e  # 테스트 실패해도 계속 진행
-                        
-                        echo "📍 PYTHONPATH: $PYTHONPATH"
-                        echo "📍 작업 디렉토리: $(pwd)"
-                        
-                        # pytest 실행
-                        python3 -m pytest tests/ -v \
+                        set +e
+                        . .venv/bin/activate
+                        mkdir -p reports
+                        pytest tests -v \
                             --junitxml=reports/test-results.xml \
                             --html=reports/report.html \
-                            --self-contained-html \
-                            --tb=short \
-                            || EXIT_CODE=$?
-                        
-                        # Exit code 처리
-                        if [ -z "$EXIT_CODE" ]; then
-                            echo "✅ 모든 테스트 통과!"
-                            EXIT_CODE=0
-                        elif [ $EXIT_CODE -eq 1 ]; then
-                            echo "⚠️ 일부 테스트 실패 (exit code: 1)"
-                        elif [ $EXIT_CODE -eq 5 ]; then
-                            echo "❌ 테스트를 찾을 수 없습니다 (exit code: 5)"
-                            echo ""
-                            echo "🔍 체크사항:"
-                            echo "  1. tests/ 디렉토리 존재 확인"
-                            echo "  2. test_*.py 또는 TEST_*.py 파일 존재"
-                            echo "  3. test_ 로 시작하는 함수 존재"
-                            echo "  4. __init__.py 파일 존재"
-                            exit 1
-                        else
-                            echo "❌ pytest 실행 오류 (exit code: $EXIT_CODE)"
-                        fi
-                        
-                        # 생성된 리포트 확인
-                        echo ""
-                        echo "📊 생성된 리포트 파일:"
-                        ls -lh test-results.xml report.html 2>/dev/null || echo "일부 파일 생성 실패"
-                        
+                            --self-contained-html --tb=short
+                        EXIT_CODE=$?
+                        echo "리포트 목록:"
+                        ls -lh reports/test-results.xml reports/report.html || true
                         exit $EXIT_CODE
-                    '''
+                        '''
+                    
                 }
             }
         }
