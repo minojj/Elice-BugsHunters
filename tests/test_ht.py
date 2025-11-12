@@ -116,6 +116,9 @@ SEL_AGENT_RESULT_CARD = (By.CSS_SELECTOR, "[data-testid='virtuoso-item-list'] a[
 
 SEL_AGENT_TITLE_IN_CARD = (By.CSS_SELECTOR, "p.MuiTypography-body1")
 
+
+
+
 # --- 공통 유틸 ---
 def wait(drv, sec=10):
     return WebDriverWait(drv, sec)
