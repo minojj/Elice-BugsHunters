@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.11-bookworm'   // 다중 아키텍처 지원
+            image 'python:3.11'   // 다중 아키텍처 지원
             args '-u root:root'            // root 로 패키지 설치
         }
     }
@@ -125,87 +125,71 @@ pipeline {
         }
         stage('Python Env') {
             steps {
-                sh '''
-                  set -eux
-                  python -m venv .venv
-                  . .venv/bin/activate
-                  pip install --upgrade pip
-                  pip install --upgrade pip
-                  python -m pip install -r requirements.txt
-                  python -m venv .venv
-                  .venv/bin/pip install --upgrade pip
-                  .venv/bin/pip install -r requirements.txt
-                  # python -c "import pyautogui..." 라인 삭제
                 script {
-                    echo '🧪 테스트 실행 중...'
+                    echo '🧪 테스트 실행 및 환경 준비 중...'
                     sh '''
-                        set +e
+                        set -eux
                         . .venv/bin/activate
-                        mkdir -p reports
-                        pytest tests -v \
-                            --junitxml=reports/test-results.xml \
-                            --html=reports/report.html \
+                        pip install --upgrade pip
+                        .venv/bin/pip install --upgrade pip
+                        .venv/bin/pip install -r requirements.txt
+                        set +e
                         mkdir -p reports
                         .venv/bin/pytest tests -v \
                             --junitxml=reports/test-results.xml \
                             --html=reports/report.html \
                             --self-contained-html --tb=short
                         EXIT_CODE=$?
-                        echo "리포트 목록:"
-                        ls -lh reports/test-results.xml reports/report.html || true
                         exit $EXIT_CODE
-                        '''
-
-    post {
-        always {
-            script {
-                echo '📊 테스트 결과 수집 중...'
-                
-                // JUnit 테스트 결과
-                try {
-                    junit allowEmptyResults: true, testResults: '**/test-results.xml'
-                } catch (Exception e) {
-                    echo "⚠️ JUnit 결과 처리 실패: ${e.message}"
+                    '''
                 }
-                
-                // HTML 리포트 발행
-                try {
-                    publishHTML([
-                        allowMissing: true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: '.',
-                        reportFiles: 'report.html',
-                        reportName: 'Pytest HTML Report',
-                        reportTitles: 'Test Report'
-                    ])
-                } catch (Exception e) {
-                    echo "⚠️ HTML 리포트 발행 실패: ${e.message}"
+            }
+            post {
+                always {
+                    script {
+                        echo '📊 테스트 결과 수집 중...'
+                        // JUnit 테스트 결과
+                        try {
+                            junit allowEmptyResults: true, testResults: '**/test-results.xml'
+                        } catch (Exception e) {
+                            echo "⚠️ JUnit 결과 처리 실패: ${e.message}"
+                        }
+                        // HTML 리포트 발행
+                        try {
+                            publishHTML([
+                                allowMissing: true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: '.',
+                                reportFiles: 'report.html',
+                                reportName: 'Pytest HTML Report',
+                                reportTitles: 'Test Report'
+                            ])
+                        } catch (Exception e) {
+                            echo "⚠️ HTML 리포트 발행 실패: ${e.message}"
+                        }
+                        // 아티팩트 저장
+                        try {
+                            archiveArtifacts artifacts: '''
+                                **/report.html,
+                                **/test-results.xml,
+                                **/screenshots/**/*.png
+                            ''', allowEmptyArchive: true, fingerprint: true
+                        } catch (Exception e) {
+                            echo "⚠️ 아티팩트 저장 실패: ${e.message}"
+                        }
+                    }
                 }
-                
-                // 아티팩트 저장
-                try {
-                    archiveArtifacts artifacts: '''
-                        **/report.html,
-                        **/test-results.xml,
-                        **/screenshots/**/*.png
-                    ''', allowEmptyArchive: true, fingerprint: true
-                } catch (Exception e) {
-                    echo "⚠️ 아티팩트 저장 실패: ${e.message}"
+                success {
+                    echo '✅ 빌드 성공!'
+                }
+                failure {
+                    echo '❌ 빌드 실패!'
+                }
+                unstable {
+                    echo '⚠️ 빌드 불안정 (일부 테스트 실패)'
                 }
             }
         }
-        
-        success {
-            echo '✅ 빌드 성공!'
-        }
-        
-        failure {
-            echo '❌ 빌드 실패!'
-        }
-        
-        unstable {
-            echo '⚠️ 빌드 불안정 (일부 테스트 실패)'
-        }
     }
-}
+}  
