@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import WebDriverWait 
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support import expected_conditions as EC 
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
 class LoginFunction:
@@ -17,7 +18,9 @@ class LoginFunction:
         "create_email_btn": (By.XPATH, '//button[@type="button" and contains(@class, "MuiButton-containedPrimary")]'),
         "name": (By.CSS_SELECTOR, "input[name='fullname']"),
         "email_error": (By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"),
-        "remove_history" : (By.XPATH, "//a[text()='Remove history']")
+        "remove_history" : (By.XPATH, "//a[text()='Remove history']"),
+        "avatar_btn" : (By.CSS_SELECTOR, "button:has(svg[data-testid='PersonIcon'])"),
+        "logout_btn" : (By.XPATH, "//p[text()='Logout']")
     }
 
     # === Page Actions ===
