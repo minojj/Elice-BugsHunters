@@ -30,10 +30,10 @@ class Chat_Expance:
     QUIZ_CREATE_MENU = (By.XPATH, "//div[text()='퀴즈 생성']")
     QUIZ_CREATE_MENU_ALT = (By.XPATH, "//div[contains(@class, 'MuiTypography-root') and contains(text(), '퀴즈 생성')]")    
     
-    #PPT 생성 관련 로케이터
-    PPT_CREATE_MENU = (By.XPATH, "//span[contains(text(), 'PPT 생성')]")
-    PPT_SLIDE_INPUT = (By.CSS_SELECTOR, "input.MuiInputBase-input.MuiOutlinedInput-input[type='number'][min='3'][max='50']")
-    PPT_SECTION_INPUT = (By.CSS_SELECTOR, "input.MuiInputBase-input.MuiOutlinedInput-input[type='number'][min='1'][max='8']")
+    # #PPT 생성 관련 로케이터
+    PPT_CREATE_BTN = (By.XPATH, "//span[contains(text(), 'PPT 생성')]")
+    PPT_SLIDE_INPUT = (By.XPATH, "//div[text()='슬라이드 수']/following-sibling::div//input")
+    PPT_SECTION_INPUT = (By.XPATH, "//label[contains(text(), '색션 수')]/../following-sibling::div//input[@type='number']")
     PPT_GENERATE_BUTTON = (By.XPATH, "//button[contains(@class, 'MuiButton') and contains(., '생성')]")
     PPT_CANCEL_BUTTON = (By.XPATH, "//button[contains(., '취소')]")
 
@@ -99,7 +99,7 @@ class Chat_Expance:
         
         file_upload_btn.click()
         print("✅ 파일 업로드 메뉴 클릭 완료")
-    
+ 
     def upload_file_via_dialog(self, filepath):
         """
         시스템 파일 대화상자를 통한 파일 업로드
@@ -461,8 +461,412 @@ class Chat_Expance:
             import traceback
             traceback.print_exc()
             return False
-        
-
-  
     
+    def click_ppt_create_menu(self):
+        
+        """PPT 생성 메뉴 클릭"""
+        try:
+            ppt_btn = WebDriverWait(self.driver, 3).until(
+                EC.element_to_be_clickable(self.PPT_CREATE_BTN)
+            )
+            print("✅ PPT 생성 메뉴 발견")
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", ppt_btn)
+            time.sleep(0.3)
+
+            ppt_btn.click()
+            print("✅ PPT 생성 메뉴 클릭 완료")
+
+            time.sleep(1)
+        except Exception as e:
+            raise Exception("PPT 생성 메뉴를 클릭할 수 없습니다.") from e
+    
+    def input_ppt_topic(self, topic):
+        """PPT 주제 입력"""
+        chat_input = self.wait.until(EC.element_to_be_clickable(self.CHAT_INPUT))
+        chat_input.clear()
+        chat_input.send_keys(topic)
+        print(f"✅ 입력 완료: {topic}")
+        time.sleep(0.5)
+
+    def clkick_slide_input(self):
+        """슬라이드 수 입력창 클릭"""
+        
+        slide_input = self.wait.until(EC.element_to_be_clickable(self.PPT_SLIDE_INPUT))
+        slide_input.click()
+        print("✅ 슬라이드 수 입력창 클릭 완료")
+
+    def click_section_input(self):
+        """섹션 수 입력창 클릭"""
+        section_input = self.wait.until(EC.element_to_be_clickable(self.PPT_SECTION_INPUT))
+        section_input.click()
+        print("✅ 섹션 수 입력창 클릭 완료")
+
+    def input_slide_and_section_count(self, slide_count, section_count):
+        """슬라이드 수 및 섹션 수 입력"""
+        slide_input = self.wait.until(EC.element_to_be_clickable(self.PPT_SLIDE_INPUT))
+        self.driver.execute_script("arguments[0].focus();", slide_input)
+        
+        
+        slide_input.send_keys(Keys.CONTROL + "a")
+        slide_input.send_keys(Keys.BACKSPACE)
+        slide_input.clear()
+        time.sleep(0.1)
+
+        slide_input.send_keys(str(slide_count))
+
+        section_input = self.wait.until(EC.element_to_be_clickable(self.PPT_SECTION_INPUT))
+        self.driver.execute_script("arguments[0].focus();", section_input)
+        time.sleep(0.2)
       
+        section_input.send_keys(Keys.CONTROL + "a")
+        section_input.send_keys(Keys.BACKSPACE)
+        section_input.clear()
+        time.sleep(0.1)
+
+        section_input.send_keys(str(section_count))
+        print("✅ 슬라이드 수 및 섹션 수 입력 완료")
+        time.sleep(0.5) #디버깅 목적 실제테스트 시 제거
+
+    def click_generate_button(self):
+        """생성하기 버튼 클릭"""
+        generate_button = self.wait.until(
+            EC.element_to_be_clickable(self.PPT_GENERATE_BUTTON)
+        )
+        generate_button.click()
+        print("✅ 생성하기 버튼 클릭 완료")
+
+    def create_ppt_and_send(self, wait_time=60):
+        """
+        PPT 생성 및 전송 프로세스 (통합 메서드)
+        
+        Args:
+            wait_time: AI 응답 대기 시간
+            
+        Returns:
+            bool: 성공 여부
+        """
+        try:
+            print("\n=== PPT 생성 테스트 시작 ===")
+            print(f"현재 URL: {self.driver.current_url}")
+            
+            # 1. 플러스 버튼 클릭
+            print("\n1. 플러스 버튼 클릭")
+            self.click_plus_button()
+            time.sleep(2)  # 메뉴가 완전히 나타날 때까지 대기
+            
+            # 2. PPT 생성 메뉴 클릭
+            print("\n2. PPT 생성 메뉴 클릭")
+            self.click_ppt_create_menu()
+
+            # 3. 백드롭 사라질 때까지 대기
+            self.wait_for_backdrop_disappear()
+            
+            # 4. PPT 주제 입력
+            print("\n3. PPT 주제 입력")
+            ppt_topic = "AI 기술의 발전과 미래 전망"
+            self.input_ppt_topic(ppt_topic)
+
+            # 5. 엔터키로 전송
+            print("\n4. 메시지 전송")
+            self.send_message_with_enter()
+            
+            # 6. 응답 대기
+            print(f"\n5. AI 응답 대기 ({wait_time}초)")
+            time.sleep(wait_time)
+
+            # 7.슬라이드수, 섹션 수 입력
+            print("\n6. 슬라이드 수 및 섹션 수 입력")
+            self.clkick_slide_input()
+            self.click_section_input()  
+            self.input_slide_and_section_count(10, 5)
+
+        
+            # 8. 생성하기 버튼 클릭
+            print("\n7. 생성하기 버튼 클릭")
+            self.click_generate_button()
+
+            # 9. 응답 대기
+            print(f"\n8. AI 응답 대기 ({wait_time}초)")
+            time.sleep(wait_time)
+            self.driver.save_screenshot("after_ppt_send.png")
+            print("\n✅ PPT 생성 및 전송 완료")
+            print("=== 테스트 성공 ===\n")
+            return True
+        
+        except TimeoutException as e:
+            print(f"\n❌ 타임아웃 오류: {str(e)}")
+            print(f"   현재 URL: {self.driver.current_url}")
+            self.driver.save_screenshot("timeout_error.png")
+            return False
+        
+        except NoSuchElementException as e:
+            print(f"\n❌ 요소를 찾을 수 없음: {str(e)}")
+            self.driver.save_screenshot("element_error.png")
+            return False
+        
+        except Exception as e:
+            print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            self.driver.save_screenshot("test_error.png")
+            import traceback
+            traceback.print_exc()
+            return False
+        
+    def click_image_create_menu(self):
+        """이미지 생성 메뉴 클릭"""
+        try:
+            image_btn = WebDriverWait(self.driver, 3).until(
+                EC.element_to_be_clickable((By.XPATH, "//div[@role='button' and contains(@class, 'MuiListItemButton') and .//span[contains(text(), '이미지 생성')]]"))
+            )
+            print("✅ 이미지 생성 메뉴 발견")
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", image_btn)
+            time.sleep(0.3)
+            image_btn.click()
+            print("✅ 이미지 생성 메뉴 클릭 완료")
+            time.sleep(0.5)
+        except Exception as e:
+            raise Exception("이미지 생성 메뉴를 클릭할 수 없습니다.") from e
+
+    def input_image_topic(self, topic):
+        """이미지 주제 입력"""
+        chat_input = self.wait.until(EC.element_to_be_clickable(self.CHAT_INPUT))
+        chat_input.clear()
+        chat_input.send_keys(topic)
+        print(f"✅ 입력 완료: {topic}")
+        time.sleep(0.5) 
+
+    def create_image_and_send(self, wait_time=30):
+        """
+        이미지 생성 및 전송 프로세스 (통합 메서드)
+        
+        Args:
+            wait_time: AI 응답 대기 시간
+            
+        Returns:
+            bool: 성공 여부
+        """
+        try:
+            print("\n=== 이미지 생성 테스트 시작 ===")
+            print(f"현재 URL: {self.driver.current_url}")
+            
+            # 1. 플러스 버튼 클릭
+            print("\n1. 플러스 버튼 클릭")
+            self.click_plus_button()
+            time.sleep(2)  # 메뉴가 완전히 나타날 때까지 대기
+            
+            # 2. 이미지 생성 메뉴 클릭
+            print("\n2. 이미지 생성 메뉴 클릭")
+            self.click_image_create_menu()
+
+            # 3. 백드롭 사라질 때까지 대기
+            self.wait_for_backdrop_disappear()
+            
+            # 4. 이미지 주제 입력
+            print("\n3. 이미지 주제 입력")
+            image_topic = "A futuristic cityscape with flying cars"
+            self.input_image_topic(image_topic)
+            print(f"✅ 입력 완료: {image_topic}")
+            time.sleep(0.5)
+    
+            # 5. 엔터키로 전송
+            print("\n4. 메시지 전송")
+            self.send_message_with_enter()
+            
+            # 6. 응답 대기
+            print(f"\n5. AI 응답 대기 ({wait_time}초)")
+            time.sleep(wait_time)
+    
+            self.driver.save_screenshot("after_image_send.png")
+            print("\n✅ 이미지 생성 및 전송 완료")
+            print("=== 테스트 성공 ===\n")
+            return True
+    
+        except TimeoutException as e:
+            print(f"\n❌ 타임아웃 오류: {str(e)}")
+            print(f"   현재 URL: {self.driver.current_url}")
+            self.driver.save_screenshot("timeout_error.png")
+            return False
+        except NoSuchElementException as e:
+            print(f"\n❌ 요소를 찾을 수 없음: {str(e)}")
+            self.driver.save_screenshot("element_error.png")
+            return False
+        except Exception as e:
+            print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            self.driver.save_screenshot("test_error.png")
+            import traceback
+            traceback.print_exc()
+            return False
+            self.send_message_with_enter()
+    
+    def click_google_search_menu(self):
+        """구글 검색 메뉴 클릭"""
+        try:
+            google_search_btn = WebDriverWait(self.driver, 3).until(
+                EC.element_to_be_clickable((By.XPATH, "//div[@role='button' and contains(@class, 'MuiListItemButton') and .//span[contains(text(), '구글 검색')]]"))
+            )
+            print("✅ 구글 검색 메뉴 발견")
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", google_search_btn)
+            time.sleep(0.3)
+            google_search_btn.click()
+            print("✅ 구글 검색 메뉴 클릭 완료")
+            time.sleep(0.5)
+        except Exception as e:
+            raise Exception("구글 검색 메뉴를 클릭할 수 없습니다.") from e
+    
+    def input_google_search_query(self, query):
+        """구글 검색어 입력"""
+        chat_input = self.wait.until(EC.element_to_be_clickable(self.CHAT_INPUT))
+        chat_input.clear()
+        chat_input.send_keys(query)
+        print(f"✅ 입력 완료: {query}")
+        time.sleep(0.5)
+
+    def google_search_and_send(self, wait_time=30):
+        """
+        구글 검색 및 전송 프로세스 (통합 메서드)
+        
+        Args:
+            wait_time: AI 응답 대기 시간
+            
+        Returns:
+            bool: 성공 여부
+        """
+        try:
+            print("\n=== 구글 검색 테스트 시작 ===")
+            print(f"현재 URL: {self.driver.current_url}")
+            
+            # 1. 플러스 버튼 클릭
+            print("\n1. 플러스 버튼 클릭")
+            self.click_plus_button()
+            time.sleep(2)  # 메뉴가 완전히 나타날 때까지 대기
+            
+            # 2. 구글 검색 메뉴 클릭
+            print("\n2. 구글 검색 메뉴 클릭")
+            self.click_google_search_menu()
+
+            print("✅ 구글 검색 메뉴 클릭 완료")
+            time.sleep(0.5)
+
+            # 3. 백드롭 사라질 때까지 대기
+            self.wait_for_backdrop_disappear()
+            
+            # 4. 검색어 입력
+            print("\n3. 검색어 입력")
+            search_query = "KPop Demon Hunters"
+            self.input_google_search_query(search_query)
+
+            # 5. 엔터키로 전송
+            print("\n4. 메시지 전송")
+            self.send_message_with_enter()
+            
+            # 6. 응답 대기
+            print(f"\n5. AI 응답 대기 ({wait_time}초)")
+            time.sleep(wait_time)
+    
+            self.driver.save_screenshot("after_google_search_send.png")
+            print("\n✅ 구글 검색 및 전송 완료")
+            print("=== 테스트 성공 ===\n")
+            return True
+    
+        except TimeoutException as e:
+            print(f"\n ❌ 타임아웃 오류: {str(e)}")
+            print(f"   현재 URL: {self.driver.current_url}")    
+            self.driver.save_screenshot("timeout_error.png")
+            return False
+        except NoSuchElementException as e:
+            print(f"\n❌ 요소를 찾을 수 없음: {str(e)}")
+            self.driver.save_screenshot("element_error.png")
+            return False
+        except Exception as e:
+            print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            self.driver.save_screenshot("test_error.png")
+            import traceback
+            traceback.print_exc()
+            return False
+        
+    def click_deep_dive_menu(self):
+
+        """심층 조사 메뉴 클릭"""
+        try:
+            deep_dive_btn = WebDriverWait(self.driver, 3).until(
+                EC.element_to_be_clickable((By.XPATH, "//div[@role='button' and contains(@class, 'MuiListItemButton') and .//span[contains(text(), '심층')]]"))
+            )
+            print("✅ 심층 조사 메뉴 발견")
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", deep_dive_btn)
+            time.sleep(0.3)
+            deep_dive_btn.click()
+            print("✅ 심층 조사 메뉴 클릭 완료")
+            time.sleep(0.5)
+        except Exception as e:
+            raise Exception("심층 조사 메뉴를 클릭할 수 없습니다.") from e
+        
+    def input_deep_dive_topic(self, topic):
+        """심층 조사 주제 입력"""
+        chat_input = self.wait.until(EC.element_to_be_clickable(self.CHAT_INPUT))
+        chat_input.clear()
+        chat_input.send_keys(topic)
+        print(f"✅ 입력 완료: {topic}")
+        time.sleep(0.5)   
+
+    def deep_dive_and_send(self, wait_time=30):
+        """
+        심층 조사 및 전송 프로세스 (통합 메서드)
+        
+        Args:
+            wait_time: AI 응답 대기 시간
+            
+        Returns:
+            bool: 성공 여부
+        """
+        try:
+            print("\n=== 심층 조사 테스트 시작 ===")
+            print(f"현재 URL: {self.driver.current_url}")
+            
+            # 1. 플러스 버튼 클릭
+            print("\n1. 플러스 버튼 클릭")
+            self.click_plus_button()
+            time.sleep(2)  # 메뉴가 완전히 나타날 때까지 대기
+            
+            # 2. 심층 조사 메뉴 클릭
+            print("\n2. 심층 조사 메뉴 클릭")
+            self.click_deep_dive_menu()
+            time.sleep(0.5)
+            print("✅ 심층 조사 메뉴 클릭 완료")
+            
+
+            # 3. 백드롭 사라질 때까지 대기
+            self.wait_for_backdrop_disappear()
+            
+            # 4. 심층 조사 주제 입력
+            print("\n3. 심층 조사 주제 입력")
+            deep_dive_topic = "인공지능의 윤리적 문제"
+            self.input_deep_dive_topic(deep_dive_topic)
+    
+            # 5. 엔터키로 전송
+            print("\n4. 메시지 전송")
+            self.send_message_with_enter()
+            
+            # 6. 응답 대기
+            print(f"\n5. AI 응답 대기 ({wait_time}초)")
+            time.sleep(wait_time)
+    
+            self.driver.save_screenshot("after_deep_dive_send.png")
+            print("\n✅ 심층 조사 및 전송 완료")
+            print("=== 테스트 성공 ===\n")
+            return True
+        
+        except TimeoutException as e:
+            print(f"\n ❌ 타임아웃 오류: {str(e)}")
+            print(f"   현재 URL: {self.driver.current_url}")    
+            self.driver.save_screenshot("timeout_error.png")
+            return False
+        except NoSuchElementException as e:
+            print(f"\n❌ 요소를 찾을 수 없음: {str(e)}")
+            self.driver.save_screenshot("element_error.png")
+            return False
+        except Exception as e:
+            print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            self.driver.save_screenshot("test_error.png")
+            import traceback
+            traceback.print_exc()
+            return False
+        
