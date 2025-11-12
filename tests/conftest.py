@@ -28,11 +28,13 @@ def pytest_runtest_setup(item):
 @pytest.fixture(scope="session")
 def driver():
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless=new")
+    # ✅ headless 모드 비활성화 - 브라우저 창을 보면서 테스트 가능
+    # options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")           # GPU 가속 비활성화 (헤드리스 환경 필수)
+    # options.add_argument("--disable-gpu")  # 실제 창을 띄울 때는 GPU 사용 가능
     options.add_argument("--window-size=1920,1080")
+    options.add_argument("--start-maximized")  # 창 최대화
 
     # ✅ 최신 버전 방식
     service = Service(ChromeDriverManager().install())
@@ -59,11 +61,13 @@ def logged_in_driver(driver) :
 @pytest.fixture
 def logged_in_driver_sub_account():
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    # ✅ 서브 계정도 headless 비활성화 (필요시 주석 해제)
+    # options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
+    # options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
+    options.add_argument("--start-maximized")
     service = Service(ChromeDriverManager().install())
     sub_driver = webdriver.Chrome(service=service, options=options)
     login_page = LoginFunction(sub_driver)
