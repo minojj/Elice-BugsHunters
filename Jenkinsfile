@@ -62,38 +62,54 @@ pipeline {
                     if (env.OS_TYPE == 'linux') {
                         echo '🌐 Chrome 설치 (Linux)...'
                         sh '''
-                            # 패키지 업데이트
-                            sudo apt-get update
-                            
-                            # Chrome 관련 의존성 설치
-                            sudo apt-get install -y \
-                                wget gnupg ca-certificates \
-                                fonts-liberation libasound2 libatk-bridge2.0-0 \
-                                libatk1.0-0 libc6 libcairo2 libcups2 \
-                                libdbus-1-3 libexpat1 libfontconfig1 libgbm1 \
-                                libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 \
-                                libnss3 libpango-1.0-0 libpangocairo-1.0-0 \
-                                libstdc++6 libx11-6 libx11-xcb1 libxcb1 \
-                                libxcomposite1 libxcursor1 libxdamage1 libxext6 \
-                                libxfixes3 libxi6 libxrandr2 libxrender1 \
-                                libxss1 libxtst6 lsb-release xdg-utils
-                            
-                            # Google Chrome 설치
-                            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-                            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-                            sudo apt-get update
-                            sudo apt-get install -y google-chrome-stable
-                            
-                            google-chrome --version
-                            echo "✅ Chrome 설치 완료"
+                            # apt 사용 가능 여부 확인
+                            if command -v apt-get &> /dev/null; then
+                                echo "📦 apt-get 패키지 관리자 사용"
+                                
+                                # 패키지 업데이트
+                                apt-get update
+                                
+                                # Chrome 관련 의존성 설치
+                                apt-get install -y \
+                                    wget gnupg ca-certificates \
+                                    fonts-liberation libasound2 libatk-bridge2.0-0 \
+                                    libatk1.0-0 libc6 libcairo2 libcups2 \
+                                    libdbus-1-3 libexpat1 libfontconfig1 libgbm1 \
+                                    libglib2.0-0 libgtk-3-0 libnspr4 \
+                                    libnss3 libpango-1.0-0 libpangocairo-1.0-0 \
+                                    libstdc++6 libx11-6 libx11-xcb1 libxcb1 \
+                                    libxcomposite1 libxcursor1 libxdamage1 libxext6 \
+                                    libxfixes3 libxi6 libxrandr2 libxrender1 \
+                                    libxss1 libxtst6 lsb-release xdg-utils \
+                                    unzip curl
+                                
+                                # Google Chrome 설치
+                                wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+                                echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+                                apt-get update
+                                apt-get install -y google-chrome-stable
+                                
+                                google-chrome --version
+                                echo "✅ Chrome 설치 완료"
+                            else
+                                echo "⚠️  apt-get을 사용할 수 없습니다. Chrome을 수동으로 설치해주세요."
+                            fi
                         '''
                     } else if (env.OS_TYPE == 'macos') {
                         echo '🌐 Chrome 확인 (macOS)...'
                         sh '''
                             # Homebrew가 설치되어 있는지 확인
                             if ! command -v brew &> /dev/null; then
-                                echo "⚠️  Homebrew가 설치되어 있지 않습니다. Chrome을 수동으로 설치해주세요."
-                                echo "Chrome 다운로드: https://www.google.com/chrome/"
+                                echo "⚠️  Homebrew가 설치되어 있지 않습니다."
+                                
+                                # Chrome이 이미 설치되어 있는지 확인
+                                if [ -d "/Applications/Google Chrome.app" ]; then
+                                    echo "✅ Chrome이 이미 설치되어 있습니다."
+                                    /Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version
+                                else
+                                    echo "⚠️  Chrome을 수동으로 설치해주세요."
+                                    echo "Chrome 다운로드: https://www.google.com/chrome/"
+                                fi
                             else
                                 # Chrome이 설치되어 있는지 확인
                                 if [ ! -d "/Applications/Google Chrome.app" ]; then
@@ -104,7 +120,7 @@ pipeline {
                                 fi
                                 
                                 # Chrome 버전 확인
-                                /Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version || echo "Chrome 경로 확인 필요"
+                                /Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version
                             fi
                         '''
                     } else {
