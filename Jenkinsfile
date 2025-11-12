@@ -66,21 +66,31 @@ pipeline {
 
         stage('Install Python Dependencies') {
             steps {
-                script {
-                    echo '🐍 Python 의존성 설치 중...'
-                    sh '''
-                        # Python3 확인
-                        set -eu
-                        python -c "import sys; print('Python:', sys.version)"
-                        python -c "print('Try importing ssl...'); import ssl; print('ssl OK:', ssl.OPENSSL_VERSION)" || echo "❌ ssl 모듈 로드 실패"
-                        python -m venv .venv
-                        .venv/bin/python -c "print('Venv ssl test'); import ssl; print('ssl OK (venv):', ssl.OPENSSL_VERSION)" || echo "❌ venv ssl 실패"
-                        .venv/bin/pip install --upgrade pip
-                        .venv/bin/pip install -r requirements.txt
-                    '''
-                }
+                sh '''
+                    set -eu
+                    python -c "import sys; print('Python:', sys.version)"
+                    python -c "import ssl; print('SSL:', ssl.OPENSSL_VERSION)"
+                    
+                    # 기존 venv 완전 제거
+                    rm -rf .venv
+                    
+                    # venv 재생성 (--without-pip 없이 기본 방식)
+                    python -m venv .venv
+                    
+                    # venv 활성화
+                    . .venv/bin/activate
+                    
+                    # pip 업그레이드
+                    python -m pip install --upgrade pip
+                    
+                    # 의존성 설치
+                    pip install -r requirements.txt
+                    
+                    # 설치 확인
+                    pip list | grep -E 'selenium|pytest|webdriver' || true
+                '''
             }
-        }   
+        }
         
         stage('Verify Project Structure') {
             steps {
@@ -123,73 +133,38 @@ pipeline {
                 }
             }
         }
-        stage('Python Env') {
+        
+              
+        stage('Run Tests') {
             steps {
-                script {
-                    echo '🧪 테스트 실행 및 환경 준비 중...'
-                    sh '''
-                        set -eux
-                        . .venv/bin/activate
-                        pip install --upgrade pip
-                        .venv/bin/pip install --upgrade pip
-                        .venv/bin/pip install -r requirements.txt
-                        set +e
-                        mkdir -p reports
-                        .venv/bin/pytest tests -v \
-                            --junitxml=reports/test-results.xml \
-                            --html=reports/report.html \
-                            --self-contained-html --tb=short
-                        EXIT_CODE=$?
-                        exit $EXIT_CODE
-                    '''
-                }
+                sh '''
+                    set +e
+                    mkdir -p reports
+                    pytest tests -v \
+                        --junitxml=reports/test-results.xml \
+                        --html=reports/report.html \
+                        --self-contained-html --tb=short
+                    EXIT_CODE=$?
+                    ls -lh reports/* || true
+                    exit $EXIT_CODE
+                '''
             }
             post {
                 always {
-                    script {
-                        echo '📊 테스트 결과 수집 중...'
-                        // JUnit 테스트 결과
-                        try {
-                            junit allowEmptyResults: true, testResults: '**/test-results.xml'
-                        } catch (Exception e) {
-                            echo "⚠️ JUnit 결과 처리 실패: ${e.message}"
-                        }
-                        // HTML 리포트 발행
-                        try {
-                            publishHTML([
-                                allowMissing: true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll: true,
-                                reportDir: '.',
-                                reportFiles: 'report.html',
-                                reportName: 'Pytest HTML Report',
-                                reportTitles: 'Test Report'
-                            ])
-                        } catch (Exception e) {
-                            echo "⚠️ HTML 리포트 발행 실패: ${e.message}"
-                        }
-                        // 아티팩트 저장
-                        try {
-                            archiveArtifacts artifacts: '''
-                                **/report.html,
-                                **/test-results.xml,
-                                **/screenshots/**/*.png
-                            ''', allowEmptyArchive: true, fingerprint: true
-                        } catch (Exception e) {
-                            echo "⚠️ 아티팩트 저장 실패: ${e.message}"
-                        }
-                    }
+                    junit allowEmptyResults: true, testResults: 'reports/test-results.xml'
+                    publishHTML([
+                        reportDir: 'reports',
+                        reportFiles: 'report.html',
+                        reportName: 'Pytest Report',
+                        keepAll: true,
+                        allowMissing: true
+                    ])
+                    archiveArtifacts artifacts: 'reports/**/*,**/screenshots/**/*.png',
+                                     allowEmptyArchive: true, fingerprint: true
                 }
-                success {
-                    echo '✅ 빌드 성공!'
-                }
-                failure {
-                    echo '❌ 빌드 실패!'
-                }
-                unstable {
-                    echo '⚠️ 빌드 불안정 (일부 테스트 실패)'
-                }
+                success { echo '✅ 성공' }
+                failure { echo '❌ 실패' }
             }
         }
     }
-}  
+}   
