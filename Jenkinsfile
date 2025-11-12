@@ -14,10 +14,6 @@ pipeline {
         HOME = "${WORKSPACE}"
         PYTHONPATH = "${WORKSPACE}:${PYTHONPATH}"
         CHROMEDRIVER = "/usr/bin/chromedriver" // 시스템 드라이버 고정
-        MAIN_EMAIL = credentials('MAIN_EMAIL')
-        MAIN_PASSWORD = credentials('MAIN_PASSWORD')
-        SUB_EMAIL = credentials('SUB_EMAIL')
-        SUB_PASSWORD = credentials('SUB_PASSWORD')
     }
 
     stages {
