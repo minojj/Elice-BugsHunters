@@ -5,7 +5,6 @@ from src.utils.helpers import Utils
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from src.pages.login_page import LoginFunction
-from src.utils.helpers import Utils 
 
 @pytest.fixture(scope="session")
 def driver():
