@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.11'   // 다중 아키텍처 지원
-            args '-u root:root'            // root 로 패키지 설치
-        }
-    }
+    agent any
 
     environment {
         PYTHONUNBUFFERED = "1"
@@ -19,76 +14,159 @@ pipeline {
             }
         }
 
-        stage('Setup Environment') {
+        stage('Detect OS') {
             steps {
                 script {
-                    echo '🔧 환경 설정 중...'
-                    sh '''
-                        echo "🐧 운영체제: $(uname -a)"
-                        echo "🐍 Python 버전: $(python3 --version 2>&1 || echo 'Python3 없음')"
-                        echo "📂 현재 디렉토리: $(pwd)"
-                        echo "📝 디렉토리 내용:"
-                        ls -la
-                    '''
+                    if (isUnix()) {
+                        def uname = sh(script: 'uname', returnStdout: true).trim()
+                        if (uname == 'Darwin') {
+                            env.OS_TYPE = 'macos'
+                            echo '🍎 macOS 감지됨'
+                        } else {
+                            env.OS_TYPE = 'linux'
+                            echo '🐧 Linux 감지됨'
+                        }
+                    } else {
+                        env.OS_TYPE = 'windows'
+                        echo '🪟 Windows 감지됨'
+                    }
+                    echo "운영체제: ${env.OS_TYPE}"
                 }
             }
         }
 
-        stage('Install Chrome & ChromeDriver') {
+        stage('Setup Environment') {
             steps {
                 script {
-                    echo '🌐 Chrome 및 ChromeDriver 설치 중...'
-                    sh '''
-                        # 패키지 목록 업데이트
-                        apt-get update || echo "⚠️ apt-get update 실패 (권한 문제 가능)"
-                        
-                        # Chrome 설치
-                        if ! command -v google-chrome >/dev/null 2>&1; then
-                            echo "⚠️ Chrome이 설치되어 있지 않습니다. Chromium을 설치합니다."
-                            apt-get install -y chromium || echo "⚠️ Chromium 설치 실패"
-                        else
-                            echo "✅ Chrome이 이미 설치되어 있습니다."
+                    echo '🔧 환경 설정 중...'
+                    if (env.OS_TYPE == 'windows') {
+                        bat '''
+                            echo 🪟 운영체제: Windows
+                            python --version
+                            echo 📂 현재 디렉토리: %CD%
+                        '''
+                    } else {
+                        sh '''
+                            echo "🐧 운영체제: $(uname -a)"
+                            python3 --version
+                            echo "📂 현재 디렉토리: $(pwd)"
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Install Browser') {
+            steps {
+                script {
+                    if (env.OS_TYPE == 'linux') {
+                        echo '🌐 Chrome 설치 (Linux)...'
+                        sh '''
+                            # 패키지 업데이트
+                            sudo apt-get update
+                            
+                            # Chrome 관련 의존성 설치
+                            sudo apt-get install -y \
+                                wget gnupg ca-certificates \
+                                fonts-liberation libasound2 libatk-bridge2.0-0 \
+                                libatk1.0-0 libc6 libcairo2 libcups2 \
+                                libdbus-1-3 libexpat1 libfontconfig1 libgbm1 \
+                                libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 \
+                                libnss3 libpango-1.0-0 libpangocairo-1.0-0 \
+                                libstdc++6 libx11-6 libx11-xcb1 libxcb1 \
+                                libxcomposite1 libxcursor1 libxdamage1 libxext6 \
+                                libxfixes3 libxi6 libxrandr2 libxrender1 \
+                                libxss1 libxtst6 lsb-release xdg-utils
+                            
+                            # Google Chrome 설치
+                            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+                            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+                            sudo apt-get update
+                            sudo apt-get install -y google-chrome-stable
+                            
                             google-chrome --version
-                        fi
-                        
-                        # ChromeDriver 설치
-                        if ! command -v chromedriver >/dev/null 2>&1; then
-                            echo "⚠️ ChromeDriver가 없습니다. 설치를 시도합니다."
-                            apt-get install -y chromium-chromedriver || echo "⚠️ ChromeDriver 설치 실패"
-                        else
-                            echo "✅ ChromeDriver가 이미 설치되어 있습니다."
-                            chromedriver --version
-                        fi
-                    '''
+                            echo "✅ Chrome 설치 완료"
+                        '''
+                    } else if (env.OS_TYPE == 'macos') {
+                        echo '🌐 Chrome 확인 (macOS)...'
+                        sh '''
+                            # Homebrew가 설치되어 있는지 확인
+                            if ! command -v brew &> /dev/null; then
+                                echo "⚠️  Homebrew가 설치되어 있지 않습니다. Chrome을 수동으로 설치해주세요."
+                                echo "Chrome 다운로드: https://www.google.com/chrome/"
+                            else
+                                # Chrome이 설치되어 있는지 확인
+                                if [ ! -d "/Applications/Google Chrome.app" ]; then
+                                    echo "Chrome 설치 중..."
+                                    brew install --cask google-chrome
+                                else
+                                    echo "✅ Chrome이 이미 설치되어 있습니다."
+                                fi
+                                
+                                # Chrome 버전 확인
+                                /Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --version || echo "Chrome 경로 확인 필요"
+                            fi
+                        '''
+                    } else {
+                        echo '🌐 Chrome 확인 (Windows)...'
+                        bat '''
+                            where chrome.exe >nul 2>&1
+                            if %errorlevel% neq 0 (
+                                echo ⚠️  Chrome이 설치되어 있지 않습니다.
+                                echo Chrome 다운로드: https://www.google.com/chrome/
+                                exit /b 0
+                            ) else (
+                                echo ✅ Chrome이 설치되어 있습니다.
+                                chrome.exe --version
+                            )
+                        '''
+                    }
                 }
             }
         }
 
         stage('Install Python Dependencies') {
             steps {
-                sh '''
-                    set -eu
-                    python -c "import sys; print('Python:', sys.version)"
-                    python -c "import ssl; print('SSL:', ssl.OPENSSL_VERSION)"
-                    
-                    # 기존 venv 완전 제거
-                    rm -rf .venv
-                    
-                    # venv 재생성 (--without-pip 없이 기본 방식)
-                    python -m venv .venv
-                    
-                    # venv 활성화
-                    . .venv/bin/activate
-                    
-                    # pip 업그레이드
-                    python -m pip install --upgrade pip
-                    
-                    # 의존성 설치
-                    pip install -r requirements.txt
-                    
-                    # 설치 확인
-                    pip list | grep -E 'selenium|pytest|webdriver' || true
-                '''
+                script {
+                    if (env.OS_TYPE == 'windows') {
+                        bat '''
+                            python --version
+                            
+                            REM venv 재생성
+                            if exist .venv rmdir /s /q .venv
+                            python -m venv .venv
+                            call .venv\\Scripts\\activate.bat
+                            
+                            REM pip 업그레이드
+                            python -m pip install --upgrade pip
+                            
+                            REM 의존성 설치
+                            pip install -r requirements.txt
+                            
+                            REM 설치 확인
+                            pip list | findstr /I "selenium pytest"
+                        '''
+                    } else {
+                        sh '''
+                            set -eu
+                            python3 -c "import sys; print('Python:', sys.version)"
+                            
+                            # venv 재생성
+                            rm -rf .venv
+                            python3 -m venv .venv
+                            . .venv/bin/activate
+                            
+                            # pip 업그레이드
+                            python -m pip install --upgrade pip
+                            
+                            # 의존성 설치
+                            pip install -r requirements.txt
+                            
+                            # 설치 확인
+                            pip list | grep -E 'selenium|pytest' || true
+                        '''
+                    }
+                }
             }
         }
         
@@ -96,59 +174,89 @@ pipeline {
             steps {
                 script {
                     echo '🔍 프로젝트 구조 확인 중...'
-                    sh '''
-                        echo "📂 프로젝트 루트:"
-                        ls -la
-                        
-                        echo ""
-                        echo "📂 tests 디렉토리:"
-                        if [ -d "tests" ]; then
-                            ls -la tests/
+                    if (env.OS_TYPE == 'windows') {
+                        bat '''
+                            echo 📂 프로젝트 루트:
+                            dir
+                            
+                            echo.
+                            echo 📂 tests 디렉토리:
+                            if exist tests (
+                                dir tests
+                                echo.
+                                echo 🔎 발견된 테스트 파일:
+                                dir /s /b tests\\test_*.py
+                            ) else (
+                                echo ❌ tests 디렉토리가 없습니다!
+                                exit /b 1
+                            )
+                        '''
+                    } else {
+                        sh '''
+                            echo "📂 프로젝트 루트:"
+                            ls -la
+                            
                             echo ""
-                            echo "🔎 발견된 테스트 파일:"
-                            find tests -name "test_*.py" -type f
-                        else
-                            echo "❌ tests 디렉토리가 없습니다!"
-                            exit 1
-                        fi
-                        
-                        echo ""
-                        echo "📂 src 디렉토리:"
-                        if [ -d "src" ]; then
-                            ls -la src/
-                        else
-                            echo "⚠️ src 디렉토리가 없습니다."
-                        fi
-                        
-                        echo ""
-                        echo "📄 필수 파일 확인:"
-                        for file in conftest.py pytest.ini requirements.txt; do
-                            if [ -f "$file" ]; then
-                                echo "✅ $file 존재"
+                            echo "📂 tests 디렉토리:"
+                            if [ -d "tests" ]; then
+                                ls -la tests/
+                                echo ""
+                                echo "🔎 발견된 테스트 파일:"
+                                find tests -name "test_*.py" -type f
                             else
-                                echo "⚠️ $file 없음"
+                                echo "❌ tests 디렉토리가 없습니다!"
+                                exit 1
                             fi
-                        done
-                    '''
+                        '''
+                    }
                 }
             }
         }
-        
               
         stage('Run Tests') {
             steps {
-                sh '''
-                    set +e
-                    . .venv/bin/activate
-                    mkdir -p reports
-                    pytest tests -v \
-                        --junitxml=reports/test-results.xml \
-                        --html=reports/report.html \
-                        --self-contained-html --tb=short
-                    EXIT_CODE=$?
-                    ls -lh reports/* || true
-                    exit $EXIT_CODE
-                '''
+                script {
+                    if (env.OS_TYPE == 'windows') {
+                        bat '''
+                            call .venv\\Scripts\\activate.bat
+                            if not exist reports mkdir reports
+                            
+                            pytest tests -v ^
+                                --junitxml=reports/test-results.xml ^
+                                --html=reports/report.html ^
+                                --self-contained-html ^
+                                --tb=short
+                            
+                            set EXIT_CODE=%errorlevel%
+                            dir reports
+                            exit /b %EXIT_CODE%
+                        '''
+                    } else {
+                        sh '''
+                            set +e
+                            . .venv/bin/activate
+                            mkdir -p reports
+                            
+                            # Chrome 경로 설정
+                            if [ "${OS_TYPE}" = "macos" ]; then
+                                export CHROME_BIN="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+                            else
+                                export CHROME_BIN=$(which google-chrome)
+                            fi
+                            echo "Chrome 경로: $CHROME_BIN"
+                            
+                            pytest tests -v \
+                                --junitxml=reports/test-results.xml \
+                                --html=reports/report.html \
+                                --self-contained-html \
+                                --tb=short
+                            
+                            EXIT_CODE=$?
+                            ls -lh reports/* || true
+                            exit $EXIT_CODE
+                        '''
+                    }
+                }
             }
             post {
                 always {
@@ -170,4 +278,4 @@ pipeline {
             }
         }
     }
-}   
+}
