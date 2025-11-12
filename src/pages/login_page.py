@@ -9,19 +9,19 @@ class LoginFunction:
         self.driver = driver
 
     locators = {
-        "main": "https://qaproject.elice.io/ai-helpy-chat",
-        "email": (By.CSS_SELECTOR, "input[name='loginId']"),
-        "password": (By.CSS_SELECTOR, "input[name='password']"),
-        "submit_btn": (By.CSS_SELECTOR, "button[type='submit']"),
-        "billing": (By.CSS_SELECTOR, "a[href*='billing/payments/credit']"),
-        "create_acc_btn": (By.CSS_SELECTOR, "a[href*='/accounts/signup']"),
-        "create_email_btn": (By.XPATH, '//button[@type="button" and contains(@class, "MuiButton-containedPrimary")]'),
-        "name": (By.CSS_SELECTOR, "input[name='fullname']"),
-        "email_error": (By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"),
-        "remove_history" : (By.XPATH, "//a[text()='Remove history']"),
-        "avatar_btn" : (By.CSS_SELECTOR, "button:has(svg[data-testid='PersonIcon'])"),
-        "logout_btn" : (By.XPATH, "//p[text()='Logout']")
-    }
+            "main": "https://qaproject.elice.io/ai-helpy-chat",
+            "email": (By.CSS_SELECTOR, "input[name='loginId']"),
+            "password": (By.CSS_SELECTOR, "input[name='password']"),
+            "submit_btn": (By.CSS_SELECTOR, "button[type='submit']"),
+            "billing": (By.CSS_SELECTOR, "a[href*='billing/payments/credit']"),
+            "create_acc_btn": (By.CSS_SELECTOR, "a[href*='/accounts/signup']"),
+            "create_email_btn": (By.XPATH, '//button[@type="button" and contains(@class, "MuiButton-containedPrimary")]'),
+            "name": (By.CSS_SELECTOR, "input[name='fullname']"),
+            "email_error": (By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"),
+            "remove_history" : (By.XPATH, "//a[text()='Remove history']"),
+            "avatar_btn" : (By.CSS_SELECTOR, "button:has(svg[data-testid='PersonIcon'])"),
+            "logout_btn" : (By.XPATH, "//p[text()='Logout']")
+        }
 
     # === Page Actions ===
 
@@ -31,7 +31,7 @@ class LoginFunction:
         WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
-        print("✅ 사이트 접속 성공")
+
 
     def login(self, email, password ):
         wait = WebDriverWait(self.driver, 10)
@@ -70,7 +70,7 @@ class LoginFunction:
                 email_select.click()
                 email_input = wait.until(EC.presence_of_element_located(self.locators["email"]))
                 email_input.send_keys(email)
-            except:
+            except Exception:
                 print("이메일 입력 필드를 활성화할 수 없습니다.")
                 return
 
@@ -119,14 +119,26 @@ class LoginFunction:
             return False
         
     def fill_signup_form(self, email):
-        # 회원가입 폼 입력 (이메일만 입력)
+        # 회원가입 폼 입력 (현재는 이메일만 입력하지만, 추가 입력 필드가 있을 경우 확장 가능)
+        WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located(self.locators["email"])
+        )
         
         self.driver.find_element(*self.locators["email"]).send_keys(email)
         
         print("✅ 이메일 입력 완료")
     
     def email_error(self):
-        return self.driver.find_element(*self.locators["email_error"])
+        # 중복 이메일 에러 메시지 확인
+        try:
+            WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located(self.locators["email_error"])
+            )
+            print("✅ 중복 이메일 에러 메시지 표시 확인")
+            return True
+        except Exception:
+            print("❌ 중복 이메일 에러 메시지 표시 확인 실패")
+            return None
     
     def clear_login_session(self):
         #브라우저 세션 초기화
@@ -145,25 +157,25 @@ class LoginFunction:
     def logout(self):
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.presence_of_element_located(self.locators["avatar_btn"])).click()
-        
-        self.driver.find_element(*self.locators["logout_btn"]).click()
+        wait.until(EC.presence_of_element_located(self.locators["logout_btn"])).click()
+        print("✅ 로그아웃 클릭 완료")
         
     def logout_check(self):
-        email_locator = self.locators.get("email")
-        password_locator = self.locators.get("password")
-
         try:
-            # 이메일 입력 필드 등장 대기
+            # 이메일이나 비밀번호 입력 필드 등장 대기
             WebDriverWait(self.driver, 10).until(
                 EC.any_of(
-                    EC.visibility_of_element_located(email_locator),
-                    EC.visibility_of_element_located(password_locator)
+                    EC.visibility_of_element_located(self.locators["email"]),
+                    EC.visibility_of_element_located(self.locators["password"])
                 )
             
             )
-            return True
             print("✅ 정상 로그아웃")
+            return True
         
         except TimeoutException:
-            return False
             print("❌ 비정상 로그아웃")
+            return False
+        
+    
+        

@@ -60,5 +60,14 @@ def test_cb_003(logged_in_driver):
     chat_page.upload_file(r"C:\Users\97min\OneDrive\바탕 화면\dog.png")
     sleep(2)
     chat_page.send_message("이 사진을 애니매이션화해서 그려줘")
-    sleep(20)
-    input("\n테스트 완료. 종료하려면 Enter를 누르세요...")
+    sleep(30)
+    # NOTE: pytest 실행 중 input() 사용은 캡처된 stdin 때문에 OSError를 유발하므로 제거
+    # 필요하면 환경변수 MANUAL_PAUSE=1 로 수동 일시정지 허용
+    import os
+    if os.getenv("MANUAL_PAUSE") == "1":
+        try:
+            input("\n수동 확인 후 Enter를 누르면 테스트가 종료됩니다...")
+        except EOFError:
+            pass
+    else:
+        print("테스트 완료 (자동 종료). 수동 대기 필요 시 MANUAL_PAUSE=1 설정.")

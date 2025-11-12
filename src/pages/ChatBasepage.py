@@ -122,9 +122,8 @@ class ChatPage:
                 try:
                     search_box.clear()
                 except Exception:
-                    # 일부 textarea는 clear가 안 먹을 수 있음 → JS로 초기화
                     self.driver.execute_script("arguments[0].value = '';", search_box)
-            # 포커스 후 Ctrl+V 시도
+            # Ctrl+V 시도
             actions = ActionChains(self.driver)
             actions.click(search_box).key_down(Keys.CONTROL).send_keys('v').key_up(Keys.CONTROL).perform()
             pasted = search_box.get_attribute("value") or ""
@@ -214,7 +213,7 @@ class ChatPage:
             
             # 방법 1: 첫 번째 메시지로 직접 스크롤
             first_message = self.driver.find_element(*self.locators["first_article"])
-            self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'instant', block: 'start'});", first_message)
+            self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'start'});", first_message)
             time.sleep(1)
             print(" 첫 번째 메시지로 스크롤 완료")
             return True
