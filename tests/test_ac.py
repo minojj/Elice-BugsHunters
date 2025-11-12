@@ -1,9 +1,6 @@
 import time
 import pytest
-from src.utils.helpers import Utils
 from src.pages.login_page import LoginFunction
-from selenium.webdriver.support import expected_conditions as EC
-
 
 @pytest.mark.usefixtures("driver")
 
