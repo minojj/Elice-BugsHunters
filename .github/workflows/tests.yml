@@ -1,0 +1,46 @@
+name: Pytest CI
+
+on:
+  push:
+    branches: [ "main", "feature/**" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. Python 설정
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      # 2. Chrome 설치 (Selenium 요구 사항)
+      - name: Install Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install google-chrome-stable
+          
+      # 3. Xvfb 설정 (GUI 테스트 필수)
+      - name: Setup Xvfb (Virtual Display)
+        uses: GabrielBB/xvfb-action@v1.0
+        with:
+          run: true
+          
+      # 4. 의존성 설치
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-html
+
+      # 5. Pytest GUI 테스트 실행
+      - name: Run Pytest GUI Tests
+        run: |
+          # ✅ 프로젝트 루트를 PYTHONPATH에 추가하여 'src' 경로 임포트 오류를 해결합니다.
+          export PYTHONPATH=$GITHUB_WORKSPACE:$PYTHONPATH
+          pytest --html=reports/report.html --self-contained-html

@@ -21,4 +21,3 @@ class Utils:
         import pyautogui 
         pyautogui.click(x, y)
         print(f"Clicked at ({x}, {y}) using pyautogui.")
-
