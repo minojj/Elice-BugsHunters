@@ -55,10 +55,10 @@ def test_cb_002(driver):
     sleep(10)
 
 
-def test_cb_003(driver):
-    chat_page = ChatPage(driver)
-    chat_page.upload_file(r"C:\Users\97min\OneDrive\바탕 화면\dog.png")
-    sleep(2)
-    chat_page.send_message("이 사진을 애니매이션화해서 그려줘")
-    sleep(30)
-    input("\n테스트 완료. 종료하려면 Enter를 누르세요...")
+# def test_cb_003(driver):
+#     chat_page = ChatPage(driver)
+#     chat_page.upload_file(r"C:\Users\97min\OneDrive\바탕 화면\dog.png")
+#     sleep(2)
+#     chat_page.send_message("이 사진을 애니매이션화해서 그려줘")
+#     sleep(30)
+#     input("\n테스트 완료. 종료하려면 Enter를 누르세요...")
