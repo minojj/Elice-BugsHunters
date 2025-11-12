@@ -22,7 +22,3 @@ python-dotenv==1.0.1            # 환경변수(.env) 파일 관리
 # Optional Utilities 
 selenium-wire==5.1.0            # (선택) 네트워크 요청 추적용
 
-# # 파일탐색창 검색기능            # filename 부분 (중복되어 충돌 날 수 있음 , 변경 요망)  ex) TEST_FILENAME = r"C:\Users\dol_ph\Downloads\git.pdf" 변경 (중복되어 충돌날수있으니 ,변경요망) 
-# pyautogui                       #pyautogui.write(filename, interval=0.1)    interval = 입력속도  
-#                                 #pyautogui.press('enter')
-
