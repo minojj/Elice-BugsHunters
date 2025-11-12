@@ -5,11 +5,15 @@ pipeline {
             args '--shm-size=2g'
      }
    }
-    
 
     environment {
         PYTHONUNBUFFERED = "1"
         HEADLESS = "true"
+        // ↓ webdriver-manager가 다운로드 안 하도록 + 캐시 경로 고정
+        WDM_LOCAL = "1"
+        WDM_CACHE = "${WORKSPACE}/.wdm"
+        // 혹시 HOME이 비어 있을 경우 대비
+        HOME = "${WORKSPACE}"
     }
 
     stages {
@@ -40,39 +44,18 @@ pipeline {
             }
         }
 
+        // Dockerfile에서 이미 chromium/chromedriver 설치됨 → 이 stage는 있어도 무관
         stage('Install Browser') {
             steps {
                 script {
                     if (isUnix()) {
                         sh '''
-                            echo "🌐 Unix/Mac: 브라우저 설치 확인..."
-                            
-                            # Mac (Homebrew)
-                            if command -v brew &> /dev/null; then
-                                echo "🍎 macOS 감지"
-                                brew list --cask google-chrome || brew install --cask google-chrome || true
-                                brew list chromedriver || brew install chromedriver || true
-                            # Linux
-                            else
-                                echo "🐧 Linux 감지"
-                                apt-get update
-                                apt-get install -y chromium chromium-driver wget ca-certificates \
-                                    fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 \
-                                    libcups2 libdbus-1-3 libgbm1 libgtk-3-0 libnspr4 libnss3 \
-                                    libxcomposite1 libxdamage1 libxrandr2 xdg-utils || true
-                                
-                                ln -sf /usr/bin/chromium /usr/bin/google-chrome || true
-                                ln -sf /usr/bin/chromedriver /usr/local/bin/chromedriver || true
-                                chmod +x /usr/bin/chromedriver || true
-                            fi
-                            
-                            # 설치 확인
-                            which google-chrome || which chromium || echo "Chrome 없음"
-                            which chromedriver || echo "ChromeDriver 없음"
+                            echo "🌐 브라우저 설치 확인 (컨테이너에 이미 설치됨)"
+                            which chromium || true
+                            which chromedriver || true
                         '''
                     } else {
                         bat '''
-                            echo 🌐 Windows: Chrome 설치 확인...
                             where chrome.exe || echo Chrome이 설치되어 있지 않습니다
                             where chromedriver.exe || echo ChromeDriver가 설치되어 있지 않습니다
                         '''
@@ -93,8 +76,7 @@ pipeline {
                             . .venv/bin/activate
                             pip install --upgrade pip
                             pip install -r requirements.txt
-                            # webdriver-manager 강제 제거
-                            pip uninstall -y webdriver-manager || true
+                            # webdriver-manager는 테스트에서 import할 수 있으므로 제거하지 않음
                         '''
                     } else {
                         bat '''
@@ -104,8 +86,6 @@ pipeline {
                             call .venv\\Scripts\\activate.bat
                             python -m pip install --upgrade pip
                             pip install -r requirements.txt
-                            REM webdriver-manager 강제 제거
-                            pip uninstall -y webdriver-manager || exit /b 0
                         '''
                     }
                 }
@@ -119,22 +99,23 @@ pipeline {
                         sh '''
                             set +e
                             . .venv/bin/activate
-                            mkdir -p reports screenshots
-                            
-                            # Chrome 경로 설정
-                            export CHROME_BIN=$(which google-chrome || which chromium || echo "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
-                            echo "🌐 Chrome 경로: $CHROME_BIN"
-                            
-                            # ChromeDriver 경로 설정
+                            mkdir -p reports screenshots "${WDM_CACHE}"
+
+                            # Chrome 경로 설정(있으면만)
+                            export CHROME_BIN=$(which google-chrome || which chromium || which chromium-browser || true)
+                            echo "🌐 Chrome 경로: ${CHROME_BIN:-<auto>}"
+
+                            # 시스템 chromedriver 우선 (Dockerfile에서 /usr/bin/chromedriver 설치됨)
                             export PATH="/usr/local/bin:/usr/bin:$PATH"
-                            
+                            which chromedriver || true
+
                             # 테스트 실행
                             pytest tests -v \
                                 --junitxml=reports/test-results.xml \
                                 --html=reports/report.html \
                                 --self-contained-html \
                                 --tb=short
-                            
+
                             EXIT_CODE=$?
                             echo "📊 테스트 종료 코드: $EXIT_CODE"
                             ls -lh reports/* 2>/dev/null || true
@@ -145,20 +126,14 @@ pipeline {
                             call .venv\\Scripts\\activate.bat
                             if not exist reports mkdir reports
                             if not exist screenshots mkdir screenshots
-                            
-                            REM 테스트 실행
+
                             pytest tests -v ^
                                 --junitxml=reports/test-results.xml ^
                                 --html=reports/report.html ^
                                 --self-contained-html ^
                                 --tb=short
-                            
-                            if errorlevel 1 (
-                                echo ❌ 테스트 실패
-                                exit /b 1
-                            ) else (
-                                echo ✅ 테스트 성공
-                            )
+
+                            if errorlevel 1 exit /b 1
                         '''
                     }
                 }
@@ -177,12 +152,6 @@ pipeline {
                     archiveArtifacts artifacts: 'reports/**/*,screenshots/**/*.png',
                                      allowEmptyArchive: true,
                                      fingerprint: true
-                }
-                success { 
-                    echo '✅ 테스트 성공!' 
-                }
-                failure { 
-                    echo '❌ 테스트 실패' 
                 }
             }
         }
