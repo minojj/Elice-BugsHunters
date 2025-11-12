@@ -1,3 +1,4 @@
+import os
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -6,15 +7,11 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from src.pages.login_page import LoginFunction
 
-import sys
-from unittest.mock import MagicMock
+@pytest.mark.skipif(os.environ.get("CI") == "true", reason="GUI not available in CI")
+def test_file_upload_via_gui():
+    from src.utils.helpers import Utils
+    Utils.upload_via_gui("example.txt")
 
-@pytest.fixture(scope="session", autouse=True)
-def mock_pyautogui_if_headless(monkeypatch):
-    if "pyautogui" in sys.modules:
-        monkeypatch.setattr(sys.modules["pyautogui"], "click", MagicMock())
-        monkeypatch.setattr(sys.modules["pyautogui"], "write", MagicMock())
-        monkeypatch.setattr(sys.modules["pyautogui"], "screenshot", MagicMock())
 
 @pytest.fixture(scope="session")
 def driver():
