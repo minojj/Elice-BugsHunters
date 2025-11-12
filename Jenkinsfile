@@ -148,8 +148,8 @@ pipeline {
                         
                         # pytest 실행
                         python3 -m pytest tests/ -v \
-                            --junitxml=reports/test-results.xml \  // 경로 수정 주석 제거
-                            --html=reports/report.html \  // 경로 수정 주석 제거
+                            --junitxml=reports/test-results.xml \
+                            --html=reports/report.html \
                             --self-contained-html \
                             --tb=short \
                             || EXIT_CODE=$?
