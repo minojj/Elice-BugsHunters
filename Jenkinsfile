@@ -7,7 +7,6 @@ pipeline {
     }
 
     environment {
-        PYTHONPATH = "${WORKSPACE}"
         PYTHONUNBUFFERED = "1"
         HEADLESS = "true"
     }
@@ -71,34 +70,18 @@ pipeline {
                     echo '🐍 Python 의존성 설치 중...'
                     sh '''
                         # Python3 확인
-                        if ! command -v python3 >/dev/null 2>&1; then
-                            echo "❌ Python3이 설치되어 있지 않습니다."
-                            exit 1
-                        fi
-                        
-                        python3 --version
-                        
-                        # pip 업그레이드
-                        python3 -m pip install --upgrade pip --user
-                        
-                        # requirements.txt 설치
-                        if [ -f requirements.txt ]; then
-                            echo "📦 requirements.txt 설치 중..."
-                            python3 -m pip install -r requirements.txt --user
-                            echo "✅ 설치 완료"
-                        else
-                            echo "❌ requirements.txt를 찾을 수 없습니다."
-                            exit 1
-                        fi
-                        
-                        # 설치 확인
-                        echo "📋 설치된 패키지:"
-                        python3 -m pip list --user | grep -E "selenium|pytest|webdriver"
+                        set -eu
+                        python -c "import sys; print('Python:', sys.version)"
+                        python -c "print('Try importing ssl...'); import ssl; print('ssl OK:', ssl.OPENSSL_VERSION)" || echo "❌ ssl 모듈 로드 실패"
+                        python -m venv .venv
+                        .venv/bin/python -c "print('Venv ssl test'); import ssl; print('ssl OK (venv):', ssl.OPENSSL_VERSION)" || echo "❌ venv ssl 실패"
+                        .venv/bin/pip install --upgrade pip
+                        .venv/bin/pip install -r requirements.txt
                     '''
                 }
             }
-        }
-
+        }   
+        
         stage('Verify Project Structure') {
             steps {
                 script {
@@ -113,7 +96,7 @@ pipeline {
                             ls -la tests/
                             echo ""
                             echo "🔎 발견된 테스트 파일:"
-                            find tests -name "*.py" -type f
+                            find tests -name "test_*.py" -type f
                         else
                             echo "❌ tests 디렉토리가 없습니다!"
                             exit 1
@@ -147,13 +130,12 @@ pipeline {
                   python -m venv .venv
                   . .venv/bin/activate
                   pip install --upgrade pip
-                  pip install -r requirements.txt
+                  pip install --upgrade pip
+                  python -m pip install -r requirements.txt
+                  python -m venv .venv
+                  .venv/bin/pip install --upgrade pip
+                  .venv/bin/pip install -r requirements.txt
                   # python -c "import pyautogui..." 라인 삭제
-                '''
-            }
-        }
-        stage('Run Tests') {
-            steps {
                 script {
                     echo '🧪 테스트 실행 중...'
                     sh '''
@@ -163,17 +145,16 @@ pipeline {
                         pytest tests -v \
                             --junitxml=reports/test-results.xml \
                             --html=reports/report.html \
+                        mkdir -p reports
+                        .venv/bin/pytest tests -v \
+                            --junitxml=reports/test-results.xml \
+                            --html=reports/report.html \
                             --self-contained-html --tb=short
                         EXIT_CODE=$?
                         echo "리포트 목록:"
                         ls -lh reports/test-results.xml reports/report.html || true
                         exit $EXIT_CODE
                         '''
-                    
-                }
-            }
-        }
-    }
 
     post {
         always {
