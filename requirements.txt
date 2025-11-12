@@ -3,6 +3,11 @@ selenium==4.25.0                # 웹 자동화 핵심 라이브러리
 webdriver-manager==4.0.2        # 브라우저 드라이버 자동 관리
 
 # Testing Frameworks 
+# Core Automation Tools
+selenium==4.25.0                # 웹 자동화 핵심 라이브러리
+webdriver-manager==4.0.2        # 브라우저 드라이버 자동 관리
+
+# Testing Frameworks
 pytest==8.3.3                   # 경량화된 테스트 프레임워크
 pytest-html==4.1.1              # 테스트 결과 HTML 리포트 출력
 pytest-cov==6.0.0               # 코드 커버리지 리포트
