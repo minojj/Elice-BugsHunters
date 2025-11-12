@@ -1,0 +1,39 @@
+name: Run Pytest with HTML Report
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # HTML 리포트용 pytest 플러그인 설치
+          pip install pytest pytest-html xvfbwrapper
+
+      - name: Run tests with Xvfb (headless display)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          xvfb-run -a pytest --html=reports/report.html --self-contained-html
+
+      - name: Upload test report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-report
+          path: reports/report.html
