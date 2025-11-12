@@ -8,8 +8,7 @@ from selenium.common.exceptions import TimeoutException
 from dotenv import load_dotenv
 from src.pages.login_page import LoginFunction
 
-
-
+load_dotenv()
 
 
 @pytest.fixture(scope="session")
@@ -27,7 +26,7 @@ def driver():
     driver.quit()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def logged_in_driver(driver):
     try:
         login_page = LoginFunction(driver)

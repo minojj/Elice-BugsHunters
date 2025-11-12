@@ -20,7 +20,7 @@ chrome_driver_path = ChromeDriverManager().install()
     # driver = webdriver.Chrome(service=service) 이거 fixture에 넣었었는데 현재 conftest.py에서 받아오기때문에 주석처리
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def pages(logged_in_driver):
     driver = logged_in_driver
     return {
@@ -402,8 +402,9 @@ def test_ca_010(my_agents_page_loaded, pages):
     create_agent_page = pages["create"]
     explorer_page = pages["explorer"]
 
-    # 1️⃣ 첫 번째 Draft 카드의 edit 버튼 클릭
-    my_agent_page.click_edit_button_by_card_type("draft")
+
+    # 1️⃣ 세 번째 Draft 카드의 edit 버튼 클릭
+    my_agent_page.click_edit_button_by_card_type("draft", index =2)
 
     # 2️⃣ 필드 요소 입력 (일부 값 비움)
     expected_values = create_agent_page.fill_form(
@@ -413,8 +414,9 @@ def test_ca_010(my_agents_page_loaded, pages):
         ""
     )
 
+
     # 페이지 렌더링 완료까지 대기
-    WebDriverWait(driver, 5).until(lambda d: d.execute_script("return document.readyState") == "complete")
+    WebDriverWait(driver, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
 
     # 3️⃣ 뒤로가기 → Explorer 이동 → My Agents로 재진입
     driver.back()
@@ -474,7 +476,7 @@ def test_ca_012(my_agents_page_loaded):
     message = save_page.get_snackbar_text().lower()
     assert "success" in message or "delete" in message, f"❌ CA_012_예상과 다른 메시지: {message}"
     print(f"✅ CA_012_선택한 에이전트 삭제 완료: {message}")
-
+    
 
 
 
