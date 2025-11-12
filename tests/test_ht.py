@@ -8,6 +8,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 import time
+import os
 
 
 # --- URLs & 계정 ---
@@ -126,16 +127,27 @@ def wait(drv, sec=10):
 @pytest.fixture(scope="function")
 def driver():
     opts = Options()
-    # 필요하면 headless 사용
-    # opts.add_argument("--headless=new")
+    # CI 환경에서는 무조건 headless 권장
+    if os.getenv("CI", "false").lower() == "true":
+        opts.add_argument("--headless=new")
+
     opts.add_argument("--window-size=1400,900")
     opts.add_argument("--disable-gpu")
     opts.add_argument("--no-sandbox")
-    # 테스트 동작 눈으로 보려면 detach 유지
-    # opts.add_experimental_option("detach", True)
+
+    # GitHub Actions의 setup-chrome가 제공하는 경로 사용
+    chrome_path = os.getenv("CHROME_PATH")
+    if chrome_path:
+        opts.binary_location = chrome_path
+    else:
+        # 혹시 다른 러너/컨테이너에서 chromium만 있는 경우 대비
+        for p in ("/usr/bin/google-chrome", "/usr/bin/chromium", "/usr/bin/chromium-browser"):
+            if os.path.exists(p):
+                opts.binary_location = p
+                break
+
     drv = webdriver.Chrome(options=opts)
     yield drv
-    # 눈으로 확인하려면 종료 막기
     drv.quit()
 
 def _login(drv):
