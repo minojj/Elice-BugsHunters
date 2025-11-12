@@ -13,6 +13,12 @@ COPY requirements.txt /app/requirements.txt
 # 빌드 필수 패키지가 필요하면 여기에 추가(예: gcc, libpq-dev 등)
 # RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    chromium \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN python -m pip install --upgrade pip && \
     pip install -r requirements.txt || true
 
