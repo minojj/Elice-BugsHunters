@@ -28,9 +28,9 @@ class LoginFunction:
     def open(self):
         # 페이지 열기
         self.driver.get(self.locators["main"])
-        # WebDriverWait(self.driver, 10).until(
-        #     EC.presence_of_element_located((By.TAG_NAME, "body"))
-        # )
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.TAG_NAME, "body"))
+        )
 
 
     def login(self, email, password ):
