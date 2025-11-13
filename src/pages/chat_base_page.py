@@ -23,6 +23,7 @@ class ChatPage:
         "image": (By.CSS_SELECTOR, 'img.inline-image'),
         "first_article": (By.XPATH, '(//div[@role="article"])[1]'),
         "scroll_latest_btn": (By.CSS_SELECTOR, 'button.h-9.w-9.rounded-full'),
+        "ai_response": "//div[@role='article'][contains(text(), '{text}')]",
     }
 
     # === Page Actions ===
@@ -51,7 +52,7 @@ class ChatPage:
     def get_ai_response(self, expected_text):
         """AI 응답 메시지 확인"""
         try:
-            ai_response_xpath = f"//div[@role='article'][contains(text(), '{expected_text}')]"
+            ai_response_xpath = self.locators["ai_response"].format(text=expected_text)
             last_ai_response = self.wait.until(
                 EC.presence_of_element_located((By.XPATH, ai_response_xpath))
             )
@@ -122,7 +123,8 @@ class ChatPage:
             if clear:
                 try:
                     search_box.clear()
-                except Exception:
+                except (TimeoutException, NoSuchElementException) as e:
+                    print(f" clear() 실패, JavaScript로 대체: {e}")
                     self.driver.execute_script("arguments[0].value = '';", search_box)
             # Ctrl+V 시도
             actions = ActionChains(self.driver)
@@ -130,8 +132,14 @@ class ChatPage:
             pasted = search_box.get_attribute("value") or ""
             print(f" 붙여넣은 텍스트: {pasted}")
             return pasted.strip()
+        except TimeoutException as e:
+            print(f" 붙여넣기 실패 - 요소 대기 시간 초과: {e}")
+            return ""
+        except NoSuchElementException as e:
+            print(f" 붙여넣기 실패 - 요소를 찾을 수 없음: {e}")
+            return ""
         except Exception as e:
-            print(f" 붙여넣기 실패: {e}")
+            print(f" 붙여넣기 실패 - 예상치 못한 오류: {e}")
             return ""
 
     def verify_copied_equals_paste(self, ai_response_element) -> bool:
