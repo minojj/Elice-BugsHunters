@@ -41,7 +41,7 @@ class ChatExpancePage:
         "image_create_menu": (By.XPATH, "//span[text()='이미지 생성']"),
         
         "google_search_menu_xpath": (By.XPATH, "//span[text()='구글 검색']"),
-        "deep_dive_menu_xpath": (By.XPATH, "//span[containstext()='심층 조사']"),
+        "deep_dive_menu_xpath": (By.XPATH, "//span[contains(text(),'심층 조사')]"),
         "deep_dive_create_button": (By.XPATH, "//button[contains(., '심층 조사 생성하기')]"),
     }
     
