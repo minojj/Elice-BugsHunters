@@ -1,11 +1,8 @@
-import logging
-from math import log  
 from selenium.webdriver.support.ui import WebDriverWait 
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support import expected_conditions as EC 
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-
-logger = logging.getLogger(__name__)    
+  
 class LoginFunction:
     def __init__(self, driver):
         self.driver = driver
@@ -21,8 +18,8 @@ class LoginFunction:
             "name": (By.CSS_SELECTOR, "input[name='fullname']"),
             "email_error": (By.XPATH, "//p[contains(text(), 'already registered')]"),
             "remove_history" : (By.XPATH, "//a[text()='Remove history']"),
-            "avatar_btn" : (By.CSS_SELECTOR, "button:has(svg[data-testid='PersonIcon'])"),
-            "logout_btn" : (By.XPATH, "//p[text()='Logout']")
+            "avatar_btn" : (By.XPATH, "//button[.//*[@data-testid='PersonIcon']]"),
+            "logout_any": (By.XPATH, "//*[text()='Logout' or text()='로그아웃']"),
         }
 
     # === Page Actions ===
@@ -33,12 +30,10 @@ class LoginFunction:
         WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
-        logger.debug(f"페이지 로드 완료: {self.driver.current_url}")
-
-
+        
 
     def login(self, email, password):
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 3)
     # 이메일 입력 필드 또는 비밀번호 필드가 먼저 나타날 수 있기 때문에
     # 두 가지 중 하나가 나타날 때까지 기다림
         try:
@@ -49,16 +44,15 @@ class LoginFunction:
                 )
             )
         except TimeoutException:
-            print("❌ 로그인 페이지 요소를 찾지 못했습니다.")
             return
 
         # remove 버튼 존재 여부 체크
         try:    
             remove_btn = wait.until(EC.element_to_be_clickable(self.locators["remove_history"]))
             remove_btn.click()
-            print("저장된 계정 초기화 완료")
+            
         except TimeoutException:
-            print("저장된 계정이 없어 제거 단계 생략")
+            pass  # 버튼이 없으면 무시
 
         # 이메일 입력 가능 상태 만들기
         try:
@@ -66,7 +60,7 @@ class LoginFunction:
             email_input.clear()
             email_input.send_keys(email)
         except TimeoutException:
-            print("⚠️ 이메일 입력 필드를 찾지 못해, 비밀번호 필드만 활성화된 상태로 보입니다.")
+            pass
             # 이메일 입력창이 숨겨진 경우, 로그인 이메일 선택 화면일 수 있음
             try:
                 email_select = self.driver.find_element(*self.locators["email"])
@@ -74,7 +68,6 @@ class LoginFunction:
                 email_input = wait.until(EC.presence_of_element_located(self.locators["email"]))
                 email_input.send_keys(email)
             except (Exception, NoSuchElementException):
-                print("이메일 입력 필드를 활성화할 수 없습니다.")
                 return
 
         # 비밀번호 입력
@@ -87,7 +80,7 @@ class LoginFunction:
             return
 
         except TimeoutException:
-            print("❌ 비밀번호 입력 필드를 찾지 못했습니다.")
+            pass
             return  
 
     def is_logged_in(self):
@@ -116,7 +109,6 @@ class LoginFunction:
         EC.visibility_of_element_located(self.locators["name"])
         )
 
-        print("✅ 'Create account with email' 클릭 완료")
 
     def check_name_field(self):
         # 회원가입 창 정상적으로 (이름)필드를 통해서 정상 동작 확인
@@ -157,16 +149,19 @@ class LoginFunction:
     def remove_history(self):
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.presence_of_element_located(self.locators["remove_history"])).click()
-        
-    def clear_element(self):
-        self.driver.find_element(*self.locators["email"]).clear()
-        self.driver.find_element(*self.locators["password"]).clear()
-        
+                
     def logout(self):
         wait = WebDriverWait(self.driver, 10)
-        wait.until(EC.presence_of_element_located(self.locators["avatar_btn"])).click()
-        wait.until(EC.presence_of_element_located(self.locators["logout_btn"])).click()
-        print("✅ 로그아웃 클릭 완료")
+        try:
+            wait.until(EC.element_to_be_clickable(self.locators["avatar_btn"])).click()
+            try:
+                wait.until(EC.presence_of_element_located(self.locators["logout_any"])).click()
+            except TimeoutException:
+                print("❌ 로그아웃 버튼을 찾지 못했습니다.")
+                return
+            print("✅ 로그아웃 클릭 완료")
+        except TimeoutException:
+            print("❌ 실패.")
         
     def logout_check(self):
         try:
@@ -176,7 +171,6 @@ class LoginFunction:
                     EC.visibility_of_element_located(self.locators["email"]),
                     EC.visibility_of_element_located(self.locators["password"])
                 )
-            
             )
             print("✅ 정상 로그아웃")
             return True
