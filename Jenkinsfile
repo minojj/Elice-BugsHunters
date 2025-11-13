@@ -1,10 +1,10 @@
 pipeline {
     agent {
-         dockerfile {
+        dockerfile {
             filename 'Dockerfile'
             args '--shm-size=2g'
-     }
-   }
+        }
+    }
 
     environment {
         PYTHONUNBUFFERED = "1"
@@ -13,7 +13,7 @@ pipeline {
         WDM_CACHE = "${WORKSPACE}/.wdm"
         HOME = "${WORKSPACE}"
         PYTHONPATH = "${WORKSPACE}:${PYTHONPATH}"
-        CHROMEDRIVER = "/usr/bin/chromedriver" // 시스템 드라이버 고정
+        CHROMEDRIVER = "/usr/bin/chromedriver"
     }
 
     stages {
@@ -44,7 +44,6 @@ pipeline {
             }
         }
 
-        // Dockerfile에서 이미 chromium/chromedriver 설치됨 → 이 stage는 있어도 무관
         stage('Install Browser') {
             steps {
                 script {
@@ -76,7 +75,6 @@ pipeline {
                             . .venv/bin/activate
                             pip install --upgrade pip
                             pip install -r requirements.txt
-                            # webdriver-manager는 테스트에서 import할 수 있으므로 제거하지 않음
                         '''
                     } else {
                         bat '''
@@ -91,38 +89,34 @@ pipeline {
                 }
             }
         }
+
         stage('Generate and Load .env') {
             steps {
-        withCredentials([
-            usernamePassword(
-                credentialsId: 'login-id',
-                usernameVariable: 'MAIN_EMAIL',
-                passwordVariable: 'MAIN_PASSWORD'
-            )
-        ]) {
-            sh '''
-                echo "[info] generate .env file..."
-                umask 077
-                cat >.env <<EOF
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'login-id',
+                        usernameVariable: 'MAIN_EMAIL',
+                        passwordVariable: 'MAIN_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "[info] generate .env file..."
+                        umask 077
+                        cat > .env <<EOF
 MAIN_EMAIL=${MAIN_EMAIL}
 MAIN_PASSWORD=${MAIN_PASSWORD}
 EOF
-                echo "[info] .env created at $(pwd)/.env"
-
-                echo "[info] using .env file..."
-                set -a
-                if [ -f .env ]; then
-                set +a
-                # echo "loaded MAIN_EMAIL: $MAIN_EMAIL"  # 이메일 노출 방지를 위해 로그 출력 제거
-            '''
-                echo "loaded MAIN_EMAIL: $MAIN_EMAIL"
-            '''
+                        echo "[info] .env created at $(pwd)/.env"
+                        echo "[info] .env file generated successfully"
+                    '''
+                }
+            }
         }
-    }
-}
+
         stage('Run Tests') {
             steps {
                 script {
+                    if (isUnix()) {
                         sh '''
                             set +e
                             . .venv/bin/activate
@@ -136,11 +130,11 @@ EOF
                                 echo "[info] .env 환경변수 로드 완료"
                             fi
 
-                            # Chrome 경로 설정(있으면만)
+                            # Chrome 경로 설정
                             export CHROME_BIN=$(which google-chrome || which chromium || which chromium-browser || true)
                             echo "🌐 Chrome 경로: ${CHROME_BIN:-<auto>}"
 
-                            # 시스템 chromedriver 우선 (Dockerfile에서 /usr/bin/chromedriver 설치됨)
+                            # 시스템 chromedriver 우선
                             export PATH="/usr/local/bin:/usr/bin:$PATH"
                             which chromedriver || true
 
@@ -155,7 +149,6 @@ EOF
                             echo "📊 테스트 종료 코드: $EXIT_CODE"
                             ls -lh reports/* 2>/dev/null || true
                             exit $EXIT_CODE
-                        '''
                         '''
                     } else {
                         bat '''
