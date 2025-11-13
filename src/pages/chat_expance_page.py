@@ -30,24 +30,33 @@ class ChatExpancePage:
         "chat_input": (By.CSS_SELECTOR, "div.MuiInputBase-root.MuiInputBase-multiline textarea"),
     
         "quiz_create_menu": (By.XPATH, "//div[text()='퀴즈 생성']"),
-        "quiz_create_menu_alt": (By.XPATH, "//div[contains(@class, 'MuiTypography-root') and contains(text(), '퀴즈 생성')]"),
-        "quiz_create_menu_alt2": (By.XPATH, "//div[@role='button' and contains(@class, 'MuiListItemButton') and .//span[contains(text(), '퀴즈')]]"),
-    
+
         # #PPT 생성 관련 로케이터
         "ppt_create_btn": (By.XPATH, "//span[contains(text(), 'PPT 생성')]"),
         "ppt_slide_input": (By.XPATH, "//div[text()='슬라이드 수']/following-sibling::div//input"),
-        "ppt_section_input": (By.XPATH, "//label[contains(text(), '색션 수')]/../following-sibling::div//input[@type='number']"),
+        "ppt_section_input": (By.XPATH, "//li[role='button' and .//svg[@data-icon='magnifying-glass']]"),
         "ppt_generate_button": (By.XPATH, "//button[contains(@class, 'MuiButton') and contains(., '생성')]"),
         "ppt_cancel_button": (By.XPATH, "//button[contains(., '취소')]"),
 
-        "image_upload_menu_css": (By.CSS_SELECTOR, "div.MuiButtonBase-root.MuiListItemButton-root[role='presentation'][data-action='image-upload']"),
-        "image_upload_menu_xpath": (By.XPATH, "//div[contains(text(), '이미지 생성')]"),
-        "google_search_menu_css": (By.CSS_SELECTOR, "div.MuiButtonBase-root.MuiListItemButton-root[role='presentation'][data-action='google-search']"),
-        "google_search_menu_xpath": (By.XPATH, "//div[contains(text(), '구글 검색')]"),
-        "deep_dive_menu_css": (By.CSS_SELECTOR, "div.MuiButtonBase-root.MuiListItemButton-root[role='presentation'][data-action='deep-dive']"),
-        "deep_dive_menu_xpath": (By.XPATH, "//div[contains(text(), '심층 조사')]"),
+        "image_create_menu": (By.XPATH, "//span[text()='이미지 생성']"),
+        
+        "google_search_menu_xpath": (By.XPATH, "//span[text()='구글 검색']"),
+        "deep_dive_menu_xpath": (By.XPATH, "//span[containstext()='심층 조사']"),
         "deep_dive_create_button": (By.XPATH, "//button[contains(., '심층 조사 생성하기')]"),
-        }
+    }
+    
+    error_selectors = [
+        # 실제 HTML 구조
+        (By.CSS_SELECTOR, "div[data-title]"),
+        (By.XPATH, "//div[@data-title]"),
+        (By.XPATH, "//*[@data-type='error']"),
+        ]
+    
+    error_keywords = [
+        'File type must be one of',
+        'image/*', 
+        'application/pdf',
+    ]
 
     def __init__(self, driver):
         """
@@ -103,8 +112,6 @@ class ChatExpancePage:
     def close_file_dialog(self):
         """파일 다이얼로그 닫기 (ESC)""" 
         #액션체인지
-         
-        
         actions = ActionChains(self.driver)
         actions.send_keys(Keys.ESCAPE)
         actions.send_keys(Keys.ESCAPE)
@@ -123,7 +130,6 @@ class ChatExpancePage:
         except TimeoutException:
             print("⚠️ 업로드된 파일명을 찾을 수 없음")
             return None
-
         
     def click_file_submit_button(self):
         """파일 제출 버튼 클릭"""
@@ -145,7 +151,6 @@ class ChatExpancePage:
             print("✅ 백드롭(overlay) 사라짐 확인 완료")
         except TimeoutException:
             print("⚠️ 백드롭 대기 중 오류 — 무시하고 진행")
-
 
     def send_message_with_enter(self):
         """엔터키로 메시지 전송 (입력창이 비어있어도 가능)"""
@@ -238,14 +243,81 @@ class ChatExpancePage:
             traceback.print_exc()
             return False
         
-    def get_error_message(self):
-        """오류 메시지 반환"""
+    def check_for_alert_or_error(self,timeout=5):
+        """경고창(alert) 또는 에러 메시지 확인"""
         try:
-            error_element = self.driver.find_element(By.CSS_SELECTOR, ".error-message")
-            return error_element.text
-        except NoSuchElementException:
-            return ""   
-        
+            WebDriverWait(self.driver, 2).until(EC.alert_is_present())
+            alert = self.driver.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+            return alert_text
+           
+        except:
+            pass
+
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            try:
+                page_source = self.driver.page_source
+                for keyword in self.error_keywords:
+                    if keyword in page_source:
+                        return True
+                           
+            except :
+                pass
+               
+    def upload_file_expect_failure(self, filepath, wait_time=10):
+        """
+         파일 업로드 (실패 예상)
+        Args:
+            filepath: 업로드할 파일의 전체 경로 
+        Returns:
+            bool: 업로드 실패 여부 (True: 실패 확인, False: 업로드 성공)
+        """
+        try:
+            print("\n=== 위험 파일 업로드 테스트 시작 ===")
+            
+            # 1. 플러스 버튼 클릭
+            self.click_plus_button()
+            
+            # 2. 파일 업로드 메뉴 클릭
+            self.click_file_upload_menu()
+            
+            # 3. 파일 업로드
+            self.upload_file(filepath)
+
+            # 4. 경고창 또는 에러 메시지 확인
+            has_error = self.check_for_alert_or_error(timeout=wait_time)
+
+            #  파일 다이얼로그 닫기
+            self.close_file_dialog()
+            
+            # 5. 응답 대기
+            self.wait_for_response(wait_time)
+            
+            if has_error:
+                print("✅ 위험 파일 업로드가 차단되었습니다 (예상된 동작)")
+                return True  # 업로드 실패 확인
+            
+            else:
+                print("❌ 위험 파일 업로드가 허용되었습니다 (예상과 다른 동작)")
+                return False  # 업로드 성공
+            
+        except TimeoutException as e:
+            print(f"❌ 타임아웃 오류: {str(e)}")
+            print(f"   현재 URL: {self.get_current_url()}")
+            return False
+            
+        except NoSuchElementException as e:
+            print(f"❌ 요소를 찾을 수 없음: {str(e)}")
+            return False
+            
+        except Exception as e:
+            print(f"❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return False
+
     def click_quiz_create_menu(self):
         """퀴즈 생성 메뉴 클릭 (여러 방법 시도)"""
         print("퀴즈 생성 메뉴 찾는 중...")
@@ -269,7 +341,7 @@ class ChatExpancePage:
         print("   ❌ 모든 방법 실패")
         self.driver.save_screenshot("quiz_menu_not_found.png")
         return False
-
+       
     def create_quiz_and_send(self, wait_time=10):
         """
         퀴즈 생성 및 전송 프로세스 (통합 메서드)
@@ -693,11 +765,8 @@ class ChatExpancePage:
         """이미지 생성 메뉴 클릭"""
         try:
             image_btn = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable(self.locators["image_upload_menu_css"])
-            )
-            print("✅ 이미지 생성 메뉴 발견")
-            self.driver.execute_script("arguments[0].scrollIntoView(true);", image_btn)
-            time.sleep(0.3)
+                EC.element_to_be_clickable(self.locators["image_create_menu"])
+        )
             image_btn.click()
             print("✅ 이미지 생성 메뉴 클릭 완료")
             time.sleep(0.5)
@@ -779,11 +848,10 @@ class ChatExpancePage:
         """구글 검색 메뉴 클릭"""
         try:
             google_search_btn = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable(self.locators["google_search_menu_css"])
+                EC.element_to_be_clickable(self.locators["google_search_menu_xpath"])
             )
             print("✅ 구글 검색 메뉴 발견")
-            self.driver.execute_script("arguments[0].scrollIntoView(true);", google_search_btn)
-            time.sleep(0.3)
+                       
             google_search_btn.click()
             print("✅ 구글 검색 메뉴 클릭 완료")
             time.sleep(0.5)
