@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.chrome.service import Service
 # from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 # StaleElementReferenceException,
 from selenium.webdriver.support import expected_conditions as EC
 # from selenium.webdriver.common.keys import Keys
@@ -65,7 +65,7 @@ class AgentExplorerPage:
                 lambda d: len(d.find_elements(*cards_locator)) > 0
             )
         except TimeoutException:
-            print("⚠️ 카드 리스트가 로드되지 않았습니다.")
+            print("⚠️ 카드 리스트 미노출")
             return []
         
         patterns = [
@@ -503,7 +503,6 @@ class MyAgentsPage:
     
 
     def click_edit_button_by_card_type(self, card_type, index=0):
-  
         if card_type == "private":
             cards = self.get_private_cards()
         elif card_type == "draft":
@@ -512,21 +511,41 @@ class MyAgentsPage:
             cards = self.get_organization_cards()
         else:
             raise ValueError(f"Invalid card_type: {card_type}")
- 
+
         if len(cards) <= index:
             raise IndexError(f"{card_type} 카드가 {index+1}개 미만입니다.")
 
         self.scroll_into_view(cards[index])
- 
-        edit_btn = cards[index].find_element(By.CSS_SELECTOR, "button:has(svg[data-icon='pen'])")
 
-        WebDriverWait(self.driver, 5).until_not(EC.presence_of_element_located((By.CSS_SELECTOR, ".MuiDialog-container")))
+        buttons = cards[index].find_elements(By.CSS_SELECTOR, "button")
+        edit_btn = None
+        for btn in buttons:
+            try:
+                icon = btn.find_element(By.CSS_SELECTOR, "svg[data-icon='pen']")
+                if icon:
+                    edit_btn = btn
+                    break
+            except:
+                continue
 
+        if not edit_btn:
+            raise NoSuchElementException("Edit 버튼(svg[data-icon='pen'])을 찾지 못했습니다.")
+
+        WebDriverWait(self.driver, 5).until_not(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".MuiDialog-container"))
+        )
         WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(edit_btn))
         WebDriverWait(self.driver, 5).until(lambda d: edit_btn.is_displayed())
 
-        edit_btn.click()
+        try:
+            edit_btn.click()
+        except:
+            self.driver.execute_script("arguments[0].click();", edit_btn)
+
         print(f"✅ {card_type} 카드 {index + 1}번째 Edit 버튼 클릭 완료")
+
+
+
 
 
     def click_delete_button_by_card_type(self, card_type, index=0):
@@ -535,6 +554,18 @@ class MyAgentsPage:
             cards = self.get_private_cards()
         elif card_type == "draft":
             cards = self.get_draft_cards()
+            if len(cards) <= index:
+                wait = WebDriverWait(self.driver, 5)
+                for _ in range(5):
+                    if len(cards) > index:
+                        break
+                    self.driver.execute_script("window.scrollBy(0, 800);")
+                    try:
+                        wait.until(lambda d: len(self.get_draft_cards()) > len(cards))
+                    except TimeoutException:
+                        pass
+                    cards = self.get_draft_cards()
+
         elif card_type == "organization":
             cards = self.get_organization_cards()
         else:
@@ -548,6 +579,9 @@ class MyAgentsPage:
         delete_btn = cards[index].find_element(By.CSS_SELECTOR, "button:has(svg[data-icon='trash'])")
         delete_btn.click()
         print(f"✅ {card_type} 카드 Delete 버튼 클릭")
+
+
+
 
     def confirm_delete_modal(self):
         delete_confirm_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.locators["confirm_delete_modal_button"]))
