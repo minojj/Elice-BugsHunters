@@ -104,86 +104,84 @@ class AgentExplorerPage:
 
 
     def delete_fixed_agent(self, my_agents_page, save_page):
-        from selenium.common.exceptions import TimeoutException
-        from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver.support import expected_conditions as EC
-        
-        wait = WebDriverWait(self.driver, 10)
-        short_wait = WebDriverWait(self.driver, 3)
-        
-        # 🔍 디버깅: 현재 URL 확인
+        wait = WebDriverWait(self.driver, 15)  # 살짝 늘림
+        short_wait = WebDriverWait(self.driver, 5)
+    
+    # 0️⃣ 현재 URL 출력
         print(f"🌐 현재 URL: {self.driver.current_url}")
         
-        # 1️⃣ 먼저 카드 리스트가 렌더링될 때까지 대기
+        # 1️⃣ 카드 리스트 로딩 대기
         try:
-            WebDriverWait(self.driver, 15).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='/agent/']"))
-            )
+            wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "a[href*='/ai-helpy-chat/agent/']")))
             print("✅ 카드 리스트(전체) 렌더링됨!")
         except TimeoutException:
             print("❌ Explorer에 카드가 하나도 안 뜸 (권한/데이터 문제?)")
             return False
         
-        # 🔍 디버깅: 이제 카드 개수 확인
-        all_cards = self.driver.find_elements(By.CSS_SELECTOR, "a[href*='/agent/']")
+        # 2️⃣ 카드 href 출력 (디버그)
+        all_cards = self.driver.find_elements(By.CSS_SELECTOR, "a[href*='/ai-helpy-chat/agent/']")
         print(f"📦 페이지에 있는 카드 수: {len(all_cards)}")
+        for card in all_cards:
+            print("카드 href:", card.get_attribute("href"))
         
-        # 🔍 디버깅: 타겟 카드가 있는지 확인
+        # 3️⃣ 타겟 카드 확인 및 없으면 스크롤 시도
         target_cards = self.driver.find_elements(*self.locators["fixed_target_card"])
         print(f"🎯 타겟 카드 발견 여부: {len(target_cards)}개")
         
         if len(target_cards) == 0:
             print("❌ 타겟 카드가 페이지에 없습니다. 스크롤이 필요합니다.")
-            # 페이지 끝까지 스크롤해서 모든 카드 로드
+            # 페이지 끝까지 스크롤 후 대기
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            WebDriverWait(self.driver, 5).until(lambda d: True)  # 잠깐 대기
+            short_wait.until(lambda d: True)  # 잠깐 대기
             
             target_cards = self.driver.find_elements(*self.locators["fixed_target_card"])
             print(f"🎯 스크롤 후 타겟 카드: {len(target_cards)}개")
-            
             if len(target_cards) == 0:
                 print("❌ 스크롤 후에도 타겟 카드 없음")
                 return False
-
-        # 2️⃣ 카드가 DOM에 존재할 때까지 대기
+        
+        # 4️⃣ 타겟 카드 DOM에 존재할 때까지 대기 및 스크롤
         card = wait.until(EC.presence_of_element_located(self.locators["fixed_target_card"]))
         print("✅ 타겟 카드 발견")
-        
-        # 3️⃣ 카드를 화면 중앙으로 스크롤
         self.driver.execute_script("arguments[0].scrollIntoView({block:'center'});", card)
         
-        # 4️⃣ 카드 안에서 메뉴 버튼 찾기
+        # 5️⃣ 카드 안에서 메뉴 버튼 찾기 및 클릭 (JS 클릭)
         try:
             menu_btn = card.find_element(By.CSS_SELECTOR, 'button[aria-label="menu"]')
             print("✅ 메뉴 버튼 발견")
             
-            # 버튼이 클릭 가능할 때까지 대기
-            wait.until(lambda d: menu_btn.is_displayed() and menu_btn.is_enabled())
-            menu_btn.click()
-            print("🔧 메뉴 버튼 클릭 완료")
-        except Exception as e:
-            print(f"❌ 메뉴 버튼 클릭 실패: {str(e)[:100]}")
-            return False
+            # 스크롤 및 포커스
+            self.driver.execute_script("arguments[0].scrollIntoView({block:'center'});", menu_btn)
+            self.driver.execute_script("arguments[0].focus();", menu_btn)
 
-        # 5️⃣ 드롭다운 메뉴에서 Delete 아이콘이 있는 버튼 클릭
+            # 클릭 전 짧게 대기
+            WebDriverWait(self.driver, 2).until(lambda d: menu_btn.is_enabled() and menu_btn.is_displayed())
+            
+            # JS 클릭
+            self.driver.execute_script("arguments[0].click();", menu_btn)
+            print("🔧 메뉴 버튼 JS 클릭 완료")
+        except Exception as e:
+            print(f"❌ 메뉴 버튼 클릭 실패: {str(e)[:150]}")
+            print("⚠️ 클릭 실패 스크린샷 저장: click_fail.png")
+            return False
+        
+        # 6️⃣ 드롭다운 메뉴 Delete 아이콘 + 버튼 클릭
         try:
             delete_icon = short_wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "svg[data-icon='trash']"))
             )
             delete_btn = delete_icon.find_element(By.XPATH, "./ancestor::*[self::button or self::li][1]")
             self.driver.execute_script("arguments[0].click();", delete_btn)
-            print("🗑️ 드롭다운 메뉴에서 Delete 클릭")
-            
+            print("🗑️ 드롭다운 메뉴에서 Delete JS 클릭")
         except TimeoutException:
             print("✅ Delete 메뉴 항목이 나타나지 않음 (삭제 권한 없음)")
             return True
-
-        # 6️⃣ 삭제 확인 모달 확인
+        
+        # 7️⃣ 삭제 확인 모달 Delete 버튼 대기 및 클릭
         try:
             modal_delete_btn = short_wait.until(
                 EC.element_to_be_clickable(my_agents_page.locators["confirm_delete_modal_button"])
             )
-            
             if not modal_delete_btn.is_enabled():
                 print("✅ Delete 버튼 비활성화됨 (삭제 권한 없음)")
                 return True
@@ -191,22 +189,22 @@ class AgentExplorerPage:
             modal_delete_btn.click()
             print("❌ 삭제 모달 Delete 버튼 클릭됨")
             
+            # 8️⃣ 스낵바 대기 및 메시지 확인
             snackbar = wait.until(
                 EC.visibility_of_element_located(save_page.locators["success_alert"])
             )
             snackbar_text = snackbar.text
-            
         except TimeoutException:
             print("✅ 삭제 확인 모달이 나타나지 않음 (삭제 권한 없음)")
             return True
-
+        
         print(f"📢 스낵바 메시지: {snackbar_text}")
         lower = snackbar_text.lower()
-
-        if "error" in lower or "permission" in lower or "권한" in lower or "삭제" in lower or "cannot" in lower or "failed" in lower:
+        
+        if any(k in lower for k in ["error", "permission", "권한", "삭제", "cannot", "failed"]):
             print("✅ 삭제 실패 알림")
             return True
-
+        
         print("❌ 삭제가 실제로 이루어짐")
         return False
 
