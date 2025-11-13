@@ -286,7 +286,14 @@ class CreateAgentPage:
             "rules": (By.NAME, "systemPrompt"),
             "conversation": (By.NAME, "conversationStarters.0.value"),
             "create_btn": (By.CSS_SELECTOR, "button.MuiButton-containedPrimary"), # Create/Publish 공용 버튼
-        }
+            "file_input": (By.CSS_SELECTOR, "input.css-1bgri6b"),
+            "file_item": (By.CSS_SELECTOR, "div.css-8e3ts2 > div.MuiStack-root.css-1lawy5a"),
+            "file_success_icon": (By.CSS_SELECTOR, "div.css-tza19w svg.MuiSvgIcon-colorSuccess"),
+            "file_failed_icon": (By.CSS_SELECTOR, "div.css-tza19w svg.MuiSvgIcon-colorError"),
+            "file_status": (By.CSS_SELECTOR, "span.MuiTypography-caption"),
+            "file_error_msg": (By.CSS_SELECTOR, "p.MuiTypography-body2.css-wrn3u"),
+            }  
+        
 
     def open(self):
         self.driver.get(self.url)
@@ -433,7 +440,6 @@ class CreateAgentPage:
 
 
     def get_agent_id_from_url(self):
-        """현재 페이지의 URL에서 agent UUID 추출"""
         current_url = self.driver.current_url
         try:
             agent_id = current_url.split("/agent/")[1].split("/")[0]
@@ -441,6 +447,64 @@ class CreateAgentPage:
             return agent_id
         except IndexError:
             raise AssertionError(f"❌ URL에서 agent ID 추출 실패 (현재 URL: {current_url})")
+
+
+    def upload_file(self, filepath):
+        file_input = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located(self.locators["file_input"])
+        )
+
+        self.driver.execute_script("arguments[0].style.display = 'block';", file_input)
+        file_input.send_keys(filepath)
+
+        print(f"📤 파일 업로드 시도: {filepath}")
+
+
+    def get_last_uploaded_item(self, timeout=10):
+        wait = WebDriverWait(self.driver, timeout)
+
+        # 파일 업로드가 시작될 때까지 기다림 (업로드되는 아이템이 최소 1개 등장)
+        wait.until(lambda d: len(d.find_elements(*self.locators["file_item"])) > 0)
+
+        # 모든 업로드된 아이템 가져오기
+        items = self.driver.find_elements(*self.locators["file_item"])
+
+        # 가장 마지막 것이 최신 업로드 파일
+        return items[-1]
+        
+
+    def get_file_status(self, file_item):
+        return file_item.find_element(*self.locators["file_status"]).text.strip()
+
+
+
+    def has_success_icon(self, file_item, timeout=5):
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                lambda d: len(file_item.find_elements(
+                    By.CSS_SELECTOR, "div.css-tza19w svg.MuiSvgIcon-colorSuccess"
+                )) > 0
+            )
+            return True
+        except:
+            return False
+
+
+    def has_failed_icon(self, file_item, timeout=5):
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                lambda d: len(file_item.find_elements(
+                    By.CSS_SELECTOR, "div.css-tza19w svg.MuiSvgIcon-colorError"
+                )) > 0
+            )
+            return True
+        except:
+            return False
+
+    def get_error_msg(self, file_item):
+        els = file_item.find_elements(*self.locators["file_error_msg"])
+        return els[0].text.strip() if els else None
+
 
    
     

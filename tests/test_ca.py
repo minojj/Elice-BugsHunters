@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 import time
+import os
 # from src.pages.agent_page import AgentPage
 # from src.utils.helpers import Utils
 # from src.pages.login_page import LoginFunction
@@ -87,6 +88,28 @@ def create_page(pages):
     print("✅ 생성 페이지로 진입 완료")
 
     yield driver
+
+
+#더미파일 생성,삭제용 fixture
+
+@pytest.fixture
+def dummy_files():
+    small = "dummy_small.pdf"
+    big = "dummy_big.pdf"
+
+    with open(small, "wb") as f:
+        f.write(b"0" * 1024)
+    with open(big, "wb") as f:
+        f.write(b"0" * 55 * 1024 * 1024)
+
+    yield {
+        "small": os.path.abspath(small),
+        "big": os.path.abspath(big),
+    }
+
+    for fpath in [small, big]:
+        if os.path.exists(fpath):
+            os.remove(fpath)
 
 
 
@@ -442,10 +465,6 @@ def test_ca_010(my_agents_page_loaded, pages):
     my_agent_page.wait_for_cards_loaded()
     my_agent_page.load_all_cards()
     print("⬅️ 뒤로가기 및 새로고침 완료")
-
-    # 5) 동일한 agent_id 를 가진 카드가 My Agents에 반영될 때까지 대기
-    success = driver.save_screenshot("click_fail.png")
-    print("📸 screenshot saved?:", success)
     updated_card = my_agent_page.wait_for_card_update(agent_id, TARGET_TITLE)
 
 
@@ -524,7 +543,36 @@ def test_ca_013(explorer_page_loaded):
 
 
 
+def test_ca_014(create_page, pages, dummy_files):
+    driver = create_page
+    create = pages["create"]
 
+    create.upload_file(dummy_files["small"])
+
+    small_item = create.get_last_uploaded_item()
+
+    assert create.has_success_icon(small_item), "❌ CA_014_작은 파일 업로드 성공 아이콘 없음"
+    assert "success" in create.get_file_status(small_item).lower(), "❌ CA_014_작은 파일 상태값이 Success가 아님"
+
+    print("✅ CA_014_작은 파일 업로드 성공")
+
+
+    create.upload_file(dummy_files["big"])
+
+    big_item = create.get_last_uploaded_item()
+
+    assert create.has_failed_icon(big_item), "❌ CA_014_큰 파일 실패 아이콘 없음"
+    assert "failed" in create.get_file_status(big_item).lower(), "❌ CA_014_큰 파일 상태값이 Failed가 아님"
+
+    err = create.get_error_msg(big_item)
+    if not err:
+        print("⚠️ CA_014_오류 문구가 없음")
+    elif "file size" not in err.lower():
+        print(f"⚠️ CA_014_예상 외 오류 문구: {err}")
+    else:
+        print("✅ CA_014_파일 사이즈 제한 오류 문구 정상 감지!")
+
+    print("✅ CA_014_파일 용량 제한 검증 완료!")
 
 
 
