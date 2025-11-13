@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+import time
 # from src.pages.agent_page import AgentPage
 # from src.utils.helpers import Utils
 # from src.pages.login_page import LoginFunction
@@ -68,24 +69,23 @@ def my_agents_page_loaded(pages):
 
 @pytest.fixture
 def create_page(pages):
-    """Explorer에서 Create 버튼 클릭으로 생성 페이지(builder#form) 진입"""
     driver = pages["explorer"].driver
     explorer_page = pages["explorer"]
     wait = WebDriverWait(driver, 10)
 
-    # 1️⃣ Explorer 페이지로 이동 (URL은 클래스 내부 self.url 사용)
     driver.get(explorer_page.url)
     wait.until(EC.url_contains("/ai-helpy-chat/agent"))
 
-    # 2️⃣ 'Create' 버튼 클릭
-    explorer_page.get_element("create_btn", wait_type="presence").click()
+    # 🔁 presence → clickable
+    explorer_page.get_element("create_btn", wait_type="clickable").click()
 
-    # 3️⃣ builder#form 로드될 때까지 대기
+    # URL + 폼 로딩까지 같이 기다리기
     wait.until(EC.url_contains("builder#form"))
+    wait.until(EC.visibility_of_element_located((By.NAME, "name")))
+
     print("✅ 생성 페이지로 진입 완료")
 
     yield driver
-    
 
 
 
@@ -97,8 +97,8 @@ def test_ca_001(logged_in_driver):
     wait = WebDriverWait(driver, 10)
     explorer_page = AgentExplorerPage(driver)
 
-    explorer_page.get_element("agent_explorer_btn", wait_type="presence").click()
-    explorer_page.get_element("create_btn", wait_type="presence").click()
+    explorer_page.get_element("agent_explorer_btn", wait_type="clickable").click()
+    explorer_page.get_element("create_btn", wait_type="clickable").click()
 
     try:
         wait.until(EC.url_contains("builder#form"))
@@ -328,7 +328,7 @@ def test_ca_007(my_agents_page_loaded):
     my_agent_page = MyAgentsPage(driver)
 
     # 1️⃣ My Agents 페이지 진입 후 Draft, Private, Organization 카드 존재여부 확인
-
+    my_agent_page.load_all_cards()
     draft_cards = my_agent_page.get_draft_cards()   
     private_cards = my_agent_page.get_private_cards()
     organization_cards = my_agent_page.get_organization_cards()
@@ -359,6 +359,7 @@ def test_ca_008(my_agents_page_loaded):
     save_page = SaveAgentPage(driver)
 
     #1️⃣ 첫 번째 Private 카드의 edit 버튼 클릭(organization으로 변경 가능)
+    my_agent_page.load_all_cards()
     my_agent_page.click_edit_button_by_card_type("private")
 
     #2️⃣ 수정 작업
@@ -383,6 +384,7 @@ def test_ca_009(my_agents_page_loaded):
     create_agent_page = CreateAgentPage(driver)
     
     #1️⃣ 첫 번째 Draft 카드의 edit 버튼 클릭
+    my_agent_page.load_all_cards()
     my_agent_page.click_edit_button_by_card_type("draft")
     
     #2️⃣ 수정을 위해 필드 요소 찾고 모든 필드 입력 후 create 버튼 클릭
@@ -413,6 +415,7 @@ def test_ca_010(my_agents_page_loaded, pages):
     create_agent_page = pages["create"]
 
     # 1) 세 번째 Draft 카드 편집
+    my_agent_page.load_all_cards()
     draft_cards = my_agent_page.get_draft_cards()
     assert len(draft_cards) >= 3, "Draft 카드가 3개 미만입니다."
 
@@ -435,6 +438,7 @@ def test_ca_010(my_agents_page_loaded, pages):
     )
 
     # 3) auto-save 대기
+    time.sleep(1) 
     create_agent_page.wait_for_autosave(expected_values, timeout=20)
     print("⏳ auto-save 완료")
 
@@ -443,10 +447,16 @@ def test_ca_010(my_agents_page_loaded, pages):
 
     # 4) 뒤로가기
     driver.back()
-    print("⬅️ 뒤로가기 완료")
+    driver.refresh()
+    my_agent_page.wait_for_cards_loaded()
+    my_agent_page.load_all_cards()
+    print("⬅️ 뒤로가기 및 새로고침 완료")
 
     # 5) 동일한 agent_id 를 가진 카드가 My Agents에 반영될 때까지 대기
+    success = driver.save_screenshot("click_fail.png")
+    print("📸 screenshot saved?:", success)
     updated_card = my_agent_page.wait_for_card_update(agent_id, TARGET_TITLE)
+
 
     assert updated_card is not None, f"Draft 카드(ID: {agent_id})가 My Agents에 없음"
     print("🔄 Draft 반영 확인 완료")
@@ -478,8 +488,9 @@ def test_ca_011(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
 
-    #1️⃣ 두 번째 draft 카드의 delete 버튼 클릭(위치나 종류는 환경에 따라 변경 가능) 
-    my_agent_page.click_delete_button_by_card_type("draft", index=1)
+    #1️⃣ 두 번째 organization 카드의 delete 버튼 클릭(위치나 종류는 환경에 따라 변경 가능) 
+    my_agent_page.load_all_cards()
+    my_agent_page.click_delete_button_by_card_type("organization", index=1)
 
     #2️⃣ 삭제 팝업 모달 확인
     assert my_agent_page.is_delete_modal_visible(), "❌ CA_011_삭제 팝업 모달 미출력"
@@ -496,8 +507,9 @@ def test_ca_012(my_agents_page_loaded):
     my_agent_page = MyAgentsPage(driver)
     save_page = SaveAgentPage(driver)
 
-    #1️⃣ 두 번째 draft 카드의 완전 삭제(위치나 종류는 환경에 따라 변경 가능)
-    my_agent_page.click_delete_button_by_card_type("draft", index=1)
+    #1️⃣ 두 번째 organization 카드의 완전 삭제(위치나 종류는 환경에 따라 변경 가능)
+    my_agent_page.load_all_cards()
+    my_agent_page.click_delete_button_by_card_type("organization", index=1)
     my_agent_page.confirm_delete_modal()
 
     #2️⃣ 삭제 후 알림 확인
@@ -510,14 +522,15 @@ def test_ca_012(my_agents_page_loaded):
 def test_ca_013(explorer_page_loaded):
     driver = explorer_page_loaded
     explorer = AgentExplorerPage(driver)
-    my_agents_page = MyAgentsPage(driver)
+    my_agent_page = MyAgentsPage(driver)
     save_page = SaveAgentPage(driver)
 
-
-    result = explorer.delete_fixed_agent(my_agents_page, save_page)
+    my_agent_page.load_all_cards()
+    result = explorer.delete_fixed_agent(my_agent_page, save_page)
 
     assert result is True, "❌ CA_013_기본제공 에이전트 삭제"
     print("✅ CA_013_기본 에이전트 삭제 방지")
+
 
 
 
