@@ -1,5 +1,5 @@
 from time import sleep
-from src.pages.ChatBasepage import ChatPage
+from src.pages.chat_base_page import ChatPage
 
 
 def test_cb_001(logged_in_driver):
