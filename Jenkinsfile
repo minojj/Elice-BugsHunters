@@ -89,8 +89,6 @@ pipeline {
                 }
             }
         }
-
-
         stage('Run Tests') {
             steps {
                 withCredentials([
@@ -100,55 +98,47 @@ pipeline {
                         passwordVariable: 'MAIN_PASSWORD'
                     )
                 ]) {
-                script {
-                    if (isUnix()) {
-                        sh '''
-                            set +e
-                            . .venv/bin/activate
-                            mkdir -p reports screenshots "${WDM_CACHE}"
+                    script {
+                        if (isUnix()) {
+                            sh '''
+                                set +e
+                                . .venv/bin/activate
+                                mkdir -p reports screenshots "${WDM_CACHE}"
 
-                            # .env 파일에서 환경변수 로드
-                            if [ -f .env ]; then
-                                set -a
-                                . .env
-                                set +a
-                                echo "[info] .env 환경변수 로드 완료"
-                            fi
+                                echo "[info] Jenkins 환경변수 사용"
+                                
+                                export CHROME_BIN=$(which google-chrome || which chromium || which chromium-browser || true)
+                                echo "🌐 Chrome 경로: ${CHROME_BIN:-<auto>}"
 
-                            # Chrome 경로 설정
-                            export CHROME_BIN=$(which google-chrome || which chromium || which chromium-browser || true)
-                            echo "🌐 Chrome 경로: ${CHROME_BIN:-<auto>}"
+                                export PATH="/usr/local/bin:/usr/bin:$PATH"
+                                which chromedriver || true
 
-                            # 시스템 chromedriver 우선
-                            export PATH="/usr/local/bin:/usr/bin:$PATH"
-                            which chromedriver || true
+                                pytest tests -v \
+                                    --junitxml=reports/test-results.xml \
+                                    --html=reports/report.html \
+                                    --self-contained-html \
+                                    --tb=short
 
-                            # 테스트 실행
-                            pytest tests -v \
-                                --junitxml=reports/test-results.xml \
-                                --html=reports/report.html \
-                                --self-contained-html \
-                                --tb=short
+                                EXIT_CODE=$?
+                                echo "📊 테스트 종료 코드: $EXIT_CODE"
+                                ls -lh reports/* 2>/dev/null || true
+                                exit $EXIT_CODE
+                            '''
+                        } else {
+                            bat '''
+                                call .venv\\Scripts\\activate.bat
+                                if not exist reports mkdir reports
+                                if not exist screenshots mkdir screenshots
 
-                            EXIT_CODE=$?
-                            echo "📊 테스트 종료 코드: $EXIT_CODE"
-                            ls -lh reports/* 2>/dev/null || true
-                            exit $EXIT_CODE
-                        '''
-                    } else {
-                        bat '''
-                            call .venv\\Scripts\\activate.bat
-                            if not exist reports mkdir reports
-                            if not exist screenshots mkdir screenshots
+                                pytest tests -v ^
+                                    --junitxml=reports/test-results.xml ^
+                                    --html=reports/report.html ^
+                                    --self-contained-html ^
+                                    --tb=short
 
-                            pytest tests -v ^
-                                --junitxml=reports/test-results.xml ^
-                                --html=reports/report.html ^
-                                --self-contained-html ^
-                                --tb=short
-
-                            if errorlevel 1 exit /b 1
-                        '''
+                                if errorlevel 1 exit /b 1
+                            '''
+                        }
                     }
                 }
             }
