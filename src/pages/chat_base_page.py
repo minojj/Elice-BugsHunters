@@ -1,3 +1,4 @@
+import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -209,8 +210,6 @@ class ChatPage:
 
     def scroll_to_top(self):
         try:
-            import time
-            
             # 방법 1: 첫 번째 메시지로 직접 스크롤
             first_message = self.driver.find_element(*self.locators["first_article"])
             self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'start'});", first_message)
