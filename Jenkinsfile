@@ -90,7 +90,8 @@ pipeline {
             }
         }
 
-        stage('Generate and Load .env') {
+
+        stage('Run Tests') {
             steps {
                 withCredentials([
                     usernamePassword(
@@ -99,22 +100,6 @@ pipeline {
                         passwordVariable: 'MAIN_PASSWORD'
                     )
                 ]) {
-                    sh '''
-                        echo "[info] generate .env file..."
-                        umask 077
-                        cat > .env <<EOF
-MAIN_EMAIL=${MAIN_EMAIL}
-MAIN_PASSWORD=${MAIN_PASSWORD}
-EOF
-                        echo "[info] .env created at $(pwd)/.env"
-                        echo "[info] .env file generated successfully"
-                    '''
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
                 script {
                     if (isUnix()) {
                         sh '''
