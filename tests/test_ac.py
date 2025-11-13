@@ -28,7 +28,7 @@ def test_AC_002_duplicate_email(driver):
     # 3️⃣ 중복된 이메일 입력
     login_page.fill_signup_form(email)
     # 4️⃣ 경고 문구 검증
-    assert login_page.email_error() is not None, "❌ 중복 이메일 에러 메시지가 표시되지 않았습니다."
+    assert login_page.email_error(), "❌ 중복 이메일 에러 메시지가 표시되지 않았습니다."
        
 def test_AC_003_negative_login(driver):
     print("\n=== test_AC_003_negative_login 테스트 시작 ===")
