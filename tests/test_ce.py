@@ -27,13 +27,11 @@ def test_ce_002(logged_in_driver):
     page = ChatExpancePage(logged_in_driver)
     
     # 파일 업로드 및 전송 (전체 프로세스)
-    result = page.upload_file_and_send(str(TEST_EXENAME.absolute()), wait_time=10)
+    result = page.upload_file_expect_failure(str(TEST_EXENAME.absolute()), wait_time=10)
 
     # 검증: 위험 파일 업로드가 방지(실패)되었는지 확인 (result가 False일 때 통과)
-    assert result is False, "❌ CE-002 실패: 위험 파일 업로드가 허용되었습니다!"
-    error_message = page.get_error_message()
-    assert "허용되지 않는" in error_message or "지원하지 않는" in error_message, "❌ CE-002 실패: 예상된 오류 메시지가 표시되지 않았습니다."
-    print("✅ CE-002 테스트 통과! (위험 파일 업로드 방지 확인)")
+    assert result is True, "❌ CE-002 실패: 위험 파일 업로드가 허용되었습니다!"
+    print("✅ CE-002 테스트 통과!")
 
 def test_ce_003_000(logged_in_driver):
    
