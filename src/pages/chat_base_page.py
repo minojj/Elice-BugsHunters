@@ -1,4 +1,5 @@
 import time
+import os
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -77,10 +78,25 @@ class ChatPage:
     def upload_file(self, file_path):
         """파일 업로드"""
         try:
-            file_input = self.driver.find_element(*self.locators["file_input"])
-            file_input.send_keys(file_path)
-            print(f" 파일 업로드 완료: {file_path}")
+            # 파일 존재 확인
+            if not os.path.exists(file_path):
+                print(f" 파일이 존재하지 않음: {file_path}")
+                return False
+            
+            # 파일 입력 요소 대기
+            file_input = self.wait.until(
+                EC.presence_of_element_located(self.locators["file_input"])
+            )
+            
+            # 절대 경로로 변환
+            abs_path = os.path.abspath(file_path)
+            file_input.send_keys(abs_path)
+            
+            print(f" 파일 업로드 완료: {abs_path}")
             return True
+        except TimeoutException:
+            print(" 파일 입력 요소를 찾을 수 없음")
+            return False
         except NoSuchElementException:
             print(" 파일 입력 요소를 찾을 수 없음")
             return False
