@@ -32,7 +32,7 @@ def driver():
     driver.quit()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def logged_in_driver(driver):
     try:
         login_page = LoginFunction(driver)
