@@ -253,8 +253,8 @@ def test_ca_004(create_page, pages):
     # 1️⃣ create with chat 클릭
     chat_page.click_create_with_chat()
 
-    # 2️⃣ 챗봇에게 단계별 메시지 입력 & 답변 생성 대기
-    chat_page.typing_chat()
+    # 2️⃣ 챗봇에 메시지 입력 & 답변 생성 대기
+    chat_page.send_single_message()
     assert chat_page.wait_for_ai_answer(), "❌ CA_004_AI 답변 생성 실패"
     print("✅ CA_004_챗봇 답변 생성 성공")
 

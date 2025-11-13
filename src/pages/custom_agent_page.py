@@ -593,6 +593,49 @@ class ChatCreatePage:
 
         return self.driver.find_element(*locator)
     
+
+
+    def send_single_message(self):
+
+        # 1) 입력창 준비
+        chat_box = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(self.locators["create_chat_input"])
+        )
+
+        self.driver.execute_script("arguments[0].focus();", chat_box)
+        chat_box.click()
+
+        # 2) 입력창 초기화
+        chat_box.send_keys(Keys.CONTROL + "a")
+        chat_box.send_keys(Keys.DELETE)
+        chat_box.send_keys(self.step1_text())
+
+        # 3) Send 버튼 클릭 (JS 클릭)
+        send_btn = WebDriverWait(self.driver, 20).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[aria-label='Send']"))
+        )
+
+        self.driver.execute_script("arguments[0].click();", send_btn)
+        print("📨 step1 메시지 전송 완료")
+
+        # 4) AI 응답 대기 (running → complete)
+        WebDriverWait(self.driver, 60).until(
+            lambda d: len(d.find_elements(By.CSS_SELECTOR, "div[data-status='running']")) == 0
+        )
+
+        # 5) 실제 답변 렌더링 확인
+        WebDriverWait(self.driver, 60).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "div.aichatkit-md[data-status='complete'] p")
+            )
+        )
+
+        print("💬 AI 응답 렌더링 완료 (step1)")
+
+
+
+
+    
     
     def typing_chat(self):
     
@@ -609,15 +652,15 @@ class ChatCreatePage:
             chat_box.send_keys(Keys.DELETE)
             chat_box.send_keys(text)
 
-            # Send 버튼 DOM 로드만 확인
-            send_btn = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[aria-label='Send']")))
+        
+            send_btn = WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[aria-label='Send']")))
 
-            # 클릭은 무조건 JS로!
             self.driver.execute_script("arguments[0].click();", send_btn)
             print(f"📨 메시지 전송 완료: {text[:50]}...")
 
-            # 응답이 끝났는지 기다림 (running 없을 때까지)
             WebDriverWait(self.driver, 60).until(lambda d: len(d.find_elements(By.CSS_SELECTOR, "div[data-status='running']")) == 0)
+            WebDriverWait(self.driver, 60).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.aichatkit-md[data-status='complete'] p")))
+            
 
         send_message(self.step1_text())
         send_message(self.step2_text())
@@ -673,10 +716,7 @@ class ChatCreatePage:
     
 
     def wait_for_ai_answer(self, timeout=30):
-        """
-        AI가 실제 답변을 생성했는지 확인하는 함수.
-        UL/OL/CODEBLOCK/MD 등 어떤 형태든 '내용이 렌더링'되면 True.
-        """
+
         wait = WebDriverWait(self.driver, timeout)
 
         def _answer_rendered(_):
