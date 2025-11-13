@@ -604,16 +604,20 @@ class ChatCreatePage:
 
    
         def send_message(text):
-       
+            # 입력창 초기화 후 메시지 입력
             chat_box.send_keys(Keys.CONTROL + "a")
             chat_box.send_keys(Keys.DELETE)
             chat_box.send_keys(text)
-            send_btn = WebDriverWait(self.driver, 20).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='button'][aria-label='Send']:not([disabled])")))
 
+            # Send 버튼 DOM 로드만 확인
+            send_btn = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "button[aria-label='Send']")))
+
+            # 클릭은 무조건 JS로!
             self.driver.execute_script("arguments[0].click();", send_btn)
             print(f"📨 메시지 전송 완료: {text[:50]}...")
 
-            WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.aichatkit-md[data-status='complete']")))
+            # 응답이 끝났는지 기다림 (running 없을 때까지)
+            WebDriverWait(self.driver, 60).until(lambda d: len(d.find_elements(By.CSS_SELECTOR, "div[data-status='running']")) == 0)
 
         send_message(self.step1_text())
         send_message(self.step2_text())
@@ -668,32 +672,36 @@ class ChatCreatePage:
         return "No"
     
 
-    def transfer_to_create_form(self):
-        """Chat 생성 결과를 Create 페이지(Form)로 자동 전송"""
-        # 1️⃣ 챗봇 생성 결과 가져오기
-        info = self.get_generated_info()
+    def wait_for_ai_answer(self, timeout=30):
+        """
+        AI가 실제 답변을 생성했는지 확인하는 함수.
+        UL/OL/CODEBLOCK/MD 등 어떤 형태든 '내용이 렌더링'되면 True.
+        """
+        wait = WebDriverWait(self.driver, timeout)
 
-        # 2️⃣ 'Form으로 이동' 버튼 클릭
-        form_btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='button'][value='form']"))
-        )
-        form_btn.click()
+        def _answer_rendered(_):
+            selectors = [
+                "ul[class^='css-'][class*='e1ge9pxx'] li",
+                "ol[class^='css-'][class*='e1ge9pxx'] li",
+                "pre[class^='css-'] code",
+                "div.aichatkit-md[data-status='complete']"
+            ]
+            for sel in selectors:
+                try:
+                    elements = self.driver.find_elements(By.CSS_SELECTOR, sel)
+                    if any(el.text.strip() for el in elements):
+                        return True
+                except:
+                    pass
+            return False
 
-        # 3️⃣ 폼 페이지 로딩 대기 (Name 필드 기준)
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.NAME, "name"))
-        )
+        wait.until(_answer_rendered)
+        print("💬 AI 답변 렌더링 확인 완료")
+        return True
 
-        # 4️⃣ CreateAgentPage 인스턴스 생성 후 자동 입력
-        create_page = CreateAgentPage(self.driver)
-        create_page.fill_form(
-            name=info["Name"],
-            description=info["Description"],
-            rules=info["System Prompt"],
-            conversation="\n".join(info["Conversation Starters"])
-        )
 
-        print("✅ Chat 생성 결과를 Create 페이지(Form)로 자동 전송 완료!")
+
+
     
 
 

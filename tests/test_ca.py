@@ -27,7 +27,8 @@ def pages(logged_in_driver):
     return {
         "explorer": AgentExplorerPage(driver),
         "create": CreateAgentPage(driver),
-        "my_agents": MyAgentsPage(driver)
+        "my_agents": MyAgentsPage(driver),
+        "chat_create": ChatCreatePage(driver)
     }
 
 
@@ -245,30 +246,20 @@ def test_ca_003_2(create_page, request):
 
 
 
-# def test_ca_004(create_page):
-#     driver = create_page
-#     wait = WebDriverWait(driver, 10)
-#     page = CreateAgentPage(driver)
-#     chat_page = ChatCreatePage(driver)
-#     save_page = SaveAgentPage(driver)
+def test_ca_004(create_page, pages):
+    driver = create_page
+    chat_page = pages["chat_create"]
 
-#     # 1️⃣ create with chat에서 필드 구성 답변 받기
+    # 1️⃣ create with chat 클릭
+    chat_page.click_create_with_chat()
 
-#     chat_page.click_create_with_chat()
-#     chat_page.typing_chat()   
+    # 2️⃣ 챗봇에게 단계별 메시지 입력 & 답변 생성 대기
+    chat_page.typing_chat()
+    assert chat_page.wait_for_ai_answer(), "❌ CA_004_AI 답변 생성 실패"
+    print("✅ CA_004_챗봇 답변 생성 성공")
 
-#     # 2️⃣ 답변 기반으로 필드 자동 입력
-#     chat_page.transfer_to_create_form()
-#     page.get_element("create_btn", "clickable").click()
-    
-#     # 3️⃣ 나만보기 설정으로 save & 생성 확인
-#     save_page.select_mode("private")
-#     print("✅ CA_004_나만보기 옵션으로 생성")
-#     save_page.click_save()
-#     save_page.verify_success()
-#     print("✅ CA_004_생성완료 알림 확인")
 
-# ##이거 챗봇 대답이 할때마다 구조가 달라짐
+
 
 
 
