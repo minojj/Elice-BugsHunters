@@ -77,4 +77,3 @@ def logged_in_driver_sub_account():
 
     yield sub_driver
     sub_driver.quit()
-
