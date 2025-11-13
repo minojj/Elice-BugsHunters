@@ -1,3 +1,4 @@
+from math import log
 import os 
 import pytest
 from selenium import webdriver
@@ -42,7 +43,7 @@ def logged_in_driver(driver):
         )
         print("✅ 로그인 성공")
 
-        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')))
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((login_page.locators["avatar_btn"])))
         print("✅ 메인 페이지 로드 확인 완료")
 
     except TimeoutException:
