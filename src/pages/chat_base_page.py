@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 class ChatPage:
     def __init__(self, driver):
@@ -115,7 +116,6 @@ class ChatPage:
         브라우저 권한 문제로 Ctrl+V 동작이 막힐 수 있으므로 실패하면 빈 문자열 반환.
         """
         try:
-            from selenium.webdriver.common.keys import Keys
             search_box = self.wait.until(
                 EC.element_to_be_clickable(self.locators["search_box"])
             )
@@ -167,17 +167,10 @@ class ChatPage:
             actions.move_to_element(message_element).perform()
             print(" 메시지에 마우스 오버 완료")
             
-            # 3. 수정 버튼 클릭 (메시지 내부 또는 근처의 수정 버튼)
-            # 메시지의 부모 요소에서 수정 버튼 찾기
-            
-            try:
-                edit_btn = self.wait.until(
-                    EC.element_to_be_clickable(self.locators["edit_btn"])
-                )
-            except TimeoutException:
-                # 다른 셀렉터 시도
-                edit_btn = message_element.find_element(By.XPATH, ".//ancestor::div//button[contains(@aria-label, '수정') or contains(@title, '수정')]")
-            
+            # 3. 수정 버튼 클릭
+            edit_btn = self.wait.until(
+                EC.element_to_be_clickable(self.locators["edit_btn"])
+            )
             edit_btn.click()
             print(" 수정 버튼 클릭 완료")
             
