@@ -1,9 +1,11 @@
+import logging
+from math import log  
 from selenium.webdriver.support.ui import WebDriverWait 
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.support import expected_conditions as EC 
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
-
+logger = logging.getLogger(__name__)    
 class LoginFunction:
     def __init__(self, driver):
         self.driver = driver
@@ -17,7 +19,7 @@ class LoginFunction:
             "create_acc_btn": (By.CSS_SELECTOR, "a[href*='/accounts/signup']"),
             "create_email_btn": (By.XPATH, '//button[@type="button" and contains(@class, "MuiButton-containedPrimary")]'),
             "name": (By.CSS_SELECTOR, "input[name='fullname']"),
-            "email_error": (By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"),
+            "email_error": (By.XPATH, "//p[contains(text(), 'already registered')]"),
             "remove_history" : (By.XPATH, "//a[text()='Remove history']"),
             "avatar_btn" : (By.CSS_SELECTOR, "button:has(svg[data-testid='PersonIcon'])"),
             "logout_btn" : (By.XPATH, "//p[text()='Logout']")
@@ -31,11 +33,12 @@ class LoginFunction:
         WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
+        logger.debug(f"페이지 로드 완료: {self.driver.current_url}")
 
 
-    def login(self, email, password ):
+
+    def login(self, email, password):
         wait = WebDriverWait(self.driver, 10)
-
     # 이메일 입력 필드 또는 비밀번호 필드가 먼저 나타날 수 있기 때문에
     # 두 가지 중 하나가 나타날 때까지 기다림
         try:
@@ -50,11 +53,11 @@ class LoginFunction:
             return
 
         # remove 버튼 존재 여부 체크
-        try:
-            remove_btn = self.driver.find_element(*self.locators["remove_history"])
+        try:    
+            remove_btn = wait.until(EC.element_to_be_clickable(self.locators["remove_history"]))
             remove_btn.click()
             print("저장된 계정 초기화 완료")
-        except NoSuchElementException:
+        except TimeoutException:
             print("저장된 계정이 없어 제거 단계 생략")
 
         # 이메일 입력 가능 상태 만들기
@@ -70,17 +73,22 @@ class LoginFunction:
                 email_select.click()
                 email_input = wait.until(EC.presence_of_element_located(self.locators["email"]))
                 email_input.send_keys(email)
-            except Exception:
+            except (Exception, NoSuchElementException):
                 print("이메일 입력 필드를 활성화할 수 없습니다.")
                 return
 
         # 비밀번호 입력
-        password_input = wait.until(EC.presence_of_element_located(self.locators["password"]))
-        password_input.clear()
-        password_input.send_keys(password)
-
+        try:
+            password_input = wait.until(EC.presence_of_element_located(self.locators["password"]))
+            password_input.clear()
+            password_input.send_keys(password)
         # 로그인 버튼 클릭
-        self.driver.find_element(*self.locators["submit_btn"]).click()
+            wait.until(EC.element_to_be_clickable(self.locators["submit_btn"])).click()
+            return
+
+        except TimeoutException:
+            print("❌ 비밀번호 입력 필드를 찾지 못했습니다.")
+            return  
 
     def is_logged_in(self):
         # 로그인 성공 여부 확인
@@ -90,7 +98,7 @@ class LoginFunction:
             )
             print("✅ 로그인 성공!")
             return True
-        except Exception:
+        except TimeoutException:
             print("❌ 로그인 실패")
             return False
 
@@ -103,6 +111,10 @@ class LoginFunction:
         WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable(self.locators["create_email_btn"])
         ).click()
+        
+        WebDriverWait(self.driver, 10).until(
+        EC.visibility_of_element_located(self.locators["name"])
+        )
 
         print("✅ 'Create account with email' 클릭 완료")
 
@@ -114,32 +126,28 @@ class LoginFunction:
             )
             print("✅ 이름 입력 필드가 표시되었습니다.")
             return True
-        except Exception:
+        except TimeoutException:
             print("❌ 이름 입력 필드가 표시되지 않았습니다.")
             return False
         
     def fill_signup_form(self, email):
         # 회원가입 폼 입력 (현재는 이메일만 입력하지만, 추가 입력 필드가 있을 경우 확장 가능)
-        WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located(self.locators["email"])
+        email_input = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located(self.locators["email"])
         )
-        
-        self.driver.find_element(*self.locators["email"]).send_keys(email)
-        
+        email_input.send_keys(email)
         print("✅ 이메일 입력 완료")
     
     def email_error(self):
         # 중복 이메일 에러 메시지 확인
         try:
-            WebDriverWait(self.driver, 10).until(
-                EC.visibility_of_element_located(self.locators["email_error"])
+            error_el = WebDriverWait(self.driver, 5).until(
+                EC.presence_of_element_located(self.locators["email_error"])
             )
-            print("✅ 중복 이메일 에러 메시지 표시 확인")
-            return True
-        except Exception:
-            print("❌ 중복 이메일 에러 메시지 표시 확인 실패")
+            return error_el
+        except TimeoutException:
             return None
-    
+       
     def clear_login_session(self):
         #브라우저 세션 초기화
         self.driver.delete_all_cookies()
