@@ -92,40 +92,49 @@ pipeline {
             }
         }
         stage('Generate and Load .env') {
-            steps{
-                withCredentials([usernamePassword(
-                    credentialsId: 'login-id',
-                    usernameVariable: 'MAIN_EMAIL',
-                    passwordVariable: 'MAIN_PASSWORD'
-                )])
-                {
-                    // .env 파일 생성 및 사용을 하나의 sh 블록에서 처리
-                    sh '''
-                        echo "[info] generate .env file..."
-                        umask 077 # 권한 제한 (owner만 읽기/쓰기)
-                        cat >.env <<EOF
+            steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'login-id',
+                usernameVariable: 'MAIN_EMAIL',
+                passwordVariable: 'MAIN_PASSWORD'
+            )
+        ]) {
+            sh '''
+                echo "[info] generate .env file..."
+                umask 077
+                cat >.env <<EOF
 MAIN_EMAIL=${MAIN_EMAIL}
 MAIN_PASSWORD=${MAIN_PASSWORD}
 EOF
-                        echo "[info] .env created at $(pwd)/.env"
+                echo "[info] .env created at $(pwd)/.env"
 
-                        echo "[info] using .env file..."
-                        set -a
-                        source .env
-                        set +a
-                        echo "loaded MAIN_EMAIL: $MAIN_EMAIL"
-                    '''
-                }
-            }
+                echo "[info] using .env file..."
+                set -a
+                if [ -f .env ]; then
+                set +a
+                # echo "loaded MAIN_EMAIL: $MAIN_EMAIL"  # 이메일 노출 방지를 위해 로그 출력 제거
+            '''
+                echo "loaded MAIN_EMAIL: $MAIN_EMAIL"
+            '''
         }
+    }
+}
         stage('Run Tests') {
             steps {
                 script {
-                    if (isUnix()) {
                         sh '''
                             set +e
                             . .venv/bin/activate
                             mkdir -p reports screenshots "${WDM_CACHE}"
+
+                            # .env 파일에서 환경변수 로드
+                            if [ -f .env ]; then
+                                set -a
+                                . .env
+                                set +a
+                                echo "[info] .env 환경변수 로드 완료"
+                            fi
 
                             # Chrome 경로 설정(있으면만)
                             export CHROME_BIN=$(which google-chrome || which chromium || which chromium-browser || true)
@@ -146,6 +155,7 @@ EOF
                             echo "📊 테스트 종료 코드: $EXIT_CODE"
                             ls -lh reports/* 2>/dev/null || true
                             exit $EXIT_CODE
+                        '''
                         '''
                     } else {
                         bat '''
