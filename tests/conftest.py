@@ -18,18 +18,26 @@ load_dotenv(dotenv_path)
 @pytest.fixture(scope="session")
 def driver():
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
-    options.add_argument("--window-size=1920,1080") 
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
 
     # ✅ 최신 버전 방식
     service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(service=service, options=options, keep_alive=True)
+    driver.set_page_load_timeout(120)
     
     yield driver
-    driver.quit()
+    
+    try:
+        driver.quit()
+    except Exception:
+        pass
 
 
 @pytest.fixture(scope="module")
@@ -60,7 +68,7 @@ def logged_in_driver(driver):
 @pytest.fixture
 def logged_in_driver_sub_account():
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
