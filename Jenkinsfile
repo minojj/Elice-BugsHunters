@@ -74,31 +74,14 @@ pipeline {
             }
             post {
                 always {
-                    script {
-                        // HTML 리포트 퍼블리시 (에러 무시)
-                        try {
-                            publishHTML([
-                                allowMissing: false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll: true,
-                                reportDir: 'reports',
-                                reportFiles: 'report.html',
-                                reportName: 'Pytest HTML Report',
-                                reportTitles: '',
-                                includes: '**/*',
-                                useWrapperFileDirectly: true
-                            ])
-                        } catch (Exception e) {
-                            echo "HTML 리포트 퍼블리시 실패: ${e.message}"
-                        }
-                    }
-                    
-                    // Artifacts로 대체 (항상 성공)
+                    // HTML 리포트를 Artifacts로 아카이브
                     archiveArtifacts(
                         artifacts: 'reports/**/*',
                         allowEmptyArchive: true,
                         fingerprint: true
                     )
+                    
+                    echo "📊 HTML 리포트: ${BUILD_URL}artifact/reports/report.html"
                 }
             }
         }
