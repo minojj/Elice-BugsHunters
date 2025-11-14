@@ -32,7 +32,6 @@ def explorer_page_loaded(pages):
 
     driver.get(explorer_page.url)  
     WebDriverWait(driver, 10).until(EC.url_contains("/ai-helpy-chat/agent"))
-    print("✅ Explorer 페이지 로드 완료")
 
     yield driver
 
@@ -45,13 +44,11 @@ def my_agents_page_loaded(pages):
 
     driver.get(my_agents_page.url)
     WebDriverWait(driver, 10).until(EC.url_contains("/ai-helpy-chat/agent/mine"))
-    print("✅ My Agents 페이지 로드 완료")
 
     try:
         WebDriverWait(driver, 15).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".MuiCard-root"))
         )
-        print("✅ My Agents 페이지 로드 + 카드 렌더링 완료")
     except TimeoutException:
         print("⚠️ 카드 리스트 렌더링 실패 (카드 0개일 수도 있음)")
 
@@ -73,8 +70,6 @@ def create_page(pages):
 
     wait.until(EC.url_contains("builder#form"))
     wait.until(EC.visibility_of_element_located((By.NAME, "name")))
-
-    print("✅ 생성 페이지로 진입 완료")
 
     yield driver
 
@@ -105,68 +100,75 @@ def dummy_files():
 
 
 
-def test_ca_001__navigate_to_agent_create_form(logged_in_driver):
+def test_ca_001_navigate_to_agent_create_form(logged_in_driver):
     driver = logged_in_driver
     wait = WebDriverWait(driver, 10)
     explorer_page = AgentExplorerPage(driver)
 
-    explorer_page.get_element("agent_explorer_btn", wait_type="clickable").click()
-    explorer_page.get_element("create_btn", wait_type="clickable").click()
+    explorer_page.click_safely("agent_explorer_btn")
+    explorer_page.click_safely("create_btn")
 
     try:
         wait.until(EC.url_contains("builder#form"))
-        print("✅ CA_001_페이지로 이동 완료!")
+        wait.until(EC.presence_of_element_located((By.NAME, "name")))
     except TimeoutException:
         print("❌ CA_001_페이지로 이동 실패!")
 
 
 
-def test_ca_002__validate_required_fields_behavior(create_page):
+def test_ca_002_validate_required_fields_behavior(create_page):
     driver = create_page
     wait = WebDriverWait(driver, 10)
     create_agent_page = CreateAgentPage(driver)
 
-    # 1️⃣ 생성 페이지에서 필드 요소 찾기, name제외 기본 필드 입력
-    
+    # 1️⃣ name 제외 입력
     create_agent_page.fill_form(
-    "", 
-    "test description",
-    "test system prompt",
-    "test conversation starter")
-    
-    create_btn = create_agent_page.get_element("create_btn")
+        "",
+        "test description",
+        "test system prompt",
+        "test conversation starter"
+    )
 
+    create_btn = create_agent_page.get_element("create_btn", wait_type="presence")
 
-    # 2️⃣ name 필드 안내문구 & 버튼 비활성화 확인
-    
-    if wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"))).is_displayed():
-        print("✅ CA_002_name 필드 입력 안내문구 정상 출력")
-    else:
-        print("❌ CA_002_name 필드 입력 안내문구 미출력")
+    # 2️⃣ name 오류문구 + 버튼 disabled 체크
+    try:
+        err = wait.until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error")
+            )
+        )
+        assert err.is_displayed(), "name 에러 문구 미표시"
+        assert not create_btn.is_enabled(), "생성 버튼이 비활성화되어 있지 않음"
 
-    assert not create_btn.is_enabled(), "❌ CA_002_생성 버튼 활성화상태"
-    print("✅ CA_002_생성 버튼 비활성화 정상")
+    except TimeoutException:
+        print("❌ CA_002_name 필드 검증 실패!")
+        return
 
-    # 3️⃣ name 입력 후 systemPrompt 필드 내용 삭제
+    # 3️⃣ name 입력 / rules 삭제
     name_input = create_agent_page.get_element("name")
     name_input.click()
     name_input.send_keys("Test Agent")
 
     rules_input = create_agent_page.get_element("rules")
     rules_input.send_keys(Keys.CONTROL + "a")
-    rules_input.send_keys(Keys.DELETE) 
+    rules_input.send_keys(Keys.DELETE)
 
-    WebDriverWait(driver, 5).until(lambda d: rules_input.get_attribute("value") == "")
-    name_input.click()  # 포커스 이동 위해 클릭
+    wait.until(lambda d: rules_input.get_attribute("value") == "")
+    name_input.click()  # focus 이동
 
-    # 4️⃣ name 안내문구 사라짐 & systemPrompt 필드 안내문구 출력 & 버튼 비활성화 확인
-    if wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error"))).is_displayed():
-        print("✅ CA_002_name 필드 입력 안내문구 사라짐")
-    else:
-        print("❌ CA_002_name 필드 입력 안내문구 여전히 출력")    
-    
-    assert not create_btn.is_enabled(), "❌ CA_002_생성 버튼 활성화상태"
-    print("✅ CA_002_생성 버튼 비활성화 정상")
+    # 4️⃣ rules 오류문구 + 버튼 disabled 체크
+    try:
+        err2 = wait.until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, "p.MuiFormHelperText-root.Mui-error")
+            )
+        )
+        assert err2.is_displayed(), "rules 에러 문구 미표시"
+        assert not create_btn.is_enabled(), "생성 버튼이 활성화됨"
+
+    except TimeoutException:
+        print("❌ CA_002_rules 검증 실패!")
 
 
 

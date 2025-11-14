@@ -29,6 +29,25 @@ class AgentExplorerPage:
         self.url = "https://qaproject.elice.io/ai-helpy-chat/agent"
 
 
+    def click_safely(self, key, timeout=10):
+        locator = self.LOCATORS[key]
+        wait = WebDriverWait(self.driver, timeout)
+
+        # 1) 요소가 로딩되고 클릭 가능할 때까지 기다림
+        element = wait.until(EC.presence_of_element_located(locator))
+        wait.until(EC.element_to_be_clickable(locator))
+
+        # 2) 화면 중앙으로 스크롤
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", element
+        )
+
+        # 3) JS click
+        self.driver.execute_script("arguments[0].click();", element)
+
+        return element
+
+
 
     def get_element(self, key, wait_type="visible", timeout=10):
         #요소 키워드(agent_explorer_btn, create_btn 등)를 받아 element 반환
