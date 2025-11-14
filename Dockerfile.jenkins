@@ -1,0 +1,11 @@
+FROM jenkins/jenkins:lts
+
+USER root
+RUN set -eux; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      docker.io ca-certificates curl git; \
+    rm -rf /var/lib/apt/lists/*
+
+ENV DOCKER_HOST=unix:///var/run/docker.sock
+USER root
