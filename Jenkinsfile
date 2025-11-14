@@ -22,12 +22,15 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                            docker build -t elice-bugshunters:${BUILD_NUMBER} -f Dockerfile .
+                            # 캐시 정리 후 재빌드
+                            docker builder prune -f || true
+                            docker build --no-cache -t elice-bugshunters:${BUILD_NUMBER} -f Dockerfile .
                             docker tag elice-bugshunters:${BUILD_NUMBER} elice-bugshunters:latest
                         '''
                     } else {
                         bat '''
-                            docker build -t elice-bugshunters:%BUILD_NUMBER% -f Dockerfile .
+                            docker builder prune -f || exit 0
+                            docker build --no-cache -t elice-bugshunters:%BUILD_NUMBER% -f Dockerfile .
                             docker tag elice-bugshunters:%BUILD_NUMBER% elice-bugshunters:latest
                         '''
                     }
@@ -77,6 +80,13 @@ pipeline {
                     ])
                 }
             }
+        }
+    }
+    
+    post {
+        always {
+            // 빌드 후 Docker 정리
+            sh 'docker system prune -f || true'
         }
     }
 }
