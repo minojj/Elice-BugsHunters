@@ -7,7 +7,6 @@ services:
       dockerfile: Dockerfile.jenkins
     container_name: elice-jenkins
     user: root
-    privileged: true
     ports:
       - "8080:8080"
       - "50000:50000"
@@ -20,17 +19,14 @@ services:
 
   ngrok:
     image: ngrok/ngrok:latest
-    container_name: elice-ngrok
-    command:
-      - "http"
-      - "jenkins:8080"
-      - "--authtoken=${NGROK_AUTHTOKEN}"
-      - "--log=stdout"
+    command: ["http","jenkins:8080","--authtoken=${NGROK_AUTHTOKEN}","--log=stdout"]
     ports:
       - "4040:4040"
     depends_on:
       - jenkins
     restart: unless-stopped
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
 
 volumes:
   jenkins_home:
