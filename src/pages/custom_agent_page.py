@@ -1,6 +1,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+import platform
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
@@ -322,12 +323,15 @@ class CreateAgentPage:
 
     def fill_form_with_trigger(self, name, description, rules, conversation):
 
+        # ✅ OS별 전체 선택 키 결정 (Windows/Linux: CTRL, mac: CMD)
+        modifier = Keys.COMMAND if platform.system() == "Darwin" else Keys.CONTROL
+
         def type_and_trigger(key, value):
             el = self.get_element(key)
 
             # ① 기존 값 확실히 지우기
             el.click()
-            el.send_keys(Keys.CONTROL + "a")
+            el.send_keys(modifier + "a")
             el.send_keys(Keys.DELETE)
 
             # ② send_keys로 실제 입력 (React가 이걸 먼저 받음)
@@ -379,29 +383,28 @@ class CreateAgentPage:
     
 
     def wait_for_autosave(self, expected_values, timeout=20):
-        wait = WebDriverWait(self.driver, timeout)
+        # 🔁 약간 느슨한 poll 주기 (0.3초)로 계속 확인
+        wait = WebDriverWait(self.driver, timeout, poll_frequency=0.3)
 
         # 1️⃣ name input이 나타날 때까지
-        name_el = wait.until(
-            EC.presence_of_element_located((By.NAME, "name"))
-        )
+        wait.until(EC.presence_of_element_located((By.NAME, "name")))
 
         # 2️⃣ input value가 기대값으로 바뀔 때까지
         wait.until(
-            lambda d: name_el.get_attribute("value") == expected_values["name"]
+            lambda d: d.find_element(By.NAME, "name").get_attribute("value") == expected_values["name"]
         )
 
-        # 3️⃣ 생성 페이지 상단 제목(p.MuiTypography-body2)도 바뀌는지 체크
+        # 3️⃣ 생성 페이지 상단 제목(p.MuiTypography-body2)도 바뀌는지 체크 (옵션)
         try:
             wait.until(
                 lambda d: d.find_element(
                     By.CSS_SELECTOR, "p.MuiTypography-body2"
                 ).text.strip() == expected_values["name"]
             )
-        except:
+        except Exception:
             pass  # 없을 수도 있으니 Optional
 
-        # 4️⃣ CSS selector로 Saved 배지 + 체크아이콘 나타날 때까지
+        # 4️⃣ CSS selector로 Saved 배지 + 체크아이콘 나타날 때까지 (옵션)
         try:
             wait.until(
                 EC.visibility_of_element_located((

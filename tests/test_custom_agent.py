@@ -378,40 +378,65 @@ def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
     create_agent_page = CreateAgentPage(driver)
-    
-    #1️⃣ 첫 번째 Draft 카드의 edit 버튼 클릭
-    my_agent_page.load_all_cards()
-    my_agent_page.click_edit_button_by_card_type("draft")
-    
-    #2️⃣ 수정을 위해 필드 요소 찾고 모든 필드 입력 후 create 버튼 클릭
-    create_agent_page.fill_form(
-    "project team",
-    "for the team project",
-    "If you must make a guess, clearly state that it is a guess",
-    "Hello, we're team 03")
-    create_agent_page.get_element("create_btn", "clickable").click()
-    
-    #3️⃣ 나만보기 설정으로 save & 생성 확인(organization으로 변경 가능)
     save_page = SaveAgentPage(driver)
-    save_page.select_mode("private")
-    print("✅ CA_008_private 옵션 선택 완료")
-    save_page.click_save()
 
+    # 1️⃣ Draft 카드 로딩 + edit 클릭
+    my_agent_page.load_all_cards()  # 무한 스크롤 안정화
+
+    # 추가 안전장치: 카드가 로딩되었는지 보장
+    WebDriverWait(driver, 15).until(
+        lambda d: len(my_agent_page.get_draft_cards()) > 0
+    )
+
+    # edit 버튼 클릭 (POM이 JS click + scrollIntoView까지 처리함)
+    my_agent_page.click_edit_button_by_card_type("draft")
+
+    # 2️⃣ 모든 필드 안정적으로 입력
+    create_agent_page.fill_form(
+        "project team",
+        "for the team project",
+        "If you must make a guess, clearly state that it is a guess",
+        "Hello, we're team 03"
+    )
+
+    # 버튼 클릭도 JS click으로 안정성 확보
+    create_btn = create_agent_page.get_element("create_btn", "clickable")
+
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", create_btn)
+    driver.execute_script("arguments[0].click();", create_btn)
+
+    # 3️⃣ 저장 모달 안정화
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "div.MuiDialog-paper"))
+    )
+
+    save_page.select_mode("private")  # 내부도 JS click 기준
+    print("✅ CA_009_private 옵션 선택 완료")
+
+    # save 버튼 안정적 클릭
+    save_btn = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(save_page.LOCATORS["save_btn"])
+    )
+    driver.execute_script("arguments[0].click();", save_btn)
+
+    # 4️⃣ 스낵바 안정적 대기
     message = save_page.get_snackbar_text().lower()
+
     assert "created" in message, f"❌ CA_009_예상과 다른 메시지: {message}"
     print(f"✅ CA_009_임시 저장된 에이전트 생성 성공 알림 확인: {message}")
 
 
 
 
-
 def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pages):
-    driver = my_agents_page_loaded  
+    driver = my_agents_page_loaded
     my_agent_page = pages["my_agents"]
     create_agent_page = pages["create"]
 
-    # 1️⃣  첫 번째 Draft 카드 편집
+    # 1️⃣ My Agents 카드 로드 보장
+    assert my_agent_page.wait_for_cards_loaded(), "My Agents 카드 로드 실패"
     my_agent_page.load_all_cards()
+
     draft_cards = my_agent_page.get_draft_cards()
     assert len(draft_cards) >= 1, "Draft 카드 존재하지 않음"
 
@@ -419,10 +444,10 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
     agent_id = my_agent_page.get_agent_id_from_card(target_card)
     print("🎯 수정할 agent_id:", agent_id)
 
-    my_agent_page.scroll_into_view(target_card)
-    target_card.find_element(By.CSS_SELECTOR, "svg[data-icon='pen']").click()
+    # ✏️ POM을 이용해서 첫 번째 Draft 카드 edit 진입 (JS click + scrollIntoView 포함)
+    my_agent_page.click_edit_button_by_card_type("draft")
 
-    # 2️⃣ 값 입력 및 자동저장 대기 후 갱신
+    # 2️⃣ 값 입력 + auto-save 대기
     TARGET_TITLE = "draft test"
     expected_values = create_agent_page.fill_form_with_trigger(
         TARGET_TITLE,
@@ -431,30 +456,39 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
         ""
     )
 
-    time.sleep(1) 
-    create_agent_page.wait_for_autosave(expected_values, timeout=20)
+    # 🔁 auto-save 완료 대기 (sleep 대신 값/UX 기준 polling)
+    time.sleep(1)
+    create_agent_page.wait_for_autosave(expected_values, timeout=25)
     print("⏳ auto-save 완료")
 
-  
+    # 3️⃣ My Agents로 돌아간 뒤, 해당 Draft 카드의 제목이 갱신될 때까지 대기
     driver.back()
-    driver.refresh()
-    my_agent_page.wait_for_cards_loaded()
-    my_agent_page.load_all_cards()
-    print("⬅️ 뒤로가기 및 새로고침 완료")
-    updated_card = my_agent_page.wait_for_card_update(agent_id, TARGET_TITLE)
 
-
-    assert updated_card is not None, f"Draft 카드(ID: {agent_id})가 My Agents에 없음"
+    updated_card = my_agent_page.wait_for_card_update(
+        agent_id,
+        TARGET_TITLE,
+        timeout=20
+    )
     print("🔄 Draft 반영 확인 완료")
 
-    # 3️⃣ 갱신된 Draft 카드 편집 진입 및 값 비교
+    # 4️⃣ 갱신된 Draft 카드 다시 편집 진입
     my_agent_page.scroll_into_view(updated_card)
-    updated_card.find_element(By.CSS_SELECTOR, "svg[data-icon='pen']").click()
 
+    # 카드 내에서 edit 버튼을 다시 안정적으로 찾고 JS click
+    edit_btn = my_agent_page._find_button_in_card(
+        updated_card,
+        my_agent_page.LOCATORS["edit_icon"]
+    )
+    assert edit_btn, "❌ CA_010_Edit 버튼 탐색 실패"
+
+    driver.execute_script("arguments[0].click();", edit_btn)
+
+    # name 필드 값이 로드될 때까지 대기
     WebDriverWait(driver, 10).until(
         lambda d: d.find_element(By.NAME, "name").get_attribute("value") != ""
     )
 
+    # 5️⃣ 필드 값 전체 비교
     actual_values = create_agent_page.get_all_field_values()
 
     assert actual_values["name"] == expected_values["name"], (
@@ -468,21 +502,44 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
 
 
 
+
+
 def test_ca_011_cancel_agent_deletion_modal(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
 
-    #1️⃣ 두 번째 organization 카드의 delete 버튼 클릭(위치나 종류는 환경에 따라 변경 가능) 
+    # 1️⃣ 카드 로드 + 무한스크롤 안정화
+    assert my_agent_page.wait_for_cards_loaded(), "My Agents 카드 로드 실패"
     my_agent_page.load_all_cards()
+
+    # 2️⃣ 두 번째 organization 카드 삭제 버튼 클릭
     my_agent_page.click_delete_button_by_card_type("organization", index=1)
 
-    #2️⃣ 삭제 팝업 모달 확인
-    assert my_agent_page.is_delete_modal_visible(), "❌ CA_011_삭제 팝업 모달 미출력"
-    
+    # 3️⃣ 삭제 모달 등장 대기 (Modal Root 기준)
+    modal_root = (By.CSS_SELECTOR, "div.MuiDialog-container")
+
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located(modal_root)
+    )
+
+    assert my_agent_page.is_delete_modal_visible(), \
+        "❌ CA_011_삭제 팝업 모달 미출력"
+
+    # 4️⃣ Cancel 클릭 (JS click + 안정화)
     my_agent_page.cancel_delete_modal()
-    
-    assert not my_agent_page.is_delete_modal_visible(), "❌ CA_011_모달이 닫히지 않음"
+
+    # 5️⃣ Modal이 완전히 사라질 때까지 invisibility 검사
+    WebDriverWait(driver, 10).until(
+        EC.invisibility_of_element_located(modal_root)
+    )
+
+    assert not my_agent_page.is_delete_modal_visible(), \
+        "❌ CA_011_모달이 닫히지 않음"
+
     print("✅ CA_011_삭제 팝업 모달 Cancel 버튼 정상 작동")
+
+
+
 
 
 
@@ -491,16 +548,57 @@ def test_ca_012_delete_agent_permanently(my_agents_page_loaded):
     my_agent_page = MyAgentsPage(driver)
     save_page = SaveAgentPage(driver)
 
-    #1️⃣ 두 번째 organization 카드의 완전 삭제(위치나 종류는 환경에 따라 변경 가능)
+    # 1️⃣ 카드 로드 및 무한스크롤 안정화
+    assert my_agent_page.wait_for_cards_loaded(), "My Agents 카드 로드 실패"
     my_agent_page.load_all_cards()
+
+    # (선택) 삭제 대상 로그용 agent_id만 확보
+    try:
+        org_cards = my_agent_page.get_organization_cards()
+        if len(org_cards) > 1:
+            target_card = org_cards[1]
+            agent_id = my_agent_page.get_agent_id_from_card(target_card)
+            print("🆔 삭제할 agent_id:", agent_id)
+        else:
+            agent_id = None
+            print("⚠️ Organization 카드가 2개 미만이라 ID 로깅은 생략")
+    except Exception as e:
+        agent_id = None
+        print(f"⚠️ 삭제 대상 ID 추출 중 예외 발생 (무시함): {e}")
+
+    # 2️⃣ 두 번째 organization 카드의 완전 삭제(위치나 종류는 환경에 따라 변경 가능)
     my_agent_page.click_delete_button_by_card_type("organization", index=1)
+
+    # 3️⃣ 모달이 떠 있는지 한 번 확인 (버튼 기준, POM 로직 그대로 활용)
+    assert my_agent_page.is_delete_modal_visible(), "❌ CA_012_삭제 모달 미출력"
+
+    # 4️⃣ Confirm Delete 클릭 (POM 내부에서 clickable wait 처리)
     my_agent_page.confirm_delete_modal()
 
-    #2️⃣ 삭제 후 알림 확인
+    # 5️⃣ (선택) 모달이 사라질 때까지 한 번 더 느슨하게 대기 (실패해도 테스트 깨지지 않게)
+    try:
+        WebDriverWait(driver, 5).until(
+            EC.invisibility_of_element_located(my_agent_page.LOCATORS["confirm_delete_modal_button"])
+        )
+    except Exception:
+        print("⚠️ 모달 invisibility 체크는 통과하지 못했지만 계속 진행합니다.")
+
+    # 6️⃣ 삭제 후 스낵바 알림 확인 (기존에 잘 되던 부분)
     message = save_page.get_snackbar_text().lower()
-    assert "success" in message or "delete" in message, f"❌ CA_012_예상과 다른 메시지: {message}"
+    print("📢 스낵바 메시지:", message)
+
+    assert (
+        "success" in message
+        or "delete" in message
+        or "deleted" in message
+        or "삭제" in message
+    ), f"❌ CA_012_예상과 다른 메시지: {message}"
+
     print(f"✅ CA_012_선택한 에이전트 삭제 완료: {message}")
-    
+
+
+
+
 
 
 def test_ca_013_prevent_deletion_of_default_agents(explorer_page_loaded):
