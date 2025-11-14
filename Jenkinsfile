@@ -26,44 +26,54 @@ pipeline {
                         sh '''
                             echo "🐧 Unix/Linux/Mac 환경"
                             echo "OS: $(uname -a)"
-                            python3 --version || python --version
+                            command -v python3 || true
+                            command -v python || true
                         '''
                     } else {
                         bat '''
                             echo 🪟 Windows 환경
                             systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
-                            python --version
+                            where python || echo python not found
                         '''
                     }
                 }
             }
         }
-
-        stage('Install Browser') {
+        stage('Bootstrap System (Linux only)') {
+            when { expression { return isUnix() } }
             steps {
-                script {
-                    if (isUnix()) {
-                        sh '''
-                            echo "🌐 브라우저 설치 확인 (컨테이너에 이미 설치됨)"
-                            which chromium || true
-                            which chromedriver || true
-                        '''
-                    } else {
-                        bat '''
-                            where chrome.exe || echo Chrome이 설치되어 있지 않습니다
-                            where chromedriver.exe || echo ChromeDriver가 설치되어 있지 않습니다
-                        '''
-                    }
-                }
+                sh '''
+                    set -e
+                    if ! command -v python3 >/dev/null 2>&1; then
+                      echo "[setup] Installing python3, venv, pip..."
+                      apt-get update -y
+                      DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-venv python3-pip
+                      ln -sf /usr/bin/python3 /usr/bin/python || true
+                    else
+                      echo "[setup] python3 already installed"
+                    fi
+
+                    # Selenium 실행용 브라우저/드라이버
+                    if ! command -v chromium >/dev/null 2>&1 && ! command -v google-chrome >/dev/null 2>&1; then
+                      echo "[setup] Installing Chromium & chromedriver..."
+                      DEBIAN_FRONTEND=noninteractive apt-get install -y chromium chromium-driver fonts-liberation tzdata || true
+                    else
+                      echo "[setup] Chromium/Chrome already present"
+                    fi
+
+                    python3 --version || true
+                    python  --version || true
+                    which chromium || which google-chrome || true
+                    which chromedriver || true
+                '''
             }
         }
-
         stage('Install Python Dependencies') {
             steps {
                 script {
                     if (isUnix()) {
                         sh '''
-                            echo "🐍 Python 의존성 설치 (Unix/Mac)..."
+                            echo "🐍 Python 의존성 설치 (Unix/Linux 컨테이너)"
                             if command -v python3 &> /dev/null; then PYTHON_CMD=python3; else PYTHON_CMD=python; fi
                             rm -rf .venv
                             $PYTHON_CMD -m venv .venv
@@ -73,7 +83,7 @@ pipeline {
                         '''
                     } else {
                         bat '''
-                            echo 🐍 Python 의존성 설치 (Windows)...
+                            echo 🐍 Python 의존성 설치 (Windows)
                             if exist .venv rmdir /s /q .venv
                             python -m venv .venv
                             call .venv\\Scripts\\activate.bat
@@ -84,6 +94,8 @@ pipeline {
                 }
             }
         }
+
+        
         stage('Run Tests') {
             steps {
                 withCredentials([
