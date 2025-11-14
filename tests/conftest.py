@@ -2,86 +2,117 @@ import os
 import platform
 import pytest
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from src.utils.helpers import Utils
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from dotenv import load_dotenv
 from src.pages.login_page import LoginFunction
+from src.utils.helpers import Utils
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path)
 
 
 
-#  공통 드라이버 생성 (OS / Jenkins 자동 감지)
+# 1) Chrome Options 구성
 
-def create_chrome_driver():
-    options = webdriver.ChromeOptions()
+def build_options():
+    opts = webdriver.ChromeOptions()
+    opts.page_load_strategy = "eager"
 
-    system = platform.system()  # Windows / Linux / Darwin(mac)
+    # HEADLESS 환경 변수로 제어
+    if os.getenv("HEADLESS", "true").lower() == "true":
+        opts.add_argument("--headless=new")
+
+    # 공통 옵션
+    for a in [
+        "--disable-gpu",
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--window-size=1920,1080",
+        "--disable-extensions",
+        "--disable-infobars"
+    ]:
+        opts.add_argument(a)
+
+    # 이미지 로딩 비활성화
+    opts.add_experimental_option(
+        "prefs", {"profile.managed_default_content_settings.images": 2}
+    )
+
+    return opts
 
 
-    #  1) Jenkins / Docker (Linux headless)
 
-    if os.environ.get("JENKINS_HOME") or system == "Linux":
-        print("🌐 Running in Jenkins/Linux environment")
-        options.add_argument("--headless=new")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--window-size=1920,1080")
+# 2) Chrome 드라이버 경로 결정 (팀원 코드 유지)
+
+def resolve_driver_path():
+    """Always use webdriver_manager unless a real system CHROMEDRIVER path is provided."""
+    sys_driver = os.getenv("CHROMEDRIVER")
+
+    # 1) 환경변수로 시스템 chromedriver 강제 지정한 경우
+    if sys_driver and os.path.exists(sys_driver):
+        print(f"🔧 Using system ChromeDriver: {sys_driver}")
+        return sys_driver
+
+    # 2) 기본값: webdriver_manager 사용
+    try:
+        from webdriver_manager.chrome import ChromeDriverManager
+        return ChromeDriverManager().install()   # ❗ path 파라미터 제거
+    except Exception as e:
+        print("❌ webdriver_manager failed:", e)
+        raise
 
 
-    #  2) macOS
+# 3) 최종 driver 생성 + OS별 메시지 추가
 
-    elif system == "Darwin":
-        print("🍎 Running on macOS")
-        options.add_argument("--headless=new")
-        options.add_argument("--window-size=1920,1080")
+def create_driver():
+    system = platform.system()  # Windows / Linux / Darwin
 
-
-    #  3) Windows (local)
-  
+    if os.getenv("JENKINS_HOME"):
+        print("🌐 Running on Jenkins (Linux-based CI)")
     else:
-        print("🪟 Running on Windows")
-        options.add_argument("--headless=new")
-        options.add_argument("--force-device-scale-factor=1")
-        options.add_argument("--window-size=1920,1080")
+        if system == "Windows":
+            print("🪟 Running on Windows")
+        elif system == "Darwin":
+            print("🍎 Running on macOS")
+        elif system == "Linux":
+            print("🐧 Running on Linux")
+        else:
+            print(f"🌍 Unknown OS detected: {system}")
 
-    service = Service(ChromeDriverManager().install())
+    options = build_options()
+    service = Service(resolve_driver_path())
     return webdriver.Chrome(service=service, options=options)
 
 
 
-#  session-level driver
+# 4) session-level driver
 
 @pytest.fixture(scope="session")
 def driver():
-    driver = create_chrome_driver()
-    yield driver
-    driver.quit()
+    d = create_driver()
+    yield d
+    d.quit()
 
 
-
-#  메인 계정 로그인
+# 5) 메인 계정 로그인
 
 @pytest.fixture(scope="module")
 def logged_in_driver(driver):
+    login_page = LoginFunction(driver)
+    login_page.open()
+    login_page.login(
+        os.getenv("MAIN_EMAIL"),
+        os.getenv("MAIN_PASSWORD")
+    )
+
     try:
-        login_page = LoginFunction(driver)
-        login_page.open()
-        login_page.login(
-            os.getenv("MAIN_EMAIL"),
-            os.getenv("MAIN_PASSWORD"))
-        print("✅ 로그인 성공")
-
-        WebDriverWait(driver, 15).until(EC.presence_of_element_located((login_page.locators["avatar_btn"])))
-        print("✅ 메인 페이지 로드 확인 완료")
-
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]'))
+        )
     except TimeoutException:
         Utils(driver).wait_for(timeout=15)
 
@@ -89,18 +120,16 @@ def logged_in_driver(driver):
 
 
 
-#  서브 계정 로그인
+# 6) 서브 계정 로그인 — 별도 driver 생성
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def logged_in_driver_sub_account():
-    sub_driver = create_chrome_driver()
-
-    login_page = LoginFunction(sub_driver)
+    d = create_driver()
+    login_page = LoginFunction(d)
     login_page.open()
     login_page.login(
         os.getenv("SUB_EMAIL"),
-        os.getenv("SUB_PASSWORD"))
-    print("✅ 서브 계정 로그인 성공")
-
-    yield sub_driver
-    sub_driver.quit()
+        os.getenv("SUB_PASSWORD")
+    )
+    yield d
+    d.quit()
