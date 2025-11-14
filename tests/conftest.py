@@ -2,72 +2,105 @@ import os
 import platform
 import pytest
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from src.utils.helpers import Utils
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException
 from dotenv import load_dotenv
 from src.pages.login_page import LoginFunction
-from src.utils.helpers import Utils
 
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path)
 
-def build_options():
-    opts = webdriver.ChromeOptions()
-    if os.getenv("HEADLESS", "true").lower() == "true":
-        opts.add_argument("--headless=new")
-    for arg in [
-        "--disable-gpu",
-        "--no-sandbox",
-        "--disable-dev-shm-usage",
-        "--window-size=1920,1080",
-        "--disable-extensions",
-        "--disable-infobars"
-    ]:
-        opts.add_argument(arg)
-    return opts
 
-def create_driver():
-    # WDM_SKIP=1 → 시스템 드라이버 직접 사용
-    if os.getenv("WDM_SKIP") == "1":
-        path = os.getenv("CHROMEDRIVER", "/usr/bin/chromedriver")
-        return webdriver.Chrome(service=Service(path), options=build_options())
-    # CI에서 chromium 우선: 환경변수로 구분
-    use_chromium = bool(os.getenv("JENKINS_HOME")) or platform.system() == "Linux"
-    if use_chromium:
-        os.environ.setdefault("WDM_CHROME_TYPE", "chromium")  # 일부 버전에서 지원
-    try:
-        path = ChromeDriverManager().install()
-    except Exception:
-        # 폴백: 시스템 드라이버
-        path = os.getenv("CHROMEDRIVER", "/usr/bin/chromedriver")
-    return webdriver.Chrome(service=Service(path), options=build_options())
+
+#  공통 드라이버 생성 (OS / Jenkins 자동 감지)
+
+def create_chrome_driver():
+    options = webdriver.ChromeOptions()
+
+    system = platform.system()  # Windows / Linux / Darwin(mac)
+
+
+    #  1) Jenkins / Docker (Linux headless)
+
+    if os.environ.get("JENKINS_HOME") or system == "Linux":
+        print("🌐 Running in Jenkins/Linux environment")
+        options.add_argument("--headless=new")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--window-size=1920,1080")
+
+
+    #  2) macOS
+
+    elif system == "Darwin":
+        print("🍎 Running on macOS")
+        options.add_argument("--headless=new")
+        options.add_argument("--window-size=1920,1080")
+
+
+    #  3) Windows (local)
+  
+    else:
+        print("🪟 Running on Windows")
+        options.add_argument("--headless=new")
+        options.add_argument("--force-device-scale-factor=1")
+        options.add_argument("--window-size=1920,1080")
+
+    service = Service(ChromeDriverManager().install())
+    return webdriver.Chrome(service=service, options=options)
+
+
+
+#  session-level driver
 
 @pytest.fixture(scope="session")
 def driver():
-    d = create_driver()
-    yield d
-    d.quit()
+    driver = create_chrome_driver()
+    yield driver
+    driver.quit()
+
+
+
+#  메인 계정 로그인
 
 @pytest.fixture(scope="module")
 def logged_in_driver(driver):
-    login = LoginFunction(driver)
-    login.open()
-    login.login(os.getenv("MAIN_EMAIL"), os.getenv("MAIN_PASSWORD"))
     try:
-        WebDriverWait(driver, 15).until(
-            lambda d: d.find_element(By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')
-        )
+        login_page = LoginFunction(driver)
+        login_page.open()
+        login_page.login(
+            os.getenv("MAIN_EMAIL"),
+            os.getenv("MAIN_PASSWORD"))
+        print("✅ 로그인 성공")
+
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')))
+        print("✅ 메인 페이지 로드 확인 완료")
+
     except TimeoutException:
         Utils(driver).wait_for(timeout=15)
+
     yield driver
+
+
+
+#  서브 계정 로그인
 
 @pytest.fixture
 def logged_in_driver_sub_account():
-    d = create_driver()
-    login = LoginFunction(d)
-    login.open()
-    login.login(os.getenv("SUB_EMAIL"), os.getenv("SUB_PASSWORD"))
-    yield d
-    d.quit()
+    sub_driver = create_chrome_driver()
+
+    login_page = LoginFunction(sub_driver)
+    login_page.open()
+    login_page.login(
+        os.getenv("SUB_EMAIL"),
+        os.getenv("SUB_PASSWORD"))
+    print("✅ 서브 계정 로그인 성공")
+
+    yield sub_driver
+    sub_driver.quit()
