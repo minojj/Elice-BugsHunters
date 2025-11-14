@@ -66,22 +66,44 @@ pipeline {
                             --junitxml=${REPORT_DIR}/test-results.xml \
                             --html=${REPORT_DIR}/report.html \
                             --self-contained-html \
-                            --tb=short
-                        chmod -R 755 "${REPORT_DIR}"
+                            --tb=short || true
+
+                        # 리포트 파일 확인
+                        echo "📊 생성된 파일 목록:"
+                        ls -lah "${REPORT_DIR}/" || echo "리포트 디렉토리가 비어있습니다"
+                        
+                        # 권한 수정
+                        if [ -f "${REPORT_DIR}/report.html" ]; then
+                            chmod -R 755 "${REPORT_DIR}"
+                            echo "✅ report.html 생성 성공"
+                        else
+                            echo "❌ report.html 생성 실패"
+                        fi
                         
                     '''
                 }
             }
             post {
                 always {
-                    // HTML 리포트를 Artifacts로 아카이브
-                    archiveArtifacts(
-                        artifacts: 'reports/**/*',
-                        allowEmptyArchive: true,
-                        fingerprint: true
-                    )
-                    
-                    echo "📊 HTML 리포트: ${BUILD_URL}artifact/reports/report.html"
+                    script {
+                        // 리포트 파일 존재 확인
+                        def reportExists = fileExists('reports/report.html')
+                        echo "리포트 파일 존재: ${reportExists}"
+                        
+                        if (reportExists) {
+                            // Artifacts 아카이브
+                            archiveArtifacts(
+                                artifacts: 'reports/**/*',
+                                allowEmptyArchive: true,
+                                fingerprint: true
+                            )
+                            echo "✅ 리포트 아카이브 완료"
+                            echo "📊 HTML 리포트: ${BUILD_URL}artifact/reports/report.html"
+                        } else {
+                            echo "❌ 리포트 파일이 생성되지 않았습니다"
+                            echo "테스트가 실패했거나 pytest-html 플러그인이 없을 수 있습니다"
+                        }
+                    }
                 }
             }
         }
