@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        dockerfile {
-            filename 'Dockerfile'
-            args '--shm-size=2g'
-        }
-    }
+    agent any
 
     environment {
         PYTHONUNBUFFERED = "1"
@@ -13,7 +8,7 @@ pipeline {
         WDM_CACHE = "${WORKSPACE}/.wdm"
         HOME = "${WORKSPACE}"
         PYTHONPATH = "${WORKSPACE}:${PYTHONPATH}"
-        CHROMEDRIVER = "/usr/bin/chromedriver"
+        
     }
 
     stages {
@@ -96,6 +91,11 @@ pipeline {
                         credentialsId: 'login-id',
                         usernameVariable: 'MAIN_EMAIL',
                         passwordVariable: 'MAIN_PASSWORD'
+                    )
+                    usernamePassword(
+                        credentialsId: 'sub-id',
+                        usernameVariable: 'SUB_EMAIL',
+                        passwordVariable: 'SUB_PASSWORD'
                     )
                 ]) {
                     script {
