@@ -1,13 +1,12 @@
-FROM python:3.14-slim
+FROM python:3.14-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# 필요 시 시스템 드라이버 사전 설치(ARM에서 권장)
 RUN set -eux; \
     apt-get update; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      chromium chromium-driver fonts-liberation tzdata ca-certificates curl git || true; \
+      chromium chromium-driver fonts-liberation tzdata ca-certificates curl git; \
     rm -rf /var/lib/apt/lists/*
 
 ENV CHROME_BIN=/usr/bin/chromium

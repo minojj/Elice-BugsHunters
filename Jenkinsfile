@@ -41,41 +41,28 @@ pipeline {
                     usernamePassword(credentialsId: 'login-id', usernameVariable: 'MAIN_EMAIL', passwordVariable: 'MAIN_PASSWORD'),
                     usernamePassword(credentialsId: 'sub-id',  usernameVariable: 'SUB_EMAIL',  passwordVariable: 'SUB_PASSWORD')
                 ]) {
-                    script {
-                        sh '''
-                            mkdir -p "${REPORT_DIR}" ".wdm"
-                            docker run --rm \
-                              --shm-size=2g \
-                              -e HEADLESS=true \
-                              -e WDM_CACHE=/app/.wdm \
-                              -e MAIN_EMAIL="${MAIN_EMAIL}" \
-                              -e MAIN_PASSWORD="${MAIN_PASSWORD}" \
-                              -e SUB_EMAIL="${SUB_EMAIL}" \
-                              -e SUB_PASSWORD="${SUB_PASSWORD}" \
-                              -v "${PWD}/.wdm:/app/.wdm" \
-                              -v "${PWD}/${REPORT_DIR}:/app/${REPORT_DIR}" \
-                              elice-bugshunters:latest \
-                              tests -v \
-                                --junitxml=${REPORT_DIR}/test-results.xml \
-                                --html=${REPORT_DIR}/report.html \
-                                --self-contained-html \
-                                --tb=short
-                        '''
-                    }
-                }
-            }
-            post {
-                always {
-                    junit allowEmptyResults: true, testResults: 'reports/test-results.xml'
-                    publishHTML([
-                        allowMissing: true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'reports',
-                        reportFiles: 'report.html',
-                        reportName: 'Pytest Report'
-                    ])
-                    archiveArtifacts artifacts: 'reports/**/*,screenshots/**/*.png', allowEmptyArchive: true, fingerprint: true
+                    sh '''
+                        mkdir -p "${REPORT_DIR}" ".wdm"
+                        docker run --rm \
+                          --shm-size=2g \
+                          -e HEADLESS=true \
+                          -e WDM_SKIP=1 \
+                          -e CHROME_BIN=/usr/bin/chromium \
+                          -e CHROMEDRIVER=/usr/bin/chromedriver \
+                          -e WDM_CACHE=/app/.wdm \
+                          -e MAIN_EMAIL="${MAIN_EMAIL}" \
+                          -e MAIN_PASSWORD="${MAIN_PASSWORD}" \
+                          -e SUB_EMAIL="${SUB_EMAIL}" \
+                          -e SUB_PASSWORD="${SUB_PASSWORD}" \
+                          -v "${PWD}/.wdm:/app/.wdm" \
+                          -v "${PWD}/${REPORT_DIR}:/app/${REPORT_DIR}" \
+                          elice-bugshunters:latest \
+                          tests -v \
+                            --junitxml=${REPORT_DIR}/test-results.xml \
+                            --html=${REPORT_DIR}/report.html \
+                            --self-contained-html \
+                            --tb=short
+                    '''
                 }
             }
         }
