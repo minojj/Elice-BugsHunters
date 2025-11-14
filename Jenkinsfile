@@ -31,50 +31,50 @@ pipeline {
                 }
             }
         }
-    }
-    stage('Run Tests in Container') {
-        steps {
-            withCredentials([
-                usernamePassword(credentialsId: 'login-id', usernameVariable: 'MAIN_EMAIL', passwordVariable: 'MAIN_PASSWORD'),
-                usernamePassword(credentialsId: 'sub-id',   usernameVariable: 'SUB_EMAIL',  passwordVariable: 'SUB_PASSWORD')
-            ]) {
-                sh '''
-                    set -eux
+    
+        stage('Run Tests in Container') {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'login-id', usernameVariable: 'MAIN_EMAIL', passwordVariable: 'MAIN_PASSWORD'),
+                    usernamePassword(credentialsId: 'sub-id',   usernameVariable: 'SUB_EMAIL',  passwordVariable: 'SUB_PASSWORD')
+                ]) {
+                    sh '''
+                        set -eux
 
-                    REPORT_DIR_HOST="${WORKSPACE}/reports"
-                    REPORT_DIR_CONT="/app/reports"
+                        REPORT_DIR_HOST="${WORKSPACE}/reports"
+                        REPORT_DIR_CONT="/app/reports"
 
-                    rm -rf "${REPORT_DIR_HOST}"
-                    mkdir -p "${REPORT_DIR_HOST}"
+                        rm -rf "${REPORT_DIR_HOST}"
+                        mkdir -p "${REPORT_DIR_HOST}"
 
-                    docker run --rm \
-                    --shm-size=2g \
-                    -e HEADLESS=true \
-                    -e WDM_SKIP=1 \
-                    -e CHROME_BIN=/usr/bin/chromium \
-                    -e CHROMEDRIVER=/usr/bin/chromedriver \
-                    -e WDM_CACHE=/app/.wdm \
-                    -e MAIN_EMAIL="${MAIN_EMAIL}" \
-                    -e MAIN_PASSWORD="${MAIN_PASSWORD}" \
-                    -e SUB_EMAIL="${SUB_EMAIL}" \
-                    -e SUB_PASSWORD="${SUB_PASSWORD}" \
-                    -v "${PWD}/.wdm:/app/.wdm" \
-                    -v "${REPORT_DIR_HOST}:${REPORT_DIR_CONT}" \
-                    elice-bugshunters:latest \
-                    tests -v \
-                        --junitxml=${REPORT_DIR_CONT}/test-results.xml \
-                        --html=${REPORT_DIR_CONT}/report.html \
-                        --self-contained-html \
-                        --tb=short
+                        docker run --rm \
+                        --shm-size=2g \
+                        -e HEADLESS=true \
+                        -e WDM_SKIP=1 \
+                        -e CHROME_BIN=/usr/bin/chromium \
+                        -e CHROMEDRIVER=/usr/bin/chromedriver \
+                        -e WDM_CACHE=/app/.wdm \
+                        -e MAIN_EMAIL="${MAIN_EMAIL}" \
+                        -e MAIN_PASSWORD="${MAIN_PASSWORD}" \
+                        -e SUB_EMAIL="${SUB_EMAIL}" \
+                        -e SUB_PASSWORD="${SUB_PASSWORD}" \
+                        -v "${PWD}/.wdm:/app/.wdm" \
+                        -v "${REPORT_DIR_HOST}:${REPORT_DIR_CONT}" \
+                        elice-bugshunters:latest \
+                        tests -v \
+                            --junitxml=${REPORT_DIR_CONT}/test-results.xml \
+                            --html=${REPORT_DIR_CONT}/report.html \
+                            --self-contained-html \
+                            --tb=short
 
-                    echo "📂 Jenkins 워크스페이스 리포트 디렉토리 내용:"
-                    ls -lah "${REPORT_DIR_HOST}"
-                '''
-                }
+                        echo "📂 Jenkins 워크스페이스 리포트 디렉토리 내용:"
+                        ls -lah "${REPORT_DIR_HOST}"
+                    '''
+                    }
             }
         }
     
-
+    }
     
 
     post {
