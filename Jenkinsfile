@@ -43,28 +43,48 @@ pipeline {
             when { expression { return isUnix() } }
             steps {
                 sh '''
-                    set -e
-                    if ! command -v python3 >/dev/null 2>&1; then
-                      echo "[setup] Installing python3, venv, pip..."
-                      apt-get update -y
-                      DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-venv python3-pip
-                      ln -sf /usr/bin/python3 /usr/bin/python || true
-                    else
-                      echo "[setup] python3 already installed"
-                    fi
+                    set -euxo pipefail
 
-                    # Selenium 실행용 브라우저/드라이버
+                    # 1) APT 소스를 컨테이너의 실제 배포판으로 고정 (trixie 혼입 방지)
+                    . /etc/os-release
+                    echo "[setup] Debian codename: $VERSION_CODENAME"
+                    cat >/etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian ${VERSION_CODENAME} main contrib non-free non-free-firmware
+deb http://security.debian.org/debian-security ${VERSION_CODENAME}-security main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian ${VERSION_CODENAME}-updates main contrib non-free non-free-firmware
+EOF
+
+                    apt-get update -y
+
+                    # 2) Python 설치(배포판 기본 버전), 유틸
+                    DEBIAN_FRONTEND=noninteractive \
+                    apt-get install -y --no-install-recommends \
+                        ca-certificates curl git \
+                        python3 python3-venv python3-pip
+
+                    ln -sf /usr/bin/python3 /usr/bin/python || true
+
+                    # 3) 브라우저/드라이버 (가능한 경우)
+                    #    arm64에서도 제공되며, 배포판에 따라 chromium 패키지명이 다를 수 있음
                     if ! command -v chromium >/dev/null 2>&1 && ! command -v google-chrome >/dev/null 2>&1; then
                       echo "[setup] Installing Chromium & chromedriver..."
-                      DEBIAN_FRONTEND=noninteractive apt-get install -y chromium chromium-driver fonts-liberation tzdata || true
-                    else
-                      echo "[setup] Chromium/Chrome already present"
+                      set +e
+                      DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+                        chromium chromium-driver fonts-liberation tzdata
+                      EC=$?
+                      set -e
+                      if [ $EC -ne 0 ]; then
+                        echo "[warn] chromium 설치 실패(레포/아키 문제). webdriver-manager로 드라이버를 받게 두고 진행합니다."
+                      fi
                     fi
 
                     python3 --version || true
                     python  --version || true
                     which chromium || which google-chrome || true
                     which chromedriver || true
+
+                    apt-get clean
+                    rm -rf /var/lib/apt/lists/*
                 '''
             }
         }
