@@ -1,19 +1,20 @@
 from time import sleep
+from pathlib import Path
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from src.pages.chat_base_page import ChatPage
 
+TEST_FILES_DIR = Path(__file__).parent.parent / "resources" / "testdata"
+TEST_FILENAME = TEST_FILES_DIR / "git.pdf"
+TEST_DOG_IMAGE = TEST_FILES_DIR / "dog.png"
+
 
 def test_cb_001(logged_in_driver):
     chat_page = ChatPage(logged_in_driver)
-    
-    print(f" 메시지 전송: '안녕하세요'")
     # 현재 기사 수 기준선 저장 후 전송
     count_before = len(chat_page.driver.find_elements(By.XPATH, "//div[@role='article']"))
     chat_page.send_message("안녕하세요")
-
-    # AI 응답으로 기사 수 증가 대기 (명시적 대기)
     WebDriverWait(chat_page.driver, 30).until(
         lambda d: len(d.find_elements(By.XPATH, "//div[@role='article']")) > count_before
     )
@@ -51,21 +52,17 @@ def test_cb_008(driver):
 def test_cb_004(driver):
     chat_page = ChatPage(driver)
     chat_page.send_message("태극기를 그려줘")
-    # 이미지 생성 대기 (check_image_exists 내부에 wait 포함)
     assert chat_page.check_image_exists(), "태극기 이미지를 찾을 수 없습니다"
 
 
-def test_cb_002(driver):
-    chat_page = ChatPage(driver)
-    chat_page.upload_file(r"C:\Users\97min\OneDrive\바탕 화면\[수업 자료] Jenkins 개념 및 환경 설정.pdf")
-    # 파일 업로드 완료 대기 (file input 값 설정 여부)
+def test_cb_002(logged_in_driver):
+    chat_page = ChatPage(logged_in_driver)
+    chat_page.upload_file(str(TEST_FILENAME.absolute()))
     WebDriverWait(chat_page.driver, 30).until(
         lambda d: d.find_element(*chat_page.locators["file_input"]).get_attribute("value")
     )
-    # 현재 기사 수 기준선 저장 후 메시지 전송
     count_before = len(chat_page.driver.find_elements(By.XPATH, "//div[@role='article']"))
     chat_page.send_message("이 파일 3줄로 요약해줘")
-    # AI 응답 대기 (기사 수 증가)
     WebDriverWait(chat_page.driver, 30).until(
         lambda d: len(d.find_elements(By.XPATH, "//div[@role='article']")) > count_before
     )
@@ -73,15 +70,13 @@ def test_cb_002(driver):
 
 def test_cb_003(driver):
     chat_page = ChatPage(driver)
-    chat_page.upload_file(r"C:\Users\97min\OneDrive\바탕 화면\dog.png")
-    # 파일 업로드 완료 대기 (file input 값 설정 여부)
+    chat_page.upload_file(str(TEST_DOG_IMAGE.absolute()))
     WebDriverWait(chat_page.driver, 30).until(
         lambda d: d.find_element(*chat_page.locators["file_input"]).get_attribute("value")
     )
-    # 현재 기사 수 기준선 저장 후 메시지 전송
     count_before = len(chat_page.driver.find_elements(By.XPATH, "//div[@role='article']"))
     chat_page.send_message("이 사진을 애니매이션화해서 그려줘")
-    # AI 응답 대기 (기사 수 증가)
     WebDriverWait(chat_page.driver, 60).until(
         lambda d: len(d.find_elements(By.XPATH, "//div[@role='article']")) > count_before
     )
+    assert chat_page.check_image_exists(), "애니메이션 이미지를 찾을 수 없습니다"
