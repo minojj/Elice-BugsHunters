@@ -16,26 +16,44 @@ load_dotenv(dotenv_path)
 
 
 
-# 1) HEADLESS 여부
-
+# 1) HEADLESS 설정
 
 def is_headless():
-    return os.getenv("HEADLESS", "true").lower() == "true"
+    """
+    macOS는 기본값 false
+    Windows/Linux/Jenkins 기본값 true
+    (사용자가 .env 에서 override 가능)
+    """
+    system = platform.system()
+
+    default = "false" if system == "Darwin" else "true"
+    return os.getenv("HEADLESS", default).lower() == "true"
 
 
 
-# 2) OPTIONS 구성 (환경 공통)
+
+# 2) Chrome OPTIONS (환경별 완전 분기)
 
 
 def build_options():
     opts = webdriver.ChromeOptions()
-    opts.page_load_strategy = "eager"
 
+    # page_load_strategy → mac headless 안정화를 위해 eager 제거
+    opts.page_load_strategy = "normal"
+
+    system = platform.system()
+
+    # 🔥 Headless 설정
     if is_headless():
         opts.add_argument("--headless=new")
+        opts.add_argument("--disable-gpu")  # headless 안정화
+        opts.add_argument("--disable-software-rasterizer")  # mac 렌더링 버그 해결
+        opts.add_argument("--use-gl=swiftshader")  # mac headless WebGL 강화
+
+  
+    # 공통 옵션
 
     for a in [
-        "--disable-gpu",
         "--no-sandbox",
         "--disable-dev-shm-usage",
         "--window-size=1920,1080",
@@ -44,7 +62,17 @@ def build_options():
     ]:
         opts.add_argument(a)
 
-    # 이미지 비활성화 → 성능 향상
+
+    # macOS ONLY 옵션
+ 
+    if system == "Darwin":
+        opts.add_argument("--disable-gpu")
+        opts.add_argument("--disable-software-rasterizer")
+        opts.add_argument("--use-angle=metal")
+
+
+    # 이미지 로딩 비활성화
+
     opts.add_experimental_option(
         "prefs", {"profile.managed_default_content_settings.images": 2}
     )
@@ -53,18 +81,18 @@ def build_options():
 
 
 
-# 3) ChromeDriver 경로 결정
+# 3) ChromeDriver 경로 결정 (팀원 기능 그대로 유지)
 
 
 def resolve_driver_path():
     sys_driver = os.getenv("CHROMEDRIVER")
 
-    # 환경변수 CHROMEDRIVER가 설정된 경우
+    # 1) 환경변수로 시스템 chromedriver 지정한 경우
     if sys_driver and os.path.exists(sys_driver):
-        print(f"🔧 Using system chromedriver: {sys_driver}")
+        print(f"🔧 Using system ChromeDriver: {sys_driver}")
         return sys_driver
 
-    # webdriver_manager 기본
+    # 2) webdriver_manager 사용 (path 파라미터 제거!)
     try:
         from webdriver_manager.chrome import ChromeDriverManager
         return ChromeDriverManager().install()
@@ -73,33 +101,29 @@ def resolve_driver_path():
         raise
 
 
-
-# 4) Driver 생성
+# 4) Driver 생성 + 환경 메시지
 
 
 def create_driver():
     system = platform.system()
 
     if os.getenv("JENKINS_HOME"):
-        print("🌐 Running in Jenkins CI (Linux based)")
+        print("🌐 Running on Jenkins (Linux CI)")
     else:
-        print(f"💻 Running on {system} (headless={is_headless()})")
+        print(f"💻 Running on {system} | headless={is_headless()}")
 
+    options = build_options()
     service = Service(resolve_driver_path())
-    return webdriver.Chrome(service=service, options=build_options())
+    return webdriver.Chrome(service=service, options=options)
 
 
-
-# 5) WAIT TIME 보정 (macOS headless only)
+# 5) macOS headless 안정화 → wait 2배 증가
 
 
 def get_wait(driver):
-    system = platform.system()
-
-    if system == "Darwin" and is_headless():
-        return WebDriverWait(driver, 20)   # mac headless → 2배 증가
+    if platform.system() == "Darwin" and is_headless():
+        return WebDriverWait(driver, 20)
     return WebDriverWait(driver, 10)
-
 
 
 
@@ -129,7 +153,9 @@ def logged_in_driver(driver):
 
     try:
         wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]'))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')
+            )
         )
     except TimeoutException:
         Utils(driver).wait_for(timeout=15)
@@ -137,7 +163,8 @@ def logged_in_driver(driver):
     yield driver
 
 
-# 8) 로그인 (서브 계정) - 별도 driver
+# 8) 로그인 (서브 계정)
+
 
 @pytest.fixture(scope="module")
 def logged_in_driver_sub_account():
@@ -153,7 +180,9 @@ def logged_in_driver_sub_account():
 
     try:
         wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]'))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')
+            )
         )
     except TimeoutException:
         Utils(d).wait_for(timeout=15)

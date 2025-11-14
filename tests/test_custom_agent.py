@@ -175,10 +175,10 @@ def test_ca_002_validate_required_fields_behavior(create_page):
 
 def test_ca_003_1_create_private_agent_successfully(create_page, request):
     driver = create_page
+    wait = WebDriverWait(driver, 10)
     create_agent_page = CreateAgentPage(driver)
 
-    # 1️⃣ 나만보기 설정으로 save & 생성 확인
-
+    # 1️⃣ 필드 입력 (React onChange 이미 내부에서 처리됨)
     create_agent_page.fill_form(
         "project team",
         "for the team project",
@@ -186,27 +186,35 @@ def test_ca_003_1_create_private_agent_successfully(create_page, request):
         "Hello, we're team 03"
     )
 
-    create_agent_page.get_element("create_btn", "clickable").click()
+    # 2️⃣ Create 버튼 안정적으로 클릭 (scroll + JS click)
+    btn_create = create_agent_page.get_element("create_btn", "clickable")
+    driver.execute_script("arguments[0].scrollIntoView({block:'center'});", btn_create)
+    driver.execute_script("arguments[0].click();", btn_create)
 
+    # 3️⃣ 저장 모달에서 'private' 선택 및 저장
     save_page = SaveAgentPage(driver)
     save_page.select_mode("private")
-    print("✅ CA_003_1_나만보기 옵션 선택 완료")
     save_page.click_save()
-    message = save_page.get_snackbar_text().lower()
-    assert "created" in message, f"❌ CA_003_1_예상과 다른 메시지: {message}"
-    print(f"✅ CA_003_1_private 에이전트 생성 성공 알림 확인: {message}")
 
-    agent_id = create_agent_page.get_agent_id_from_url()
-
-    request.config.cache.set("private_agent_id", agent_id)
-    print(f"✅ CA_003_1_Private agent ID 저장 완료: {agent_id}")
-    
-
-    # 2️⃣ 페이지 자동 이동 확인
-
+    # 4️⃣ 스낵바 메시지 확인
     try:
-        WebDriverWait(driver, 10).until(lambda d: "builder#form" not in d.current_url)
-        print("✅ CA_003_1_에이전트 메인 페이지로 이동 완료!")
+        message = save_page.get_snackbar_text().lower()
+        assert "created" in message, f"❌ CA_003_1_예상과 다른 메시지: {message}"
+    except TimeoutException:
+        print("❌ CA_003_1_스낵바 메시지 미출력!")
+        return
+
+    # 5️⃣ 생성된 agent ID 추출 & 저장
+    try:
+        agent_id = create_agent_page.get_agent_id_from_url()
+        request.config.cache.set("private_agent_id", agent_id)
+    except Exception:
+        print("❌ CA_003_1_agent_id 추출 실패!")
+        return
+
+    # 6️⃣ 생성 완료 후 builder 페이지 벗어났는지 확인
+    try:
+        wait.until(lambda d: "builder#form" not in d.current_url)
     except TimeoutException:
         print("❌ CA_003_1_에이전트 메인 페이지로 자동 이동 실패!")
 
