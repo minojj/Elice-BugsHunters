@@ -1,23 +1,16 @@
 import pytest
-# from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-# from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-# from src.pages.agent_page import AgentPage
-# from src.utils.helpers import Utils
-# from src.pages.login_page import LoginFunction
+import time
+import os
 from src.pages.custom_agent_page import AgentExplorerPage, CreateAgentPage, SaveAgentPage, ChatCreatePage, MyAgentsPage
 
 
 chrome_driver_path = ChromeDriverManager().install()
-
-    #크롬 열고 로그인까지 완료된 드라이버 리턴
-    # service = Service(CHROME_DRIVER_PATH)
-    # driver = webdriver.Chrome(service=service) 이거 fixture에 넣었었는데 현재 conftest.py에서 받아오기때문에 주석처리
 
 
 @pytest.fixture
@@ -26,7 +19,8 @@ def pages(logged_in_driver):
     return {
         "explorer": AgentExplorerPage(driver),
         "create": CreateAgentPage(driver),
-        "my_agents": MyAgentsPage(driver)
+        "my_agents": MyAgentsPage(driver),
+        "chat_create": ChatCreatePage(driver)
     }
 
 
@@ -36,7 +30,7 @@ def explorer_page_loaded(pages):
     driver = pages["explorer"].driver
     explorer_page = pages["explorer"]
 
-    driver.get(explorer_page.url)  # ✅ 클래스 내부 URL 사용
+    driver.get(explorer_page.url)  
     WebDriverWait(driver, 10).until(EC.url_contains("/ai-helpy-chat/agent"))
     print("✅ Explorer 페이지 로드 완료")
 
@@ -68,24 +62,43 @@ def my_agents_page_loaded(pages):
 
 @pytest.fixture
 def create_page(pages):
-    """Explorer에서 Create 버튼 클릭으로 생성 페이지(builder#form) 진입"""
     driver = pages["explorer"].driver
     explorer_page = pages["explorer"]
     wait = WebDriverWait(driver, 10)
 
-    # 1️⃣ Explorer 페이지로 이동 (URL은 클래스 내부 self.url 사용)
     driver.get(explorer_page.url)
     wait.until(EC.url_contains("/ai-helpy-chat/agent"))
 
-    # 2️⃣ 'Create' 버튼 클릭
-    explorer_page.get_element("create_btn", wait_type="presence").click()
+    explorer_page.get_element("create_btn", wait_type="clickable").click()
 
-    # 3️⃣ builder#form 로드될 때까지 대기
     wait.until(EC.url_contains("builder#form"))
+    wait.until(EC.visibility_of_element_located((By.NAME, "name")))
+
     print("✅ 생성 페이지로 진입 완료")
 
     yield driver
-    
+
+
+#더미파일 생성,삭제용 fixture
+
+@pytest.fixture
+def dummy_files():
+    small = "dummy_small.pdf"
+    big = "dummy_big.pdf"
+
+    with open(small, "wb") as f:
+        f.write(b"0" * 1024)
+    with open(big, "wb") as f:
+        f.write(b"0" * 55 * 1024 * 1024)
+
+    yield {
+        "small": os.path.abspath(small),
+        "big": os.path.abspath(big),
+    }
+
+    for fpath in [small, big]:
+        if os.path.exists(fpath):
+            os.remove(fpath)
 
 
 
@@ -97,14 +110,15 @@ def test_ca_001(logged_in_driver):
     wait = WebDriverWait(driver, 10)
     explorer_page = AgentExplorerPage(driver)
 
-    explorer_page.get_element("agent_explorer_btn", wait_type="presence").click()
-    explorer_page.get_element("create_btn", wait_type="presence").click()
+    explorer_page.get_element("agent_explorer_btn", wait_type="clickable").click()
+    explorer_page.get_element("create_btn", wait_type="clickable").click()
 
     try:
         wait.until(EC.url_contains("builder#form"))
         print("✅ CA_001_페이지로 이동 완료!")
     except TimeoutException:
         print("❌ CA_001_페이지로 이동 실패!")
+
 
 
 def test_ca_002(create_page):
@@ -245,30 +259,20 @@ def test_ca_003_2(create_page, request):
 
 
 
-# def test_ca_004(create_page):
-#     driver = create_page
-#     wait = WebDriverWait(driver, 10)
-#     page = CreateAgentPage(driver)
-#     chat_page = ChatCreatePage(driver)
-#     save_page = SaveAgentPage(driver)
+def test_ca_004(create_page, pages):
+    driver = create_page
+    chat_page = pages["chat_create"]
 
-#     # 1️⃣ create with chat에서 필드 구성 답변 받기
+    # 1️⃣ create with chat 클릭
+    chat_page.click_create_with_chat()
 
-#     chat_page.click_create_with_chat()
-#     chat_page.typing_chat()   
+    # 2️⃣ 챗봇에 메시지 입력 & 답변 생성 대기
+    chat_page.send_single_message()
+    assert chat_page.wait_for_ai_answer(), "❌ CA_004_AI 답변 생성 실패"
+    print("✅ CA_004_챗봇 답변 생성 성공")
 
-#     # 2️⃣ 답변 기반으로 필드 자동 입력
-#     chat_page.transfer_to_create_form()
-#     page.get_element("create_btn", "clickable").click()
-    
-#     # 3️⃣ 나만보기 설정으로 save & 생성 확인
-#     save_page.select_mode("private")
-#     print("✅ CA_004_나만보기 옵션으로 생성")
-#     save_page.click_save()
-#     save_page.verify_success()
-#     print("✅ CA_004_생성완료 알림 확인")
 
-# ##이거 챗봇 대답이 할때마다 구조가 달라짐
+
 
 
 
@@ -328,7 +332,7 @@ def test_ca_007(my_agents_page_loaded):
     my_agent_page = MyAgentsPage(driver)
 
     # 1️⃣ My Agents 페이지 진입 후 Draft, Private, Organization 카드 존재여부 확인
-
+    my_agent_page.load_all_cards()
     draft_cards = my_agent_page.get_draft_cards()   
     private_cards = my_agent_page.get_private_cards()
     organization_cards = my_agent_page.get_organization_cards()
@@ -359,6 +363,7 @@ def test_ca_008(my_agents_page_loaded):
     save_page = SaveAgentPage(driver)
 
     #1️⃣ 첫 번째 Private 카드의 edit 버튼 클릭(organization으로 변경 가능)
+    my_agent_page.load_all_cards()
     my_agent_page.click_edit_button_by_card_type("private")
 
     #2️⃣ 수정 작업
@@ -376,13 +381,14 @@ def test_ca_008(my_agents_page_loaded):
     print(f"✅ CA_008_에이전트 수정 성공 알림 확인: {message}")
 
 
-
+@pytest.mark.xdist_group(name="serial_group")
 def test_ca_009(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
     create_agent_page = CreateAgentPage(driver)
     
     #1️⃣ 첫 번째 Draft 카드의 edit 버튼 클릭
+    my_agent_page.load_all_cards()
     my_agent_page.click_edit_button_by_card_type("draft")
     
     #2️⃣ 수정을 위해 필드 요소 찾고 모든 필드 입력 후 create 버튼 클릭
@@ -406,26 +412,25 @@ def test_ca_009(my_agents_page_loaded):
 
 
 
-    
+@pytest.mark.xdist_group(name="serial_group")
 def test_ca_010(my_agents_page_loaded, pages):
     driver = my_agents_page_loaded  
     my_agent_page = pages["my_agents"]
     create_agent_page = pages["create"]
 
-    # 1) 세 번째 Draft 카드 편집
+    # 1️⃣  첫 번째 Draft 카드 편집
+    my_agent_page.load_all_cards()
     draft_cards = my_agent_page.get_draft_cards()
-    assert len(draft_cards) >= 3, "Draft 카드가 3개 미만입니다."
+    assert len(draft_cards) >= 1, "Draft 카드 존재하지 않음"
 
-    target_card = draft_cards[2]
-
-    # 🔥 고유한 agent_id 확보 (여기서만 해야 함)
+    target_card = draft_cards[0]
     agent_id = my_agent_page.get_agent_id_from_card(target_card)
     print("🎯 수정할 agent_id:", agent_id)
 
     my_agent_page.scroll_into_view(target_card)
     target_card.find_element(By.CSS_SELECTOR, "svg[data-icon='pen']").click()
 
-    # 2) 값 입력
+    # 2️⃣ 값 입력 및 자동저장 대기 후 갱신
     TARGET_TITLE = "draft test"
     expected_values = create_agent_page.fill_form_with_trigger(
         TARGET_TITLE,
@@ -434,35 +439,32 @@ def test_ca_010(my_agents_page_loaded, pages):
         ""
     )
 
-    # 3) auto-save 대기
+    time.sleep(1) 
     create_agent_page.wait_for_autosave(expected_values, timeout=20)
     print("⏳ auto-save 완료")
 
-    # ❌ 여기서 다시 draft_cards[2] 로 재조회 절대 금지!
-    #    agent_id 가 바뀌어 버려서 오류 발생했던 구간임
-
-    # 4) 뒤로가기
+  
     driver.back()
-    print("⬅️ 뒤로가기 완료")
-
-    # 5) 동일한 agent_id 를 가진 카드가 My Agents에 반영될 때까지 대기
+    driver.refresh()
+    my_agent_page.wait_for_cards_loaded()
+    my_agent_page.load_all_cards()
+    print("⬅️ 뒤로가기 및 새로고침 완료")
     updated_card = my_agent_page.wait_for_card_update(agent_id, TARGET_TITLE)
+
 
     assert updated_card is not None, f"Draft 카드(ID: {agent_id})가 My Agents에 없음"
     print("🔄 Draft 반영 확인 완료")
 
-    # 6) 갱신된 Draft 카드 편집 진입
+    # 3️⃣ 갱신된 Draft 카드 편집 진입 및 값 비교
     my_agent_page.scroll_into_view(updated_card)
     updated_card.find_element(By.CSS_SELECTOR, "svg[data-icon='pen']").click()
 
-    # 7) 값 로딩 대기
     WebDriverWait(driver, 10).until(
         lambda d: d.find_element(By.NAME, "name").get_attribute("value") != ""
     )
 
     actual_values = create_agent_page.get_all_field_values()
 
-    # 8) 값 비교
     assert actual_values["name"] == expected_values["name"], (
         f"❌ name 불일치: '{expected_values['name']}' vs '{actual_values['name']}'"
     )
@@ -478,8 +480,9 @@ def test_ca_011(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
 
-    #1️⃣ 두 번째 draft 카드의 delete 버튼 클릭(위치나 종류는 환경에 따라 변경 가능) 
-    my_agent_page.click_delete_button_by_card_type("draft", index=1)
+    #1️⃣ 두 번째 organization 카드의 delete 버튼 클릭(위치나 종류는 환경에 따라 변경 가능) 
+    my_agent_page.load_all_cards()
+    my_agent_page.click_delete_button_by_card_type("organization", index=1)
 
     #2️⃣ 삭제 팝업 모달 확인
     assert my_agent_page.is_delete_modal_visible(), "❌ CA_011_삭제 팝업 모달 미출력"
@@ -496,8 +499,9 @@ def test_ca_012(my_agents_page_loaded):
     my_agent_page = MyAgentsPage(driver)
     save_page = SaveAgentPage(driver)
 
-    #1️⃣ 두 번째 draft 카드의 완전 삭제(위치나 종류는 환경에 따라 변경 가능)
-    my_agent_page.click_delete_button_by_card_type("draft", index=1)
+    #1️⃣ 두 번째 organization 카드의 완전 삭제(위치나 종류는 환경에 따라 변경 가능)
+    my_agent_page.load_all_cards()
+    my_agent_page.click_delete_button_by_card_type("organization", index=1)
     my_agent_page.confirm_delete_modal()
 
     #2️⃣ 삭제 후 알림 확인
@@ -510,17 +514,52 @@ def test_ca_012(my_agents_page_loaded):
 def test_ca_013(explorer_page_loaded):
     driver = explorer_page_loaded
     explorer = AgentExplorerPage(driver)
-    my_agents_page = MyAgentsPage(driver)
+    my_agent_page = MyAgentsPage(driver)
     save_page = SaveAgentPage(driver)
 
+    #1️⃣ 기본제공 에이전트 삭제 시도 및 알림 확인
 
-    result = explorer.delete_fixed_agent(my_agents_page, save_page)
+    my_agent_page.load_all_cards()
+    result = explorer.delete_fixed_agent(my_agent_page, save_page)
 
     assert result is True, "❌ CA_013_기본제공 에이전트 삭제"
     print("✅ CA_013_기본 에이전트 삭제 방지")
 
 
 
+def test_ca_014(create_page, pages, dummy_files):
+    driver = create_page
+    create = pages["create"]
+
+    #1️⃣ 지식파일에 작은 파일 업로드 기능 확인
+
+    create.upload_file(dummy_files["small"])
+
+    small_item = create.get_last_uploaded_item()
+
+    assert create.has_success_icon(small_item), "❌ CA_014_작은 파일 업로드 성공 아이콘 없음"
+    assert "success" in create.get_file_status(small_item).lower(), "❌ CA_014_작은 파일 상태값이 Success가 아님"
+
+    print("✅ CA_014_작은 파일 업로드 성공")
+
+    #2️⃣ 지식파일에 큰 파일 업로드 불가 확인
+
+    create.upload_file(dummy_files["big"])
+
+    big_item = create.get_last_uploaded_item()
+
+    assert create.has_failed_icon(big_item), "❌ CA_014_큰 파일 실패 아이콘 없음"
+    assert "failed" in create.get_file_status(big_item).lower(), "❌ CA_014_큰 파일 상태값이 Failed가 아님"
+
+    err = create.get_error_msg(big_item)
+    if not err:
+        print("⚠️ CA_014_오류 문구가 없음")
+    elif "file size" not in err.lower():
+        print(f"⚠️ CA_014_예상 외 오류 문구: {err}")
+    else:
+        print("✅ CA_014_파일 사이즈 제한 오류 문구 정상 감지!")
+
+    print("✅ CA_014_파일 용량 제한 검증 완료!")
 
 
 
