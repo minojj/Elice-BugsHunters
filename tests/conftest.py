@@ -37,6 +37,9 @@ def build_options():
     ]:
         opts.add_argument(a)
 
+    # 👉 여기 추가 (로컬에서만 쓰고 싶으면 조건 걸어도 됨)
+    opts.add_experimental_option("detach", True)
+
     # 이미지 로딩 비활성화
     opts.add_experimental_option(
         "prefs", {"profile.managed_default_content_settings.images": 2}
@@ -93,7 +96,7 @@ def create_driver():
 def driver():
     d = create_driver()
     yield d
-    d.quit()
+    # d.quit()
 
 # 5) 메인 계정 로그인
 
@@ -128,4 +131,4 @@ def logged_in_driver_sub_account():
         os.getenv("SUB_PASSWORD")
     )
     yield d
-    d.quit()
+    # d.quit()
