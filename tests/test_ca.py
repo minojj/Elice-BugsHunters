@@ -49,11 +49,20 @@ def my_agents_page_loaded(pages):
     driver = pages["my_agents"].driver
     my_agents_page = pages["my_agents"]
 
-    driver.get(my_agents_page.url)  # ✅ 클래스 내부 URL 사용
+    driver.get(my_agents_page.url)
     WebDriverWait(driver, 10).until(EC.url_contains("/ai-helpy-chat/agent/mine"))
     print("✅ My Agents 페이지 로드 완료")
 
+    try:
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".MuiCard-root"))
+        )
+        print("✅ My Agents 페이지 로드 + 카드 렌더링 완료")
+    except TimeoutException:
+        print("⚠️ 카드 리스트 렌더링 실패 (카드 0개일 수도 있음)")
+
     yield driver
+
 
 #생성폼 수동 진입용 fixture   
 
@@ -394,55 +403,74 @@ def test_ca_009(my_agents_page_loaded):
     assert "created" in message, f"❌ CA_009_예상과 다른 메시지: {message}"
     print(f"✅ CA_009_임시 저장된 에이전트 생성 성공 알림 확인: {message}")
 
-    
 
+
+
+    
 def test_ca_010(my_agents_page_loaded, pages):
     driver = my_agents_page_loaded  
     my_agent_page = pages["my_agents"]
     create_agent_page = pages["create"]
-    explorer_page = pages["explorer"]
 
+    # 1) 세 번째 Draft 카드 편집
+    draft_cards = my_agent_page.get_draft_cards()
+    assert len(draft_cards) >= 3, "Draft 카드가 3개 미만입니다."
 
-    # 1️⃣ 세 번째 Draft 카드의 edit 버튼 클릭
-    my_agent_page.click_edit_button_by_card_type("draft", index =2)
+    target_card = draft_cards[2]
 
-    # 2️⃣ 필드 요소 입력 (일부 값 비움)
-    expected_values = create_agent_page.fill_form(
-        "project team",
+    # 🔥 고유한 agent_id 확보 (여기서만 해야 함)
+    agent_id = my_agent_page.get_agent_id_from_card(target_card)
+    print("🎯 수정할 agent_id:", agent_id)
+
+    my_agent_page.scroll_into_view(target_card)
+    target_card.find_element(By.CSS_SELECTOR, "svg[data-icon='pen']").click()
+
+    # 2) 값 입력
+    TARGET_TITLE = "draft test"
+    expected_values = create_agent_page.fill_form_with_trigger(
+        TARGET_TITLE,
         "",
-        "If you must make a guess, clearly state that it is a guess",
+        "draft rules",
         ""
     )
 
+    # 3) auto-save 대기
+    create_agent_page.wait_for_autosave(expected_values, timeout=20)
+    print("⏳ auto-save 완료")
 
-    # 페이지 렌더링 완료까지 대기
-    WebDriverWait(driver, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
+    # ❌ 여기서 다시 draft_cards[2] 로 재조회 절대 금지!
+    #    agent_id 가 바뀌어 버려서 오류 발생했던 구간임
 
-    # 3️⃣ 뒤로가기 → Explorer 이동 → My Agents로 재진입
+    # 4) 뒤로가기
     driver.back()
-    print("✅ Draft 수정 뒤 뒤로가기 완료")
+    print("⬅️ 뒤로가기 완료")
 
-    driver.get(explorer_page.url)
-    WebDriverWait(driver, 5).until(EC.url_contains("/agent"))
-    driver.get(my_agent_page.url)
-    WebDriverWait(driver, 5).until(EC.url_contains("/agent/mine"))
-    print("✅ Explorer 이동 후 My Agents 페이지 재진입 완료")
+    # 5) 동일한 agent_id 를 가진 카드가 My Agents에 반영될 때까지 대기
+    updated_card = my_agent_page.wait_for_card_update(agent_id, TARGET_TITLE)
 
-    # 4️⃣ 재진입 후 필드 내용 임시저장 여부 확인
-    my_agent_page.click_edit_button_by_card_type("draft")
+    assert updated_card is not None, f"Draft 카드(ID: {agent_id})가 My Agents에 없음"
+    print("🔄 Draft 반영 확인 완료")
 
-    WebDriverWait(driver, 10).until(lambda d: d.find_element(By.NAME, "name").get_attribute("value") != "")
+    # 6) 갱신된 Draft 카드 편집 진입
+    my_agent_page.scroll_into_view(updated_card)
+    updated_card.find_element(By.CSS_SELECTOR, "svg[data-icon='pen']").click()
+
+    # 7) 값 로딩 대기
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.NAME, "name").get_attribute("value") != ""
+    )
 
     actual_values = create_agent_page.get_all_field_values()
 
-    # 5️⃣ 값 비교 및 검증
-    assert actual_values["name"] == expected_values["name"], (f"❌ CA_010_name 불일치: 예상 '{expected_values['name']}', 실제 '{actual_values['name']}'")
-    assert actual_values["rules"] == expected_values["rules"], (f"❌ CA_010_rules 불일치: 예상 '{expected_values['rules']}', 실제 '{actual_values['rules']}'")
+    # 8) 값 비교
+    assert actual_values["name"] == expected_values["name"], (
+        f"❌ name 불일치: '{expected_values['name']}' vs '{actual_values['name']}'"
+    )
+    assert actual_values["rules"] == expected_values["rules"], (
+        f"❌ rules 불일치: '{expected_values['rules']}' vs '{actual_values['rules']}'"
+    )
 
-    print("✅ CA_010_임시저장 성공 (입력값 정상 유지 확인)")
-
-
-
+    print("✅ CA_010_임시저장 성공")
 
 
 
@@ -477,6 +505,22 @@ def test_ca_012(my_agents_page_loaded):
     assert "success" in message or "delete" in message, f"❌ CA_012_예상과 다른 메시지: {message}"
     print(f"✅ CA_012_선택한 에이전트 삭제 완료: {message}")
     
+
+
+def test_ca_013(explorer_page_loaded):
+    driver = explorer_page_loaded
+    explorer = AgentExplorerPage(driver)
+    my_agents_page = MyAgentsPage(driver)
+    save_page = SaveAgentPage(driver)
+
+
+    result = explorer.delete_fixed_agent(my_agents_page, save_page)
+
+    assert result is True, "❌ CA_013_기본제공 에이전트 삭제"
+    print("✅ CA_013_기본 에이전트 삭제 방지")
+
+
+
 
 
 
