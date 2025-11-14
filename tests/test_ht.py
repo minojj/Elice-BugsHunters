@@ -29,8 +29,6 @@ def _goto_main(drv):
     
     # 추가적인 안정화 시간
     time.sleep(1)
-    
-    print("✅ 메인 페이지 로드 완료")
 
 def test_ht_001(logged_in_driver):
     """새 채팅 시작 시 스레드가 생성되는지 확인"""
@@ -42,7 +40,6 @@ def test_ht_001(logged_in_driver):
 
     # 새 채팅 버튼 클릭 전 현재 상태 저장
     before_top = sidebar.top_thread_href()
-    print(f"이전 최상단 스레드: {before_top}")
     
     sidebar.click_new_chat()
     time.sleep(0.5)  # 새 채팅 UI 전환 대기
@@ -50,7 +47,6 @@ def test_ht_001(logged_in_driver):
     # 메시지 전송
     test_msg = "안녕하세요, 테스트 메시지입니다."
     composer.send(test_msg)
-    print(f"메시지 전송: {test_msg}")
     
     # 응답 시작 대기 (스레드 생성 시간 고려)
     time.sleep(3)
@@ -64,7 +60,6 @@ def test_ht_001(logged_in_driver):
         after_top = sidebar.top_thread_href()
         print(f"새 최상단 스레드: {after_top}")
         assert after_top and after_top != before_top, "스레드가 변경되지 않았습니다"
-        print("✅ test_ht_001: 새 스레드 생성 확인 완료")
     except TimeoutException:
         raise AssertionError("새 스레드가 생성되지 않았습니다 (타임아웃)")
 
@@ -95,7 +90,6 @@ def test_ht_002(logged_in_driver):
     # 5. 
     assert any(v.startswith(test_str) for v in vals)
       
-
 def test_ht_003(logged_in_driver):
     """에이전트 탐색 페이지에서 검색 기능 확인"""
     drv = logged_in_driver
@@ -107,7 +101,6 @@ def test_ht_003(logged_in_driver):
     # 에이전트 페이지 열기
     agent.open()
     time.sleep(2)  # 페이지 전환 완전 대기
-    print(f"에이전트 페이지 열림, 검색어: {agent_name}")
     
     # 검색 수행
     agent.search(agent_name)
@@ -135,7 +128,6 @@ def test_ht_004(logged_in_driver):
     
     original_msg = "이름변경테스트_원본"
     composer.send(original_msg)
-    print(f"원본 메시지 전송: {original_msg}")
     
     # 스레드 생성 대기
     time.sleep(3)
@@ -176,7 +168,6 @@ def test_ht_004(logged_in_driver):
             EC.element_to_be_clickable(XPATH_SAVE_BTN)
         )
         save_btn.click()
-        print(f"새 이름 저장: {new_name}")
         
         # 다이얼로그 닫힘 대기
         WebDriverWait(drv, 10).until(
@@ -193,7 +184,6 @@ def test_ht_004(logged_in_driver):
         
         actual_title = sidebar.top_thread_title()
         assert actual_title == new_name, f"이름 변경 실패: 예상={new_name}, 실제={actual_title}"
-        print(f"✅ test_ht_004: 스레드 이름 변경 확인 ({new_name})")
         
     except TimeoutException:
         raise AssertionError("이름 변경 작업이 시간 초과되었습니다")
@@ -211,7 +201,6 @@ def test_ht_005(logged_in_driver):
     sidebar.click_new_chat()
     time.sleep(0.5)
     
-    print(f"첫 번째 스레드 메시지 전송: {test_str}")
     composer.send(test_str)
     time.sleep(2)
     
@@ -227,11 +216,9 @@ def test_ht_005(logged_in_driver):
     
     second_msg = "두번째스레드테스트"
     composer.send(second_msg)
-    print(f"두 번째 스레드 메시지 전송: {second_msg}")
     time.sleep(3)
 
     # 첫 번째 스레드로 돌아가기
-    print("첫 번째 스레드로 이동 시도...")
     sidebar.click_second_thread()
     time.sleep(2)  # 페이지 전환 대기
 
@@ -247,7 +234,6 @@ def test_ht_005(logged_in_driver):
         
         text = first_msg.text.strip()
         assert test_str in text, f"첫 메시지 텍스트가 예상과 다름: 예상={test_str}, 실제={text}"
-        print(f"✅ test_ht_005: 스레드 간 이동 및 메시지 확인 완료")
         
     except TimeoutException:
         raise AssertionError("첫 번째 메시지를 찾을 수 없습니다")
@@ -267,7 +253,6 @@ def test_ht_006(logged_in_driver):
     
     delete_test_msg = "삭제테스트"
     composer.send(delete_test_msg)
-    print(f"삭제할 스레드 생성: {delete_test_msg}")
     
     # 2. 응답 완료 대기
     time.sleep(3)
@@ -276,7 +261,6 @@ def test_ht_006(logged_in_driver):
     # 3. 삭제할 스레드의 정보 저장
     thread_href = sidebar.top_thread_href()
     assert thread_href, "최상단 스레드를 찾을 수 없습니다"
-    print(f"삭제할 스레드 href: {thread_href}")
     
     # 4. 최상단 요소 참조 (staleness 검증용)
     try:
@@ -296,14 +280,12 @@ def test_ht_006(logged_in_driver):
     
     # 7. 삭제 확인
     dialogs.confirm_delete()
-    print("삭제 확인 버튼 클릭")
     
     # 8. 스레드가 사라질 때까지 대기
     try:
         assert WebDriverWait(drv, 30).until(
             EC.staleness_of(top_el)
         ), "스레드가 삭제되지 않았습니다"
-        print("✅ 스레드 요소가 DOM에서 제거됨")
     except TimeoutException:
         raise AssertionError("스레드 삭제 타임아웃")
     
@@ -312,7 +294,6 @@ def test_ht_006(logged_in_driver):
     
     new_href = sidebar.top_thread_href()
     assert new_href != thread_href, f"스레드 목록이 갱신되지 않았습니다 (이전={thread_href}, 현재={new_href})"
-    print(f"✅ test_ht_006: 스레드 삭제 완료 (새 최상단: {new_href})")
 
 def test_ht_007(logged_in_driver):
     """여러 채팅 생성 시 최신 스레드가 상단에 오는지 확인"""
@@ -328,12 +309,10 @@ def test_ht_007(logged_in_driver):
     
     first_msg = "첫번째"
     composer.send(first_msg)
-    print(f"첫 번째 스레드 생성: {first_msg}")
     time.sleep(3)
     
     before_top = sidebar.top_thread_href()
     assert before_top, "첫 번째 스레드 href를 가져올 수 없습니다"
-    print(f"첫 번째 스레드 href: {before_top}")
 
     # 두 번째 스레드 생성
     sidebar.click_new_chat()
@@ -341,7 +320,6 @@ def test_ht_007(logged_in_driver):
     
     second_msg = "두번째"
     composer.send(second_msg)
-    print(f"두 번째 스레드 생성: {second_msg}")
     time.sleep(3)
 
     # 스레드 순서 변경 확인
@@ -353,7 +331,6 @@ def test_ht_007(logged_in_driver):
         
         after_top = sidebar.top_thread_href()
         assert after_top and after_top != before_top, "스레드 순서가 변경되지 않았습니다"
-        print(f"✅ test_ht_007: 최신 스레드가 상단 확인 (새 href: {after_top})")
         
     except TimeoutException:
         raise AssertionError("새 스레드가 최상단으로 이동하지 않았습니다")
