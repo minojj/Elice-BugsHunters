@@ -128,8 +128,11 @@ class ChatPage:
 
     def edit_message(self, original_message, new_message):
         try:
+            # 짧은 대기 시간 설정
+            short_wait = WebDriverWait(self.driver, 5)
+            
             # 1. 수정할 메시지 찾기
-            message_element = self.wait.until(
+            message_element = short_wait.until(
                 EC.presence_of_element_located(self.locators["message_bubble"])
             )
             print(f" 수정할 메시지 찾기 완료: {original_message}")
@@ -140,14 +143,14 @@ class ChatPage:
             print(" 메시지에 마우스 오버 완료")
             
             # 3. 수정 버튼 클릭
-            edit_btn = self.wait.until(
+            edit_btn = short_wait.until(
                 EC.element_to_be_clickable(self.locators["edit_btn"])
             )
             edit_btn.click()
             print(" 수정 버튼 클릭 완료")
             
             # 4. 수정 입력창이 나타날 때까지 대기
-            edit_input = self.wait.until(
+            edit_input = short_wait.until(
                 EC.presence_of_element_located(self.locators["edit_input"])
             )
             print(" 수정 입력창 표시 완료")
@@ -158,7 +161,7 @@ class ChatPage:
             print(f" 새 메시지 입력 완료: {new_message}")
             
             # 6. 확인 버튼 클릭
-            confirm_btn = self.wait.until(
+            confirm_btn = short_wait.until(
                 EC.element_to_be_clickable(self.locators["edit_confirm_btn"])
             )
             confirm_btn.click()

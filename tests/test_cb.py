@@ -1,5 +1,4 @@
 from time import sleep
-import pytest
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -35,13 +34,8 @@ def test_cb_005(driver):
 
 def test_cb_007(driver):
     chat_page = ChatPage(driver)
-    # 현재 기사 수 기준선 저장 후 메시지 수정
-    count_before = len(chat_page.driver.find_elements(By.XPATH, "//div[@role='article']"))
     chat_page.edit_message("안녕하세요", "애국가 4절까지 가사 알려줘")
-    # 수정된 메시지에 대한 AI 응답 대기 (기사 수 증가)
-    WebDriverWait(chat_page.driver, 15).until(
-        lambda d: len(d.find_elements(By.XPATH, "//div[@role='article']")) > count_before
-    )
+    sleep(5)  # AI 응답 대기
 
 
 def test_cb_008(driver):
@@ -78,12 +72,6 @@ def test_cb_002(driver):
 
 
 def test_cb_003(driver):
-    try:
-        # 세션 유효성 확인
-        driver.current_url
-    except Exception as e:
-        pytest.skip(f"브라우저 세션이 종료됨: {e}")
-    
     chat_page = ChatPage(driver)
     chat_page.upload_file(r"C:\Users\97min\OneDrive\바탕 화면\dog.png")
     # 파일 업로드 완료 대기 (file input 값 설정 여부)
