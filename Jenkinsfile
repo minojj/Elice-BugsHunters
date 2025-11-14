@@ -45,7 +45,9 @@ pipeline {
                     usernamePassword(credentialsId: 'sub-id',  usernameVariable: 'SUB_EMAIL',  passwordVariable: 'SUB_PASSWORD')
                 ]) {
                     sh '''
-                        mkdir -p "${REPORT_DIR}" ".wdm"
+                        rm -rf "${REPORT_DIR}"
+                        mkdir -p "${REPORT_DIR}"
+
                         docker run --rm \
                           --shm-size=2g \
                           -e HEADLESS=true \
@@ -66,19 +68,37 @@ pipeline {
                             --self-contained-html \
                             --tb=short
                         chmod -R 755 "${REPORT_DIR}"
+                        find "${REPORT_DIR}" -type f -exec chmod 644 {} \;
                     '''
                 }
             }
             post {
                 always {
-                    publishHTML([
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'reports',
-                        reportFiles: 'report.html',
-                        reportName: 'Pytest HTML Report'
-                    ])
+                    script {
+                        // HTML 리포트 퍼블리시 (에러 무시)
+                        try {
+                            publishHTML([
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll: true,
+                                reportDir: 'reports',
+                                reportFiles: 'report.html',
+                                reportName: 'Pytest HTML Report',
+                                reportTitles: '',
+                                includes: '**/*',
+                                useWrapperFileDirectly: true
+                            ])
+                        } catch (Exception e) {
+                            echo "HTML 리포트 퍼블리시 실패: ${e.message}"
+                        }
+                    }
+                    
+                    // Artifacts로 대체 (항상 성공)
+                    archiveArtifacts(
+                        artifacts: 'reports/**/*',
+                        allowEmptyArchive: true,
+                        fingerprint: true
+                    )
                 }
             }
         }
