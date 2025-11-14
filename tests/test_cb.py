@@ -26,17 +26,22 @@ def test_cb_005(driver):
     ai_response = chat_page.get_ai_response("안녕하세요")
     assert ai_response, "AI 응답을 찾을 수 없습니다"
     
-    sleep(1)  # 복사 전 안정화 대기
+    # 복사 버튼이 클릭 가능할 때까지 대기
+    WebDriverWait(chat_page.driver, 10).until(
+        EC.presence_of_element_located(chat_page.locators["copy_btn"])
+    )
     result = chat_page.copy_message(ai_response)
     assert result, "복사 버튼 클릭 실패"
-    
-    sleep(2)  # 복사 완료 대기
 
 
 def test_cb_007(driver):
     chat_page = ChatPage(driver)
+    count_before = len(chat_page.driver.find_elements(By.XPATH, "//div[@role='article']"))
     chat_page.edit_message("안녕하세요", "애국가 4절까지 가사 알려줘")
-    sleep(5)  # AI 응답 대기
+    # AI 응답으로 기사 수 증가 대기
+    WebDriverWait(chat_page.driver, 30).until(
+        lambda d: len(d.find_elements(By.XPATH, "//div[@role='article']")) > count_before
+    )
 
 
 def test_cb_008(driver):
