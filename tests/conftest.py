@@ -48,7 +48,6 @@ def create_chrome_driver():
   
     else:
         print("🪟 Running on Windows")
-        # GUI로 띄울 수도 있고, headless도 가능
         options.add_argument("--headless=new")
         options.add_argument("--force-device-scale-factor=1")
         options.add_argument("--window-size=1920,1080")
@@ -77,15 +76,10 @@ def logged_in_driver(driver):
         login_page.open()
         login_page.login(
             os.getenv("MAIN_EMAIL"),
-            os.getenv("MAIN_PASSWORD")
-        )
+            os.getenv("MAIN_PASSWORD"))
         print("✅ 로그인 성공")
 
-        WebDriverWait(driver, 15).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')
-            )
-        )
+        WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')))
         print("✅ 메인 페이지 로드 확인 완료")
 
     except TimeoutException:
@@ -105,8 +99,7 @@ def logged_in_driver_sub_account():
     login_page.open()
     login_page.login(
         os.getenv("SUB_EMAIL"),
-        os.getenv("SUB_PASSWORD")
-    )
+        os.getenv("SUB_PASSWORD"))
     print("✅ 서브 계정 로그인 성공")
 
     yield sub_driver
