@@ -68,7 +68,7 @@ pipeline {
                             --self-contained-html \
                             --tb=short
                         chmod -R 755 "${REPORT_DIR}"
-                        find "${REPORT_DIR}" -type f -exec chmod 644 {} \;
+                        
                     '''
                 }
             }
