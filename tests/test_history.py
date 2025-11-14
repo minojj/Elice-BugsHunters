@@ -29,7 +29,7 @@ def _goto_main(drv):
     # 추가적인 안정화 시간
     time.sleep(1)
 
-def test_ht_001(logged_in_driver):
+def test_ht_001_start_new_chat(logged_in_driver):
     """새 채팅 시작 시 스레드가 생성되는지 확인"""
     drv = logged_in_driver
     _goto_main(drv)
@@ -62,7 +62,7 @@ def test_ht_001(logged_in_driver):
     except TimeoutException:
         raise AssertionError("새 스레드가 생성되지 않았습니다 (타임아웃)")
 
-def test_ht_002(logged_in_driver):
+def test_ht_002_search_history(logged_in_driver):
     drv = logged_in_driver
     _goto_main(drv)
     
@@ -89,7 +89,7 @@ def test_ht_002(logged_in_driver):
     # 5. 
     assert any(v.startswith(test_str) for v in vals)
       
-def test_ht_003(logged_in_driver):
+def test_ht_003_agent_search(logged_in_driver):
     """에이전트 탐색 페이지에서 검색 기능 확인"""
     drv = logged_in_driver
     _goto_main(drv)
@@ -113,7 +113,7 @@ def test_ht_003(logged_in_driver):
         print(f"❌ 검색 결과 검증 실패: {e}")
         raise
 
-def test_ht_004(logged_in_driver):
+def test_ht_004_chat_title_fix(logged_in_driver):
     """채팅 스레드 이름 변경 기능 확인"""
     drv = logged_in_driver
     _goto_main(drv)
@@ -187,7 +187,7 @@ def test_ht_004(logged_in_driver):
     except TimeoutException:
         raise AssertionError("이름 변경 작업이 시간 초과되었습니다")
 
-def test_ht_005(logged_in_driver):
+def test_ht_005_view_chat_history(logged_in_driver):
     """여러 메시지 전송 후 스레드 간 이동 확인"""
     drv = logged_in_driver
     _goto_main(drv)
@@ -237,7 +237,7 @@ def test_ht_005(logged_in_driver):
     except TimeoutException:
         raise AssertionError("첫 번째 메시지를 찾을 수 없습니다")
 
-def test_ht_006(logged_in_driver):
+def test_ht_006_delete_chat(logged_in_driver):
     """채팅 스레드 삭제 기능 확인"""
     drv = logged_in_driver
     _goto_main(drv)
@@ -294,7 +294,7 @@ def test_ht_006(logged_in_driver):
     new_href = sidebar.top_thread_href()
     assert new_href != thread_href, f"스레드 목록이 갱신되지 않았습니다 (이전={thread_href}, 현재={new_href})"
 
-def test_ht_007(logged_in_driver):
+def test_ht_007_chat_history_ordered_by_time(logged_in_driver):
     """여러 채팅 생성 시 최신 스레드가 상단에 오는지 확인"""
     drv = logged_in_driver
     _goto_main(drv)
