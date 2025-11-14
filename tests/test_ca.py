@@ -105,7 +105,7 @@ def dummy_files():
 
 
 
-def test_ca_001(logged_in_driver):
+def test_ca_001__navigate_to_agent_create_form(logged_in_driver):
     driver = logged_in_driver
     wait = WebDriverWait(driver, 10)
     explorer_page = AgentExplorerPage(driver)
@@ -121,7 +121,7 @@ def test_ca_001(logged_in_driver):
 
 
 
-def test_ca_002(create_page):
+def test_ca_002__validate_required_fields_behavior(create_page):
     driver = create_page
     wait = WebDriverWait(driver, 10)
     create_agent_page = CreateAgentPage(driver)
@@ -171,7 +171,7 @@ def test_ca_002(create_page):
 
 
 
-def test_ca_003_1(create_page, request):
+def test_ca_003_1_create_private_agent_successfully(create_page, request):
     driver = create_page
     create_agent_page = CreateAgentPage(driver)
 
@@ -208,20 +208,12 @@ def test_ca_003_1(create_page, request):
     except TimeoutException:
         print("❌ CA_003_1_에이전트 메인 페이지로 자동 이동 실패!")
 
-    #     try: 
-    #         save_page.verify_success()
-    #         save_page.click_start_chat_fast()
-    #         print("✅ CA_003_1_생성 에이전트 페이지로 직접 이동")
-    #     except: 
-    #         print("❌ CA_003_1_버튼 사라짐으로 실패")
-
-    # assert save_page.get_element("chat_input").is_displayed(), "❌ CA_003_1_생성 에이전트 페이지로 직접 이동하지 못함"            
-    # print("✅ CA_003_1_생성 에이전트 페이지 직접 이동 성공")
-    # 임시알림으로 뜬 스낵바에 바로가기 버튼인 'start to chat'을 클릭하는 연계 작업.. 너무 빨리 사라져서 계속 실패함
 
 
 
-def test_ca_003_2(create_page, request):
+
+
+def test_ca_003_2_create_organization_agent_successfully(create_page, request):
     driver = create_page
     create_agent_page = CreateAgentPage(driver)
 
@@ -259,7 +251,7 @@ def test_ca_003_2(create_page, request):
 
 
 
-def test_ca_004(create_page, pages):
+def test_ca_004_test_create_with_chat_generates_ai_response(create_page, pages):
     driver = create_page
     chat_page = pages["chat_create"]
 
@@ -276,7 +268,7 @@ def test_ca_004(create_page, pages):
 
 
 
-def test_ca_005(create_page):
+def test_ca_005_prevent_duplicate_agent_creation(create_page):
     driver = create_page
     create_agent_page = CreateAgentPage(driver)
 
@@ -308,7 +300,7 @@ def test_ca_005(create_page):
 
 
 
-def test_ca_006(explorer_page_loaded, request):
+def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request):
     driver = explorer_page_loaded
     explorer_page = AgentExplorerPage(driver)
 
@@ -381,7 +373,6 @@ def test_ca_008(my_agents_page_loaded):
     print(f"✅ CA_008_에이전트 수정 성공 알림 확인: {message}")
 
 
-@pytest.mark.xdist_group(name="serial_group")
 def test_ca_009(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
@@ -412,7 +403,7 @@ def test_ca_009(my_agents_page_loaded):
 
 
 
-@pytest.mark.xdist_group(name="serial_group")
+
 def test_ca_010(my_agents_page_loaded, pages):
     driver = my_agents_page_loaded  
     my_agent_page = pages["my_agents"]
