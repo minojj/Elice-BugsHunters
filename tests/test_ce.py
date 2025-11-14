@@ -9,7 +9,7 @@ TEST_FILENAME = TEST_FILES_DIR / "git.pdf"
 TEST_EXENAME = TEST_FILES_DIR / "npp.8.8.7.Installer.x64.exe"
 
 
-def test_ce_001(logged_in_driver):
+def test_ce_001_quiz(logged_in_driver):
    
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -20,7 +20,7 @@ def test_ce_001(logged_in_driver):
     assert result, "❌ 퀴즈 생성 및 전송 프로세스 실패"
     print("✅ CE-001 테스트 통과!")
 
-def test_ce_002(logged_in_driver):
+def test_ce_002_quiz_empty(logged_in_driver):
    
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -31,7 +31,7 @@ def test_ce_002(logged_in_driver):
     assert result, "✅CE-002 : 빈칸 퀴즈 생성이 허용되었습니다!"
     print("✅ CE-002 테스트 통과! (빈칸 퀴즈 생성 반응확인)")
 
-def test_ce_003(logged_in_driver):
+def test_ce_003_quiz_special_chars(logged_in_driver):
    
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -42,7 +42,7 @@ def test_ce_003(logged_in_driver):
     assert result, "✅CE-003 : 특수문자 퀴즈 생성이 허용되었습니다!"
     print("✅ CE-003 테스트 통과! (특수문자 퀴즈 생성 확인)")
 
-def test_ce_004(logged_in_driver):
+def test_ce_004_quiz_no_type(logged_in_driver):
    
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -53,7 +53,7 @@ def test_ce_004(logged_in_driver):
     assert result, "✅CE-004 : 난이도 혹은 주관식, 객관식을 명시하지 않은 퀴즈 생성이 허용되었습니다!"
     print("✅ CE-004 테스트 통과! (난이도 혹은 주관식, 객관식을 명시하지 않은 퀴즈 생성 확인)")
 
-def test_ce_005(logged_in_driver):
+def test_ce_005_ppt(logged_in_driver):
    
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -64,7 +64,7 @@ def test_ce_005(logged_in_driver):
     assert result, "❌ PPT 생성 및 전송 프로세스 실패"
     print("✅ CE-005 테스트 통과!")
  
-def test_ce_006(logged_in_driver):
+def test_ce_006_image_text(logged_in_driver):
 
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -75,7 +75,7 @@ def test_ce_006(logged_in_driver):
     assert result, "❌ 이미지 생성 및 전송 프로세스 실패"
     print("✅ CE-006 테스트 통과!")
 
-def test_ce_007(logged_in_driver):
+def test_ce_007_image_file(logged_in_driver):
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
     
@@ -85,7 +85,7 @@ def test_ce_007(logged_in_driver):
     assert result, "❌ 이미지 생성 및 전송 프로세스 실패"
     print("✅ CE-007 테스트 통과!")
     
-def test_ce_008(logged_in_driver):
+def test_ce_008_google_search(logged_in_driver):
 
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -96,7 +96,7 @@ def test_ce_008(logged_in_driver):
     assert result, "❌ 구글 검색 및 전송 프로세스 실패"
     print("✅ CE-008 테스트 통과!")
 
-def test_ce_009(logged_in_driver):
+def test_ce_009_deep_dive(logged_in_driver):
 
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -107,7 +107,7 @@ def test_ce_009(logged_in_driver):
     assert result, "❌ 심층 조사 및 전송 프로세스 실패"
     print("✅ CE-009 테스트 통과!")
 
-def test_ce_010(logged_in_driver):
+def test_ce_010_file_upload(logged_in_driver):
 
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -118,7 +118,7 @@ def test_ce_010(logged_in_driver):
     assert result, "❌ 파일 업로드 및 전송 프로세스 실패"
     print("✅ CE-010 테스트 통과!")  
      
-def test_ce_011(logged_in_driver):
+def test_ce_011_file_upload_expect_failure(logged_in_driver):
   
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -130,7 +130,7 @@ def test_ce_011(logged_in_driver):
     assert result is True, "❌ CE-011 실패: 위험 파일 업로드가 허용되었습니다!"
     print("✅ CE-011 테스트 통과!")
 
-def test_ce_012(logged_in_driver):
+def test_ce_012_file_upload_new_chat(logged_in_driver):
     
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
@@ -141,7 +141,7 @@ def test_ce_012(logged_in_driver):
     assert result, "❌ 파일 업로드 및 전송 프로세스 실패"
     print("✅ CE-012 테스트 통과!")
 
-def test_ce_013(logged_in_driver):
+def test_ce_013_quiz_empty_new_chat(logged_in_driver):
     # Page Object 생성
     page = ChatExpancePage(logged_in_driver)
     
