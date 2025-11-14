@@ -13,7 +13,6 @@ pipeline {
         WDM_CACHE = "${WORKSPACE}/.wdm"
         HOME = "${WORKSPACE}"
         PYTHONPATH = "${WORKSPACE}:${PYTHONPATH}"
-        CHROMEDRIVER = "/usr/bin/chromedriver"
     }
 
     stages {
