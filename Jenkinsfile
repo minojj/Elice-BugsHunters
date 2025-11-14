@@ -91,7 +91,7 @@ pipeline {
                         credentialsId: 'login-id',
                         usernameVariable: 'MAIN_EMAIL',
                         passwordVariable: 'MAIN_PASSWORD'
-                    )
+                    ),
                     usernamePassword(
                         credentialsId: 'sub-id',
                         usernameVariable: 'SUB_EMAIL',
