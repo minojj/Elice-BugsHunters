@@ -45,12 +45,7 @@ def build_options():
     return opts
 
 
-<<<<<<< HEAD
-
-# 2) Chrome 드라이버 경로 결정 (팀원 코드 유지)
-=======
 # 2) Chrome 드라이버 경로 결정 
->>>>>>> develop
 
 def resolve_driver_path():
     """Always use webdriver_manager unless a real system CHROMEDRIVER path is provided."""
@@ -92,10 +87,6 @@ def create_driver():
     return webdriver.Chrome(service=service, options=options)
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
 # 4) session-level driver
 
 @pytest.fixture(scope="session")
@@ -104,10 +95,7 @@ def driver():
     yield d
     d.quit()
 
-<<<<<<< HEAD
-=======
 # 5) 메인 계정 로그인
->>>>>>> develop
 
 # 5) 메인 계정 로그인
 
@@ -121,11 +109,7 @@ def logged_in_driver(driver):
     )
 
     try:
-<<<<<<< HEAD
-        WebDriverWait(driver, 5).until(
-=======
         WebDriverWait(driver, 15).until(
->>>>>>> develop
             EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]'))
         )
     except TimeoutException:
@@ -134,14 +118,8 @@ def logged_in_driver(driver):
     yield driver
 
 
-<<<<<<< HEAD
-
 # 6) 서브 계정 로그인 — 별도 driver 생성
 
-=======
-# 6) 서브 계정 로그인 — 별도 driver 생성
-
->>>>>>> develop
 @pytest.fixture(scope="module")
 def logged_in_driver_sub_account():
     d = create_driver()
