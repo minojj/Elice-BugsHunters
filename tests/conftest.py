@@ -45,8 +45,7 @@ def build_options():
     return opts
 
 
-
-# 2) Chrome 드라이버 경로 결정 (팀원 코드 유지)
+# 2) Chrome 드라이버 경로 결정 
 
 def resolve_driver_path():
     """Always use webdriver_manager unless a real system CHROMEDRIVER path is provided."""
@@ -88,7 +87,6 @@ def create_driver():
     return webdriver.Chrome(service=service, options=options)
 
 
-
 # 4) session-level driver
 
 @pytest.fixture(scope="session")
@@ -117,7 +115,6 @@ def logged_in_driver(driver):
         Utils(driver).wait_for(timeout=15)
 
     yield driver
-
 
 
 # 6) 서브 계정 로그인 — 별도 driver 생성
