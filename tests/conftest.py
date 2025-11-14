@@ -95,7 +95,6 @@ def driver():
     yield d
     d.quit()
 
-
 # 5) 메인 계정 로그인
 
 @pytest.fixture(scope="module")
@@ -112,7 +111,7 @@ def logged_in_driver(driver):
             EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]'))
         )
     except TimeoutException:
-        Utils(driver).wait_for(timeout=15)
+        Utils(driver).wait_for(timeout=3)
 
     yield driver
 
