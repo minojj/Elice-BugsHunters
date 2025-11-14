@@ -45,8 +45,8 @@ pipeline {
                     usernamePassword(credentialsId: 'sub-id',  usernameVariable: 'SUB_EMAIL',  passwordVariable: 'SUB_PASSWORD')
                 ]) {
                     sh '''
-                        rm -rf "${REPORT_DIR}"
-                        mkdir -p "${REPORT_DIR}"
+                        rm -rf ${WORKSPACE}/reports
+                        mkdir -p ${WORKSPACE}/reports
 
                         docker run --rm \
                           --shm-size=2g \
@@ -68,18 +68,7 @@ pipeline {
                             --self-contained-html \
                             --tb=short || true
 
-                        # 리포트 파일 확인
-                        echo "📊 생성된 파일 목록:"
-                        ls -lah "${REPORT_DIR}/" || echo "리포트 디렉토리가 비어있습니다"
-                        
-                        # 권한 수정
-                        if [ -f "${REPORT_DIR}/report.html" ]; then
-                            chmod -R 755 "${REPORT_DIR}"
-                            echo "✅ report.html 생성 성공"
-                        else
-                            echo "❌ report.html 생성 실패"
-                        fi
-                        
+                        ls -lah ${WORKSPACE}/reports/
                     '''
                 }
             }
