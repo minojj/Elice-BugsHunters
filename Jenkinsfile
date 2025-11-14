@@ -22,10 +22,27 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                            # 캐시 정리 후 재빌드
-                            docker builder prune -f || true
-                            docker build --no-cache -t elice-bugshunters:${BUILD_NUMBER} -f Dockerfile .
-                            docker tag elice-bugshunters:${BUILD_NUMBER} elice-bugshunters:latest
+                            pytest tests -v \
+                                --junitxml=reports/test-results.xml \
+                                --html=reports/report.html \
+                                --self-contained-html \
+                                --tb=short
+
+                            EXIT_CODE=$?
+                            echo "📊 테스트 종료 코드: $EXIT_CODE"
+
+                            echo "=== 컨테이너 안에서 reports 디렉토리 내용 확인 ==="
+                            pwd
+                            ls -R
+                            ls -lh reports || echo "reports 디렉토리 없음"
+                            ls -lh reports/report.html || echo "report.html 없음"
+
+                            # 🔥 Jenkins 워크스페이스로 리포트 복사 + 권한 풀기
+                            mkdir -p "$WORKSPACE/reports"
+                            cp -r reports/* "$WORKSPACE/reports/" || true
+                            chmod -R 777 "$WORKSPACE/reports" || true
+
+                            exit $EXIT_CODE
                         '''
                     } else {
                         bat '''
