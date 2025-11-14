@@ -36,7 +36,7 @@ pipeline {
             steps {
                 withCredentials([
                     // TODO: 실제 Jenkins 크리덴셜 ID로 바꿔주세요
-                    usernamePassword(credentialsId: 'login-id', usernameVariable: 'MAIN_EMAIL', usernameVariable: 'MAIN_EMAIL', passwordVariable: 'MAIN_PASSWORD'),
+                    usernamePassword(credentialsId: 'login-id', usernameVariable: 'MAIN_EMAIL', passwordVariable: 'MAIN_PASSWORD'),
                     usernamePassword(credentialsId: 'sub-id',   usernameVariable: 'SUB_EMAIL',  passwordVariable: 'SUB_PASSWORD')
                 ]) {
                     sh '''
