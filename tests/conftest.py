@@ -97,8 +97,6 @@ def driver():
 
 # 5) 메인 계정 로그인
 
-# 5) 메인 계정 로그인
-
 @pytest.fixture(scope="module")
 def logged_in_driver(driver):
     login_page = LoginFunction(driver)
