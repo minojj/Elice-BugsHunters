@@ -65,6 +65,7 @@ pipeline {
                             --html=${REPORT_DIR}/report.html \
                             --self-contained-html \
                             --tb=short
+                        chmod -R 755 "${REPORT_DIR}"
                     '''
                 }
             }
