@@ -1,9 +1,8 @@
-import os
 import time
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException
 
 # POM 컴포넌트들
 from src.pages.ht_composer import Composer
@@ -334,5 +333,3 @@ def test_ht_007(logged_in_driver):
         
     except TimeoutException:
         raise AssertionError("새 스레드가 최상단으로 이동하지 않았습니다")
-
-
