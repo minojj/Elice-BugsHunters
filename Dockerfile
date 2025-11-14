@@ -1,24 +1,24 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# 브라우저/드라이버 (가능한 경우 설치, 실패해도 통과)
+# Chromium + Chromedriver 설치 (아키텍처 자동 매칭: amd64/arm64)
 RUN set -eux; \
     apt-get update; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      chromium chromium-driver fonts-liberation tzdata curl ca-certificates git || true; \
+      chromium chromium-driver \
+      fonts-liberation tzdata ca-certificates curl git; \
     rm -rf /var/lib/apt/lists/*
 
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROMEDRIVER=/usr/bin/chromedriver
-WORKDIR /app
 
+WORKDIR /app
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip && pip install -r requirements.txt
-
 COPY . .
 
-# pytest를 기본 엔트리포인트로
+# pytest를 컨테이너 기본 엔트리포인트로
 ENTRYPOINT ["pytest"]
 CMD ["tests","-v","--maxfail=1","--tb=short"]
