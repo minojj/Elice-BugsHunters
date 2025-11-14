@@ -40,11 +40,11 @@ pipeline {
                     usernamePassword(credentialsId: 'sub-id',   usernameVariable: 'SUB_EMAIL',  passwordVariable: 'SUB_PASSWORD')
                 ]) {
                     sh '''
-                        echo "🧹 기존 리포트/스크린샷 정리"
+                        
                         rm -rf "${WORKSPACE}/${REPORT_DIR}" "${WORKSPACE}/${SCREENSHOT_DIR}"
                         mkdir -p "${WORKSPACE}/${REPORT_DIR}" "${WORKSPACE}/${SCREENSHOT_DIR}"
 
-                        echo "🐳 테스트 컨테이너 실행"
+                        
                         docker run --rm \
                           --shm-size=2g \
                           -e HEADLESS=true \
