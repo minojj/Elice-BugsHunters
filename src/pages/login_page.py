@@ -138,7 +138,7 @@ class LoginFunction:
             )
             return error_el
         except TimeoutException:
-            return None
+            return False
        
     def clear_login_session(self):
         #브라우저 세션 초기화

@@ -1,0 +1,15 @@
+FROM jenkins/jenkins:lts
+
+USER root
+RUN set -eux; \
+    apt-get update; apt-get install -y --no-install-recommends ca-certificates curl git; \
+    rm -rf /var/lib/apt/lists/*; \
+    # docker CLI (정적 바이너리) 설치
+    mkdir -p /usr/bin; \
+    ARCH="$(uname -m)"; \
+    curl -fsSL "https://download.docker.com/linux/static/stable/${ARCH}/docker-26.1.4.tgz" \
+      | tar -xz -C /usr/bin --strip-components=1 docker/docker; \
+    /usr/bin/docker --version
+
+ENV DOCKER_HOST=unix:///var/run/docker.sock
+USER root
