@@ -319,7 +319,7 @@ def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request
 
 
 
-def test_ca_007(my_agents_page_loaded):
+def test_ca_007_display_agent_cards_in_my_agents(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
 
@@ -348,7 +348,7 @@ def test_ca_007(my_agents_page_loaded):
 
 
 
-def test_ca_008(my_agents_page_loaded):
+def test_ca_008_update_existing_agent_successfully(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
     create_agent_page = CreateAgentPage(driver)
@@ -373,7 +373,8 @@ def test_ca_008(my_agents_page_loaded):
     print(f"✅ CA_008_에이전트 수정 성공 알림 확인: {message}")
 
 
-def test_ca_009(my_agents_page_loaded):
+
+def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
     create_agent_page = CreateAgentPage(driver)
@@ -404,7 +405,7 @@ def test_ca_009(my_agents_page_loaded):
 
 
 
-def test_ca_010(my_agents_page_loaded, pages):
+def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pages):
     driver = my_agents_page_loaded  
     my_agent_page = pages["my_agents"]
     create_agent_page = pages["create"]
@@ -467,7 +468,7 @@ def test_ca_010(my_agents_page_loaded, pages):
 
 
 
-def test_ca_011(my_agents_page_loaded):
+def test_ca_011_cancel_agent_deletion_modal(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
 
@@ -485,7 +486,7 @@ def test_ca_011(my_agents_page_loaded):
 
 
 
-def test_ca_012(my_agents_page_loaded):
+def test_ca_012_delete_agent_permanently(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
     save_page = SaveAgentPage(driver)
@@ -502,7 +503,7 @@ def test_ca_012(my_agents_page_loaded):
     
 
 
-def test_ca_013(explorer_page_loaded):
+def test_ca_013_prevent_deletion_of_default_agents(explorer_page_loaded):
     driver = explorer_page_loaded
     explorer = AgentExplorerPage(driver)
     my_agent_page = MyAgentsPage(driver)
@@ -518,7 +519,7 @@ def test_ca_013(explorer_page_loaded):
 
 
 
-def test_ca_014(create_page, pages, dummy_files):
+def test_ca_014_validate_file_upload_and_size_limit(create_page, pages, dummy_files):
     driver = create_page
     create = pages["create"]
 
@@ -555,7 +556,7 @@ def test_ca_014(create_page, pages, dummy_files):
 
 
 
-def test_ca_015(logged_in_driver_sub_account, request):
+def test_ca_015_private_agent_hidden_from_sub_account(logged_in_driver_sub_account, request):
     driver = logged_in_driver_sub_account
     explorer_page = AgentExplorerPage(driver)
 
