@@ -2,7 +2,7 @@ import time
 import pytest
 from pathlib import Path
 # from src.pages.login_page import LoginFunction
-from src.pages.chat_expance_page import ChatExpancePage
+from src.pages.chat_expanse_page import ChatExpansePage
 
 TEST_FILES_DIR = Path(__file__).parent.parent /"resources" / "testdata"
 TEST_FILENAME = TEST_FILES_DIR / "git.pdf"
@@ -12,7 +12,7 @@ TEST_EXENAME = TEST_FILES_DIR / "npp.8.8.7.Installer.x64.exe"
 def test_ce_001_quiz(logged_in_driver):
    
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 퀴즈 생성 및 전송 (전체 프로세스)
     result = page.create_quiz_and_send(wait_time=30)
@@ -23,7 +23,7 @@ def test_ce_001_quiz(logged_in_driver):
 def test_ce_002_quiz_empty(logged_in_driver):
    
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 퀴즈 생성 및 전송 (전체 프로세스)
     result = page.create_quiz_and_send_empty(wait_time=10)
@@ -34,7 +34,7 @@ def test_ce_002_quiz_empty(logged_in_driver):
 def test_ce_003_quiz_special_chars(logged_in_driver):
    
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 퀴즈 생성 및 전송 (전체 프로세스)
     result = page.create_quiz_and_send_special_chars(wait_time=10)
@@ -45,7 +45,7 @@ def test_ce_003_quiz_special_chars(logged_in_driver):
 def test_ce_004_quiz_no_type(logged_in_driver):
    
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 퀴즈 생성 및 전송 (전체 프로세스)
     result = page.create_quiz_and_send_no_type(wait_time=10)
@@ -56,7 +56,7 @@ def test_ce_004_quiz_no_type(logged_in_driver):
 def test_ce_005_ppt(logged_in_driver):
    
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # PPT 생성 및 전송 (전체 프로세스)
     result = page.create_ppt_and_send()
@@ -67,7 +67,7 @@ def test_ce_005_ppt(logged_in_driver):
 def test_ce_006_image_text(logged_in_driver):
 
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 이미지 생성 및 전송 (전체 프로세스)
     result = page.create_image_and_send(wait_time=30)
@@ -77,7 +77,7 @@ def test_ce_006_image_text(logged_in_driver):
 
 def test_ce_007_image_file(logged_in_driver):
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 이미지 생성 및 전송 (예외 케이스)
     result = page.create_image_and_send_file(str(TEST_FILENAME.absolute()), wait_time=30)
@@ -88,7 +88,7 @@ def test_ce_007_image_file(logged_in_driver):
 def test_ce_008_google_search(logged_in_driver):
 
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 구글 검색 및 전송 (전체 프로세스)
     result = page.google_search_and_send(wait_time=30)
@@ -99,7 +99,7 @@ def test_ce_008_google_search(logged_in_driver):
 def test_ce_009_deep_dive(logged_in_driver):
 
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 심층 조사 및 전송 (전체 프로세스)
     result = page.deep_dive_and_send(wait_time=30)
@@ -110,7 +110,7 @@ def test_ce_009_deep_dive(logged_in_driver):
 def test_ce_010_file_upload(logged_in_driver):
 
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 파일 업로드 및 전송 (전체 프로세스)
     result = page.upload_file_and_send(str(TEST_FILENAME.absolute()), wait_time=30)
@@ -121,7 +121,7 @@ def test_ce_010_file_upload(logged_in_driver):
 def test_ce_011_file_upload_expect_failure(logged_in_driver):
   
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 파일 업로드 및 전송 (전체 프로세스)
     result = page.upload_file_expect_failure(str(TEST_EXENAME.absolute()), wait_time=10)
@@ -133,7 +133,7 @@ def test_ce_011_file_upload_expect_failure(logged_in_driver):
 def test_ce_012_file_upload_new_chat(logged_in_driver):
     
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 파일 업로드 및 전송 (전체 프로세스)
     result = page.upload_file_and_send_new_chat(str(TEST_FILENAME.absolute()), wait_time=30)
@@ -143,7 +143,7 @@ def test_ce_012_file_upload_new_chat(logged_in_driver):
 
 def test_ce_013_quiz_empty_new_chat(logged_in_driver):
     # Page Object 생성
-    page = ChatExpancePage(logged_in_driver)
+    page = ChatExpansePage(logged_in_driver)
     
     # 퀴즈 생성 및 전송 (전체 프로세스)
     result = page.create_quiz_and_send_empty_new_chat(wait_time=10)
