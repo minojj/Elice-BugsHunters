@@ -12,7 +12,7 @@ from src.utils.helpers import Utils
 from tests.conftest import driver
 
 
-class ChatExpancePage:
+class ChatExpansePage:
     """AI Helpy Chat 페이지 객체"""
     
     # 로케이터 정의
@@ -98,7 +98,6 @@ class ChatExpancePage:
         file_path = str(upload_file)
         print(f"🔍 받은 파일 경로: {file_path}")   
 
-         
         file_input = self.wait.until(
             EC.presence_of_element_located(self.locators["file_input"])
     )
