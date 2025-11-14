@@ -5,12 +5,12 @@ import platform
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from .base import BasePage
 
 
 
 
-
-class AgentExplorerPage:
+class AgentExplorerPage(BasePage):
 
     LOCATORS = {
         "agent_explorer_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'),
@@ -29,23 +29,6 @@ class AgentExplorerPage:
         self.url = "https://qaproject.elice.io/ai-helpy-chat/agent"
 
 
-    def click_safely(self, key, timeout=10):
-        locator = self.LOCATORS[key]
-        wait = WebDriverWait(self.driver, timeout)
-
-        # 1) 요소가 로딩되고 클릭 가능할 때까지 기다림
-        element = wait.until(EC.presence_of_element_located(locator))
-        wait.until(EC.element_to_be_clickable(locator))
-
-        # 2) 화면 중앙으로 스크롤
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block: 'center'});", element
-        )
-
-        # 3) JS click
-        self.driver.execute_script("arguments[0].click();", element)
-
-        return element
 
 
 
@@ -278,7 +261,7 @@ class AgentExplorerPage:
         return False
 
 
-class CreateAgentPage:
+class CreateAgentPage(BasePage):
     
     LOCATORS = {
         "name": (By.NAME, "name"),
@@ -516,7 +499,7 @@ class CreateAgentPage:
    
     
 
-class SaveAgentPage:
+class SaveAgentPage(BasePage):
 
     LOCATORS = {
         "private_radio": (By.CSS_SELECTOR, "input[value='private']"),
@@ -582,7 +565,7 @@ class SaveAgentPage:
 
 
     
-class ChatCreatePage:
+class ChatCreatePage(BasePage):
 
     LOCATORS = {
         "create_with_chat_btn": (By.CSS_SELECTOR, "button[type='button'][value='chat']"),
@@ -773,7 +756,7 @@ class ChatCreatePage:
     
 
 
-class MyAgentsPage:
+class MyAgentsPage(BasePage):
     LOCATORS = {
         "my_agents_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/mine"]'),
         "all_agent_cards": (By.CSS_SELECTOR, "div.MuiGrid-item"),
