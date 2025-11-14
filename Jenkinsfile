@@ -58,7 +58,7 @@ pipeline {
                           -v "${WORKSPACE}/${REPORT_DIR}:/app/${REPORT_DIR}" \
                           -v "${WORKSPACE}/${SCREENSHOT_DIR}:/app/${SCREENSHOT_DIR}" \
                           ${DOCKER_IMAGE}:latest \
-                          pytest tests -v \
+                          tests -v \
                             --junitxml=${REPORT_DIR}/test-results.xml \
                             --html=${REPORT_DIR}/report.html \
                             --self-contained-html \
