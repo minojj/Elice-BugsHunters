@@ -15,11 +15,8 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 def build_options():
     opts = webdriver.ChromeOptions()
-    # 기본 headless (환경변수 HEADLESS=false면 비활성)
-    headless = os.getenv("HEADLESS", "true").lower() == "true"
-    if headless:
+    if os.getenv("HEADLESS", "true").lower() == "true":
         opts.add_argument("--headless=new")
-    # 공통 안정화 옵션
     for arg in [
         "--disable-gpu",
         "--no-sandbox",
@@ -32,20 +29,19 @@ def build_options():
     return opts
 
 def create_driver():
-    # Jenkins / Linux 환경이면 chromium 우선 시도
-    is_ci = bool(os.getenv("JENKINS_HOME")) or platform.system() == "Linux"
-    # WDM_SKIP=1 이면 시스템 드라이버 사용 (컨테이너에서 /usr/bin/chromedriver)
+    # WDM_SKIP=1 → 시스템 드라이버 직접 사용
     if os.getenv("WDM_SKIP") == "1":
         path = os.getenv("CHROMEDRIVER", "/usr/bin/chromedriver")
         return webdriver.Chrome(service=Service(path), options=build_options())
-    # webdriver_manager (chromium 우선 → 실패 시 기본 Chrome)
-    from webdriver_manager.core.utils import ChromeType
+    # CI에서 chromium 우선: 환경변수로 구분
+    use_chromium = bool(os.getenv("JENKINS_HOME")) or platform.system() == "Linux"
+    if use_chromium:
+        os.environ.setdefault("WDM_CHROME_TYPE", "chromium")  # 일부 버전에서 지원
     try:
-        path = ChromeDriverManager(
-            chrome_type=ChromeType.CHROMIUM if is_ci else ChromeType.GOOGLE
-        ).install()
-    except Exception:
         path = ChromeDriverManager().install()
+    except Exception:
+        # 폴백: 시스템 드라이버
+        path = os.getenv("CHROMEDRIVER", "/usr/bin/chromedriver")
     return webdriver.Chrome(service=Service(path), options=build_options())
 
 @pytest.fixture(scope="session")
