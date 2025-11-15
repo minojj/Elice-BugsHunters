@@ -359,35 +359,40 @@ def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request
 
 
 
-
-
-
-
 def test_ca_007_display_agent_cards_in_my_agents(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
 
-    # 1️⃣ My Agents 페이지 진입 후 Draft, Private, Organization 카드 존재여부 확인
+    # 1️⃣ 카드 로딩 보장
+    assert my_agent_page.wait_for_cards_loaded(), "❌ My Agents 카드 로드 실패"
     my_agent_page.load_all_cards()
-    draft_cards = my_agent_page.get_draft_cards()   
+
+    # 👇 안정화: 스크롤로 인해 Virtuoso가 뒤늦게 렌더링할 수 있으므로 한번 더 체크
+    assert my_agent_page.wait_for_cards_loaded(), "❌ My Agents 카드 재로드 실패"
+
+    # 2️⃣ 카드 목록 조회
+    draft_cards = my_agent_page.get_draft_cards()
     private_cards = my_agent_page.get_private_cards()
     organization_cards = my_agent_page.get_organization_cards()
 
-    assert my_agent_page.has_cards("private", minimum=1), "❌ CA_007_Private 카드 없음."
+    # 3️⃣ 최소 1개씩 존재해야 함
+    assert my_agent_page.has_cards("private", minimum=1), "❌ CA_007_Private 카드 없음"
     assert my_agent_page.has_cards("draft", minimum=1), "❌ CA_007_Draft 카드 없음"
     assert my_agent_page.has_cards("organization", minimum=1), "❌ CA_007_Organization 카드 없음"
-    
-    # 2️⃣ 각 카드의 화면 노출 확인
 
-    assert my_agent_page.is_card_visible(private_cards[0]), "❌ CA_007_Private 카드 미출력"
-    assert my_agent_page.is_card_visible(draft_cards[0]), "❌ CA_007_Draft 카드 미출력"
-    assert my_agent_page.is_card_visible(organization_cards[0]), "❌ CA_007_Organization 카드 미출력"
-    
-    # 3️⃣ 각 카드 개수 출력
+    # 4️⃣ 카드들이 "보이는 상태"인지 확인
+    # (macOS 및 Jenkins headless의 스크롤 offset 보정)
+    first_private = private_cards[0]
+    my_agent_page.scroll_into_view(first_private)
+    assert my_agent_page.is_card_visible(first_private), "❌ CA_007_Private 카드 미출력"
 
-    print(f"✅ Private 카드 개수: {my_agent_page.get_card_count('private')}")
-    print(f"✅ Draft 카드 개수: {my_agent_page.get_card_count('draft')}")
-    print(f"✅ Organization 카드 개수: {my_agent_page.get_card_count('organization')}")
+    first_draft = draft_cards[0]
+    my_agent_page.scroll_into_view(first_draft)
+    assert my_agent_page.is_card_visible(first_draft), "❌ CA_007_Draft 카드 미출력"
+
+    first_org = organization_cards[0]
+    my_agent_page.scroll_into_view(first_org)
+    assert my_agent_page.is_card_visible(first_org), "❌ CA_007_Organization 카드 미출력"
 
 
 
@@ -410,11 +415,9 @@ def test_ca_008_update_existing_agent_successfully(my_agents_page_loaded):
 
     #3️⃣ 수정 후 저장, 알림 확인(1️⃣에서 organization으로 변경 시 organization으로 변경)
     save_page.select_mode("private")
-    print("✅ CA_008_Private 모드 유지 확인")
     save_page.click_save()
     message = save_page.get_snackbar_text().lower()
     assert "updated" in message, f"❌ CA_008_예상과 다른 메시지: {message}"
-    print(f"✅ CA_008_에이전트 수정 성공 알림 확인: {message}")
 
 
 
@@ -455,7 +458,7 @@ def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
     )
 
     save_page.select_mode("private")  # 내부도 JS click 기준
-    print("✅ CA_009_private 옵션 선택 완료")
+
 
     # save 버튼 안정적 클릭
     save_btn = WebDriverWait(driver, 10).until(
@@ -467,7 +470,6 @@ def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
     message = save_page.get_snackbar_text().lower()
 
     assert "created" in message, f"❌ CA_009_예상과 다른 메시지: {message}"
-    print(f"✅ CA_009_임시 저장된 에이전트 생성 성공 알림 확인: {message}")
 
 
 
@@ -486,7 +488,7 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
 
     target_card = draft_cards[0]
     agent_id = my_agent_page.get_agent_id_from_card(target_card)
-    print("🎯 수정할 agent_id:", agent_id)
+
 
     # ✏️ POM을 이용해서 첫 번째 Draft 카드 edit 진입 (JS click + scrollIntoView 포함)
     my_agent_page.click_edit_button_by_card_type("draft")
@@ -503,7 +505,6 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
     # 🔁 auto-save 완료 대기 (sleep 대신 값/UX 기준 polling)
     time.sleep(1)
     create_agent_page.wait_for_autosave(expected_values, timeout=25)
-    print("⏳ auto-save 완료")
 
     # 3️⃣ My Agents로 돌아간 뒤, 해당 Draft 카드의 제목이 갱신될 때까지 대기
     driver.back()
@@ -513,7 +514,6 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
         TARGET_TITLE,
         timeout=20
     )
-    print("🔄 Draft 반영 확인 완료")
 
     # 4️⃣ 갱신된 Draft 카드 다시 편집 진입
     my_agent_page.scroll_into_view(updated_card)
@@ -541,8 +541,6 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
     assert actual_values["rules"] == expected_values["rules"], (
         f"❌ rules 불일치: '{expected_values['rules']}' vs '{actual_values['rules']}'"
     )
-
-    print("✅ CA_010_임시저장 성공")
 
 
 
@@ -580,7 +578,6 @@ def test_ca_011_cancel_agent_deletion_modal(my_agents_page_loaded):
     assert not my_agent_page.is_delete_modal_visible(), \
         "❌ CA_011_모달이 닫히지 않음"
 
-    print("✅ CA_011_삭제 팝업 모달 Cancel 버튼 정상 작동")
 
 
 
@@ -629,7 +626,7 @@ def test_ca_012_delete_agent_permanently(my_agents_page_loaded):
 
     # 6️⃣ 삭제 후 스낵바 알림 확인 (기존에 잘 되던 부분)
     message = save_page.get_snackbar_text().lower()
-    print("📢 스낵바 메시지:", message)
+
 
     assert (
         "success" in message
@@ -638,7 +635,7 @@ def test_ca_012_delete_agent_permanently(my_agents_page_loaded):
         or "삭제" in message
     ), f"❌ CA_012_예상과 다른 메시지: {message}"
 
-    print(f"✅ CA_012_선택한 에이전트 삭제 완료: {message}")
+
 
 
 
@@ -657,7 +654,7 @@ def test_ca_013_prevent_deletion_of_default_agents(explorer_page_loaded):
     result = explorer.delete_fixed_agent(my_agent_page, save_page)
 
     assert result is True, "❌ CA_013_기본제공 에이전트 삭제"
-    print("✅ CA_013_기본 에이전트 삭제 방지")
+
 
 
 
@@ -674,7 +671,6 @@ def test_ca_014_validate_file_upload_and_size_limit(create_page, pages, dummy_fi
     assert create.has_success_icon(small_item), "❌ CA_014_작은 파일 업로드 성공 아이콘 없음"
     assert "success" in create.get_file_status(small_item).lower(), "❌ CA_014_작은 파일 상태값이 Success가 아님"
 
-    print("✅ CA_014_작은 파일 업로드 성공")
 
     #2️⃣ 지식파일에 큰 파일 업로드 불가 확인
 
@@ -686,14 +682,13 @@ def test_ca_014_validate_file_upload_and_size_limit(create_page, pages, dummy_fi
     assert "failed" in create.get_file_status(big_item).lower(), "❌ CA_014_큰 파일 상태값이 Failed가 아님"
 
     err = create.get_error_msg(big_item)
-    if not err:
+    if not err: 
         print("⚠️ CA_014_오류 문구가 없음")
     elif "file size" not in err.lower():
         print(f"⚠️ CA_014_예상 외 오류 문구: {err}")
     else:
         print("✅ CA_014_파일 사이즈 제한 오류 문구 정상 감지!")
 
-    print("✅ CA_014_파일 용량 제한 검증 완료!")
 
 
 
@@ -709,7 +704,7 @@ def test_ca_015_private_agent_hidden_from_sub_account(logged_in_driver_sub_accou
     # 2️⃣ 해당 카드 검색 후 노출 여부 확인
     results = explorer_page.click_agent_card_by_id(private_id)
     assert len(results) == 0, f"❌ CA_015_Private 카드 노출됨: {results}"
-    print("✅ CA_015_서브 계정에서 Private 카드 미노출 확인 완료")
+
 
 
 
