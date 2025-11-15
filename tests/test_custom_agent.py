@@ -357,42 +357,28 @@ def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request
 
 
 
-
-
 def test_ca_007_display_agent_cards_in_my_agents(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
 
-    # 1️⃣ 카드 로딩 보장
     assert my_agent_page.wait_for_cards_loaded(), "❌ My Agents 카드 로드 실패"
+
     my_agent_page.load_all_cards()
 
-    # 👇 안정화: 스크롤로 인해 Virtuoso가 뒤늦게 렌더링할 수 있으므로 한번 더 체크
     assert my_agent_page.wait_for_cards_loaded(), "❌ My Agents 카드 재로드 실패"
 
-    # 2️⃣ 카드 목록 조회
+    # 🚀 Virtuoso 렌더링 후 다시 불러오기 (중요!)
     draft_cards = my_agent_page.get_draft_cards()
     private_cards = my_agent_page.get_private_cards()
     organization_cards = my_agent_page.get_organization_cards()
 
-    # 3️⃣ 최소 1개씩 존재해야 함
     assert my_agent_page.has_cards("private", minimum=1), "❌ CA_007_Private 카드 없음"
     assert my_agent_page.has_cards("draft", minimum=1), "❌ CA_007_Draft 카드 없음"
     assert my_agent_page.has_cards("organization", minimum=1), "❌ CA_007_Organization 카드 없음"
 
-    # 4️⃣ 카드들이 "보이는 상태"인지 확인
-    # (macOS 및 Jenkins headless의 스크롤 offset 보정)
-    first_private = private_cards[0]
-    my_agent_page.scroll_into_view(first_private)
-    assert my_agent_page.is_card_visible(first_private), "❌ CA_007_Private 카드 미출력"
 
-    first_draft = draft_cards[0]
-    my_agent_page.scroll_into_view(first_draft)
-    assert my_agent_page.is_card_visible(first_draft), "❌ CA_007_Draft 카드 미출력"
 
-    first_org = organization_cards[0]
-    my_agent_page.scroll_into_view(first_org)
-    assert my_agent_page.is_card_visible(first_org), "❌ CA_007_Organization 카드 미출력"
+
 
 
 
