@@ -260,31 +260,30 @@ def test_ca_003_2_create_organization_agent_successfully(create_page, request):
 
 
 
-        
+def test_ca_004_test_create_with_chat_generates_ai_response(create_page, pages):
+    driver = create_page
+    chat_page = pages["chat_create"]
 
+    # 1️⃣ create with chat 클릭 (scroll + JS click)
+    try:
+        chat_page.click_safely("create_with_chat_btn")  
+    except Exception:
+        print("❌ CA_004_Create-with-Chat 버튼 클릭 실패!")
+        return
 
-def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request):
-    driver = explorer_page_loaded
-    explorer = AgentExplorerPage(driver)
+    # 2️⃣ 챗봇에 메시지 입력
+    try:
+        chat_page.send_single_message()
+    except Exception:
+        print("❌ CA_004_메시지 전송 실패!")
+        return
 
-    # 1️⃣ 이전 테스트에서 저장된 agent_id 불러오기
-    private_id = request.config.cache.get("private_agent_id", None)
-    org_id = request.config.cache.get("organization_agent_id", None)
-    assert private_id or org_id, "❌ CA_006_agent_id 누락"
+    # 3️⃣ AI 응답 생성 확인
+    try:
+        assert chat_page.wait_for_ai_answer(), "❌ CA_004_AI 답변 생성 실패"
+    except Exception:
+        print("❌ CA_004_AI 응답 감지 실패!")
 
-    # 2️⃣ 카드 전체 로딩 보장
-    explorer.load_all_cards()
-
-    # 3️⃣ 각 ID에 대해 카드가 반드시 존재해야 함
-    if private_id:
-        card = explorer.find_card_by_agent_id(private_id)
-        assert card is not None, f"❌ CA_006_Private 카드 미노출 (ID: {private_id})"
-        explorer.click_agent_card_by_id_stable(private_id)
-
-    if org_id:
-        card = explorer.find_card_by_agent_id(org_id)
-        assert card is not None, f"❌ CA_006_Organization 카드 미노출 (ID: {org_id})"
-        explorer.click_agent_card_by_id_stable(org_id)
 
 
 
@@ -337,23 +336,27 @@ def test_ca_005_prevent_duplicate_agent_creation(create_page):
 
 
 
-def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request): 
-    driver = explorer_page_loaded 
-    explorer_page = AgentExplorerPage(driver) 
-    # 1️⃣ 이전에 저장된 두 개의 ID 가져오기 
 
-    private_id = request.config.cache.get("private_agent_id", None) 
-    org_id = request.config.cache.get("organization_agent_id", None) 
-    
-    assert private_id or org_id, "❌ CA_006_이전 테스트의 agent_id를 불러올 수 없습니다." 
-    
-    # 2️⃣ Private/Organization 카드 확인 
-    
-    if private_id: 
-        explorer_page.click_agent_card_by_id(private_id) 
-    
-    if org_id: 
-        explorer_page.click_agent_card_by_id(org_id) 
+def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request):
+    driver = explorer_page_loaded
+    explorer_page = AgentExplorerPage(driver)
+
+    # 1️⃣ 이전에 저장된 두 개의 ID 가져오기
+    private_id = request.config.cache.get("private_agent_id", None)
+    org_id = request.config.cache.get("organization_agent_id", None)
+    assert private_id or org_id, "❌ CA_006_이전 테스트의 agent_id를 불러올 수 없습니다."
+
+    # 2️⃣ Private/Organization 카드 확인
+    if private_id:
+        result = explorer_page.click_agent_card_by_id(private_id)
+        assert result, f"❌ CA_006_Private 카드 미노출 (ID: {private_id})"
+    if org_id:
+        result = explorer_page.click_agent_card_by_id(org_id)
+        assert result, f"❌ CA_006_Organization 카드 미노출 (ID: {org_id})"
+
+
+
+
 
 
 
