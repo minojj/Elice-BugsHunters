@@ -15,13 +15,7 @@ class AgentExplorerPage(BasePage):
     LOCATORS = {
         "agent_explorer_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'),
         "create_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'),
-        "agent_card_title": (By.CSS_SELECTOR, "p.MuiTypography-body1.MuiTypography-noWrap"),
-        "agent_card": (By.CSS_SELECTOR, "a.MuiCard-root, a[class*='MuiCard'], a[href*='/agent/']"),
-        "agent_chat_input": (By.CSS_SELECTOR, "textarea[placeholder='Ask anything']"),
-        "search_input": (By.CSS_SELECTOR, "input[placeholder='Search AI agents']"),
-        "search_agent_card_spans": (By.CSS_SELECTOR, "span.MuiTypography-root"),
         "fixed_target_card": (By.CSS_SELECTOR, 'a[href*="8f701da7-7c53-4f54-b26d-b6eeb39a4479"]'),
-        "fixed_target_card_menu_btn": (By.CSS_SELECTOR, 'a[href*="582b1607-e565-4d5a-9e8d-18f99bb52422"] button[aria-label="menu"]'),
     }
 
     def __init__(self, driver):
@@ -29,23 +23,6 @@ class AgentExplorerPage(BasePage):
         self.url = "https://qaproject.elice.io/ai-helpy-chat/agent"
 
 
-
-
-
-    def get_element(self, key, wait_type="visible", timeout=10):
-        #요소 키워드(agent_explorer_btn, create_btn 등)를 받아 element 반환
-        locator = self.LOCATORS[key]
-        wait = WebDriverWait(self.driver, timeout)
-
-        if wait_type == "clickable":
-            wait.until(EC.element_to_be_clickable(locator))
-        elif wait_type == "presence":
-            wait.until(EC.presence_of_element_located(locator))
-        else:
-            wait.until(EC.visibility_of_element_located(locator))
-
-        return self.driver.find_element(*locator)
-    
 
 
     def click_agent_card_by_id(self, agent_id):
@@ -499,6 +476,44 @@ class CreateAgentPage(BasePage):
     def get_error_msg(self, file_item):
         els = file_item.find_elements(*self.LOCATORS["file_error_msg"])
         return els[0].text.strip() if els else None
+    
+
+
+    def wait_for_new_upload_item(self, timeout=10):
+        wait = WebDriverWait(self.driver, timeout)
+        old_count = len(self.driver.find_elements(*self.LOCATORS["file_item"]))
+
+        wait.until(lambda d: len(d.find_elements(*self.LOCATORS["file_item"])) > old_count)
+
+        items = self.driver.find_elements(*self.LOCATORS["file_item"])
+        return items[-1]   # 가장 마지막 = 새로 업로드된 파일
+
+
+
+    def wait_for_status(self, file_item, expected_status, timeout=10):
+        wait = WebDriverWait(self.driver, timeout)
+
+        def _status_is_expected(_):
+            status = self.get_file_status(file_item).lower()
+            return expected_status in status
+
+        try:
+            wait.until(_status_is_expected)
+            return True
+        except:
+            return False
+        
+
+    def wait_for_error_msg(self, file_item, timeout=10):
+        wait = WebDriverWait(self.driver, timeout)
+
+        return wait.until(
+            lambda d: file_item.find_element(
+                *self.LOCATORS["file_error_msg"]
+            ).text.strip()
+        )
+
+
 
 
    
@@ -541,11 +556,6 @@ class SaveAgentPage(BasePage):
         self.driver.execute_script("arguments[0].click();", btn)
 
 
-    def verify_success(self):
-        alert = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located(self.LOCATORS["success_alert"]))
-        assert "The agent has been created" in alert.text, "❌ 에이전트 생성 실패"
-        print("✅ 에이전트 생성 성공!")
 
     def get_snackbar_text(self):
         alert = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.LOCATORS["success_alert"]))
@@ -575,87 +585,14 @@ class ChatCreatePage(BasePage):
     LOCATORS = {
         "create_with_chat_btn": (By.CSS_SELECTOR, "button[type='button'][value='chat']"),
         "create_chat_input": (By.CSS_SELECTOR, "textarea[name='input']"),
-        "info_list": (By.CSS_SELECTOR, "ul[class^='css-'][class*='e1ge9pxx'] li"),
-        "conversation_list": (By.CSS_SELECTOR, "ol[class^='css-'][class*='e1ge9pxx'] li"),
     }
 
     def __init__(self, driver):
         self.driver = driver
 
     def click_create_with_chat(self):
-        """'Create with Chat' 버튼 클릭 후 챗봇 대화 페이지로 진입"""
-        btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.LOCATORS["create_with_chat_btn"])
-        )
-        self.driver.execute_script("arguments[0].click();", btn)
-        print("✅ 'Create with Chat' 버튼 클릭 완료")
+        self.click_safely("create_with_chat_btn")
 
-
-    def get_generated_info(self):
-
-        info = {
-            "Name": "",
-            "Description": "",
-            "System Prompt": "",
-            "Conversation Starters": []
-        }
-
-        try:
-            list_items = WebDriverWait(self.driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "ul[class^='css-'][class*='e1ge9pxx'] li")))
-
-            for el in list_items:
-                text = el.text.strip()
-                if not text:
-                    continue
-                if text.startswith("Name:"):
-                    info["Name"] = text.split(":", 1)[-1].strip()
-                elif text.startswith("Description:"):
-                    info["Description"] = text.split(":", 1)[-1].strip()
-                elif "System Prompt" in text:
-                    info["System Prompt"] = text.split(":", 1)[-1].strip()
-
-            print("✅ Name/Description/System Prompt(텍스트형) 추출 완료.")
-        except Exception:
-            print("⚠️ Name/Description/System Prompt 리스트 추출 실패 (ul li 없음)")
-
-     
-        try:
-            code_block = WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, "pre[class^='css-'] code")))
-            code_text = code_block.text.strip()
-            if code_text:
-                info["System Prompt"] = code_text
-                print("✅ System Prompt를 코드블록에서 추출했습니다.")
-        except Exception:
-            pass 
-
-        try:
-            conv_items = WebDriverWait(self.driver, 10).until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "ol[class^='css-'][class*='e1ge9pxx'] li")))
-            info["Conversation Starters"] = [el.text.strip() for el in conv_items if el.text.strip()]
-            print(f"✅ Conversation Starters {len(info['Conversation Starters'])}개 추출 완료.")
-        except Exception:
-            print("⚠️ Conversation Starters 추출 실패.")
-
-        if not any(info.values()):
-            print("❌ 생성정보 감지 실패")
-        else:
-            print("✅ 전체 생성 정보 추출 완료.")
-
-        return info
-
-
-    def get_element(self, key, wait_type="visible", timeout=10):
-        locator = self.LOCATORS[key]
-        wait = WebDriverWait(self.driver, timeout)
-
-        if wait_type == "clickable":
-            wait.until(EC.element_to_be_clickable(locator))
-        elif wait_type == "presence":
-            wait.until(EC.presence_of_element_located(locator))
-        else:
-            wait.until(EC.visibility_of_element_located(locator))
-
-        return self.driver.find_element(*locator)
-    
 
 
     def send_single_message(self):
@@ -779,14 +716,6 @@ class MyAgentsPage(BasePage):
         self.url = "https://qaproject.elice.io/ai-helpy-chat/agent/mine"
 
 
-  
-    def click_my_agents_button(self):
-        btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.LOCATORS["my_agents_btn"])
-        )
-        btn.click()
-
-
 
     def get_all_cards(self):
         self.driver.execute_script("window.scrollTo(0, 0);")
@@ -871,23 +800,6 @@ class MyAgentsPage(BasePage):
         agent_id = href.rstrip("/").split("/")[-2]
         return agent_id
     
-
-    def find_card_by_agent_id(self, agent_id, timeout=10):
-        wait = WebDriverWait(self.driver, timeout)
-
-        for _ in range(timeout):
-            cards = self.get_all_cards()
-
-            for card in cards:
-                try:
-                    link = card.find_element(By.CSS_SELECTOR, "a[href*='/ai-helpy-chat/agent/'], a[href*='/agent/']")
-                    href = link.get_attribute("href") or ""
-                    if agent_id in href:
-                        return card
-                except:
-                    continue
-
-        return None
     
 
     def wait_for_cards_loaded(self, timeout=10):
@@ -939,6 +851,27 @@ class MyAgentsPage(BasePage):
         raise AssertionError(
             f"❌ 카드(ID={agent_id}) 제목 '{updated_title}' 로 갱신되지 않음"
         )
+
+
+    def find_card_by_agent_id(self, agent_id, timeout=10):
+        wait = WebDriverWait(self.driver, timeout)
+
+        for _ in range(timeout):
+            cards = self.get_all_cards()
+
+            for card in cards:
+                try:
+                    link = card.find_element(
+                        By.CSS_SELECTOR,
+                        "a[href*='/ai-helpy-chat/agent/'], a[href*='/agent/']"
+                    )
+                    href = link.get_attribute("href") or ""
+                    if agent_id in href:
+                        return card
+                except:
+                    continue
+
+        return None
 
 
 

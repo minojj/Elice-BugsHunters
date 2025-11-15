@@ -589,45 +589,42 @@ def test_ca_012_delete_agent_permanently(my_agents_page_loaded):
     my_agent_page = MyAgentsPage(driver)
     save_page = SaveAgentPage(driver)
 
-    # 1️⃣ 카드 로드 및 무한스크롤 안정화
+    # 1) 카드 로드
     assert my_agent_page.wait_for_cards_loaded(), "My Agents 카드 로드 실패"
     my_agent_page.load_all_cards()
 
-    # (선택) 삭제 대상 로그용 agent_id만 확보
-    try:
-        org_cards = my_agent_page.get_organization_cards()
-        if len(org_cards) > 1:
-            target_card = org_cards[1]
-            agent_id = my_agent_page.get_agent_id_from_card(target_card)
-            print("🆔 삭제할 agent_id:", agent_id)
-        else:
-            agent_id = None
-            print("⚠️ Organization 카드가 2개 미만이라 ID 로깅은 생략")
-    except Exception as e:
-        agent_id = None
-        print(f"⚠️ 삭제 대상 ID 추출 중 예외 발생 (무시함): {e}")
+    # 🔥 안정화 추가 ① — organization 카드 수량 체크
+    org_cards = my_agent_page.get_organization_cards()
+    assert len(org_cards) > 1, "❌ CA_012_Organization 카드가 2개 이상 필요합니다."
 
-    # 2️⃣ 두 번째 organization 카드의 완전 삭제(위치나 종류는 환경에 따라 변경 가능)
+    # 삭제할 카드
+    target_card = org_cards[1]
+
+    # 🔥 안정화 추가 ② — 스크롤 + DOM 안정화
+    my_agent_page.scroll_into_view(target_card)
+    WebDriverWait(driver, 5).until(lambda d: target_card.is_displayed())
+
+    # 2) 삭제 클릭
     my_agent_page.click_delete_button_by_card_type("organization", index=1)
 
-    # 3️⃣ 모달이 떠 있는지 한 번 확인 (버튼 기준, POM 로직 그대로 활용)
+    # 3) 모달 확인
     assert my_agent_page.is_delete_modal_visible(), "❌ CA_012_삭제 모달 미출력"
 
-    # 4️⃣ Confirm Delete 클릭 (POM 내부에서 clickable wait 처리)
+    # 4) confirm 클릭
     my_agent_page.confirm_delete_modal()
 
-    # 5️⃣ (선택) 모달이 사라질 때까지 한 번 더 느슨하게 대기 (실패해도 테스트 깨지지 않게)
+    # 5) invisibility 체크 (optional)
     try:
         WebDriverWait(driver, 5).until(
-            EC.invisibility_of_element_located(my_agent_page.LOCATORS["confirm_delete_modal_button"])
+            EC.invisibility_of_element_located(
+                my_agent_page.LOCATORS["confirm_delete_modal_button"]
+            )
         )
     except Exception:
-        print("⚠️ 모달 invisibility 체크는 통과하지 못했지만 계속 진행합니다.")
+        pass  # print 없이 통과
 
-    # 6️⃣ 삭제 후 스낵바 알림 확인 (기존에 잘 되던 부분)
+    # 6) snackbar
     message = save_page.get_snackbar_text().lower()
-
-
     assert (
         "success" in message
         or "delete" in message
@@ -662,33 +659,25 @@ def test_ca_014_validate_file_upload_and_size_limit(create_page, pages, dummy_fi
     driver = create_page
     create = pages["create"]
 
-    #1️⃣ 지식파일에 작은 파일 업로드 기능 확인
-
+    # 작은 파일
     create.upload_file(dummy_files["small"])
-
     small_item = create.get_last_uploaded_item()
 
-    assert create.has_success_icon(small_item), "❌ CA_014_작은 파일 업로드 성공 아이콘 없음"
-    assert "success" in create.get_file_status(small_item).lower(), "❌ CA_014_작은 파일 상태값이 Success가 아님"
+    assert create.has_success_icon(small_item)
+    assert "success" in create.get_file_status(small_item).lower()
 
-
-    #2️⃣ 지식파일에 큰 파일 업로드 불가 확인
-
+    # 큰 파일
     create.upload_file(dummy_files["big"])
-
     big_item = create.get_last_uploaded_item()
 
-    assert create.has_failed_icon(big_item), "❌ CA_014_큰 파일 실패 아이콘 없음"
-    assert "failed" in create.get_file_status(big_item).lower(), "❌ CA_014_큰 파일 상태값이 Failed가 아님"
+    assert create.has_failed_icon(big_item)
+    assert "failed" in create.get_file_status(big_item).lower()
 
     err = create.get_error_msg(big_item)
-    if not err: 
-        print("⚠️ CA_014_오류 문구가 없음")
+    if not err:
+        print("⚠️ 오류 문구 없음")
     elif "file size" not in err.lower():
-        print(f"⚠️ CA_014_예상 외 오류 문구: {err}")
-    else:
-        print("✅ CA_014_파일 사이즈 제한 오류 문구 정상 감지!")
-
+        print(f"⚠️ 예상 외 오류 문구: {err}")
 
 
 
