@@ -61,7 +61,7 @@ def test_ht_002_search_history(logged_in_driver):
     main = MainPage(drv)
     main.open()
     
-    test_str = "test"  # 검색할 메시지
+    test_str = "테스트123"  # 검색할 메시지
     
     sidebar = ChatSidebar(drv)
     composer = Composer(drv)
@@ -354,7 +354,7 @@ def test_ht_007_chat_history_ordered_by_time(logged_in_driver):
     # --- 1) 첫 번째 스레드 생성 ---
     sidebar.click_new_chat()            # 클릭 시 clickable()로 명시적 대기
 
-    first_msg = "첫번째"
+    first_msg = "첫번째테스트"
     composer.send(first_msg)            # textarea/submit 에 대한 명시적 대기 포함
 
     # 첫 번째 스레드 href가 생길 때까지 명시적 대기 후 저장
@@ -370,7 +370,7 @@ def test_ht_007_chat_history_ordered_by_time(logged_in_driver):
     
     # --- 2) 두 번째 스레드 생성 ---
     sidebar.click_new_chat()
-    second_msg = "두번째"
+    second_msg = "두번째테스트"
     composer.send(second_msg)
 
     # --- 3) 새 스레드가 최상단으로 올라올 때까지 명시적 대기 ---
