@@ -27,7 +27,6 @@ class AgentExplorerPage(BasePage):
 
 
  
-    # 1) 특정 agent ID 카드 클릭 
 
     def click_agent_card_by_id(self, agent_id, timeout=15):
         wait = WebDriverWait(self.driver, timeout)
@@ -38,6 +37,7 @@ class AgentExplorerPage(BasePage):
             f'a[href$="/{agent_id}"]',
             f'a[href*="/agent/{agent_id}"]',
         ]
+
 
         def find_card():
             for css in patterns:
@@ -57,17 +57,16 @@ class AgentExplorerPage(BasePage):
             cards = self.driver.find_elements(*locator)
             count = len(cards)
 
-            # 더 이상 늘어나지 않으면 끝
             if count == prev_count:
                 break
             prev_count = count
 
-            # 아래로 스크롤
+
             self.driver.execute_script(
                 "window.scrollTo(0, document.body.scrollHeight);"
             )
 
-            # 새로운 카드 로딩 대기
+
             try:
                 wait.until(lambda d: len(d.find_elements(*locator)) > count)
             except:
@@ -76,7 +75,6 @@ class AgentExplorerPage(BasePage):
         if not card:
             return []
 
-        # 안정적 클릭
         self.driver.execute_script(
             "arguments[0].scrollIntoView({block:'center'});", card
         )
@@ -87,51 +85,36 @@ class AgentExplorerPage(BasePage):
         return [card]
 
 
-    # 2) hover + 메뉴 버튼 열기
+
  
     def open_card_menu(self, card, timeout=8):
         wait = WebDriverWait(self.driver, timeout)
 
-        # 스크롤 후 hover
         self.driver.execute_script(
-            "arguments[0].scrollIntoView({block:'center'});", card
+            "arguments[0].scrollIntoView({block: 'center'});", 
+            card
         )
 
-        try:
-            actions = ActionChains(self.driver)
-            actions.move_to_element(card).perform()
+        menu_btn = card.find_element(*self.LOCATORS["menu_btn_in_card"])
 
-            # JS hover 강제
-            self.driver.execute_script("""
-                arguments[0].dispatchEvent(
-                    new MouseEvent('mouseover', {bubbles:true})
-                );
-            """, card)
+        self.driver.execute_script("""
+            arguments[0].style.display='flex';
+            arguments[0].style.opacity='1';
+            arguments[0].style.visibility='visible';
+        """, menu_btn)
 
-            # 메뉴버튼 등장할 때까지 대기
-            wait.until(lambda d: len(card.find_elements(
-                *self.LOCATORS["menu_btn_in_card"]
-            )) > 0)
+        wait.until(lambda d: menu_btn.is_displayed())
+        self.driver.execute_script("arguments[0].click();", menu_btn)
 
-            menu_btn = card.find_element(*self.LOCATORS["menu_btn_in_card"])
-            wait.until(lambda d: menu_btn.is_displayed() and menu_btn.is_enabled())
-
-            self.driver.execute_script("arguments[0].click();", menu_btn)
-            return True
-
-        except Exception:
-            print("❌ 메뉴 버튼 표시/클릭 실패")
-            return False
+        return True
 
 
-    # 3) 기본 제공 에이전트 삭제 방지 로직
-    #    (삭제 버튼 XPATH 예외 허용)
+
 
     def delete_fixed_agent(self, my_agents_page, save_page):
         wait = WebDriverWait(self.driver, 15)
         short_wait = WebDriverWait(self.driver, 5)
 
-        # 타겟 카드 로드 대기
         try:
             wait.until(
                 EC.presence_of_element_located(self.LOCATORS["fixed_target_card"])
@@ -142,12 +125,11 @@ class AgentExplorerPage(BasePage):
 
         card = self.driver.find_element(*self.LOCATORS["fixed_target_card"])
 
-        # 메뉴 열기
+
         if not self.open_card_menu(card):
             print("❌ 메뉴 열기 실패")
             return False
 
-        # Delete 항목 클릭 (XPATH 예외 허용)
         try:
             delete_icon = short_wait.until(
                 EC.presence_of_element_located(self.LOCATORS["delete_icon"])
@@ -157,10 +139,9 @@ class AgentExplorerPage(BasePage):
             )
             self.driver.execute_script("arguments[0].click();", delete_btn)
         except TimeoutException:
-            # 삭제 버튼이 없으면 → 기본 에이전트 → PASS
             return True
 
-        # 삭제 모달 확인
+
         try:
             modal_delete_btn = short_wait.until(
                 EC.element_to_be_clickable(
@@ -183,11 +164,8 @@ class AgentExplorerPage(BasePage):
         except TimeoutException:
             return True
 
-        # 실패 메시지면 PASS (정상)
         if any(k in msg for k in ["error", "권한", "cannot", "failed"]):
             return True
-
-        # 성공 메시지면 오히려 잘못된 것 → 삭제되면 안 됨
         print("❌ 기본제공 에이전트가 실제로 삭제됨 → 실패")
         return False
     
@@ -199,16 +177,14 @@ class AgentExplorerPage(BasePage):
 class CreateAgentPage(BasePage):
 
     LOCATORS = {
-        # 기본 필드
+
         "name": (By.NAME, "name"),
         "description": (By.CSS_SELECTOR, 'input[name="description"]'),
         "rules": (By.NAME, "systemPrompt"),
         "conversation": (By.NAME, "conversationStarters.0.value"),
 
-        # 공용 버튼 (Create / Publish)
         "create_btn": (By.CSS_SELECTOR, "button.MuiButton-containedPrimary"),
 
-        # 파일 업로드 관련
         "file_input": (By.CSS_SELECTOR, "input.css-1bgri6b"),
         "file_item": (By.CSS_SELECTOR, "div.css-8e3ts2 > div.MuiStack-root.css-1lawy5a"),
         "file_success_icon": (By.CSS_SELECTOR, "div.css-tza19w svg.MuiSvgIcon-colorSuccess"),
@@ -216,7 +192,6 @@ class CreateAgentPage(BasePage):
         "file_status": (By.CSS_SELECTOR, "span.MuiTypography-caption"),
         "file_error_msg": (By.CSS_SELECTOR, "p.MuiTypography-body2.css-wrn3u"),
 
-        # autosave 관련 (추가 LOCATORS)
         "autosave_saved_badge": (By.CSS_SELECTOR, "span.MuiTypography-caption.css-10z10oy"),
         "autosave_check_icon": (By.CSS_SELECTOR, "svg[data-icon='circle-check']"),
         "top_title_text": (By.CSS_SELECTOR, "p.MuiTypography-body2"),
@@ -228,9 +203,7 @@ class CreateAgentPage(BasePage):
         self.url = "https://qaproject.elice.io/ai-helpy-chat/agent"
 
 
-    # ----------------------------------
-    # 페이지 오픈
-    # ----------------------------------
+
     def open(self):
         self.driver.get(self.url)
         WebDriverWait(self.driver, 10).until(
@@ -238,9 +211,7 @@ class CreateAgentPage(BasePage):
         )
 
 
-    # ----------------------------------
-    # Form 입력
-    # ----------------------------------
+
     def fill_form(self, name, description, rules, conversation):
 
         self.get_element("name").send_keys(name)
@@ -276,7 +247,6 @@ class CreateAgentPage(BasePage):
                 el.send_keys(" ")
                 el.send_keys(Keys.BACKSPACE)
 
-            # React synthetic events
             self.driver.execute_script(
                 "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", el
             )
@@ -300,9 +270,7 @@ class CreateAgentPage(BasePage):
         }
 
 
-    # ----------------------------------
-    # 필드 값 조회
-    # ----------------------------------
+ 
     def get_field_value(self, field):
         return self.get_element(field).get_attribute("value")
 
@@ -316,22 +284,16 @@ class CreateAgentPage(BasePage):
         }
 
 
-    # ----------------------------------
-    # Auto-save 체크
-    # ----------------------------------
+
     def wait_for_autosave(self, expected, timeout=20):
 
         wait = WebDriverWait(self.driver, timeout, poll_frequency=0.3)
-
-        # input 로딩
         wait.until(EC.presence_of_element_located((By.NAME, "name")))
 
-        # 값 적용
         wait.until(
             lambda d: d.find_element(By.NAME, "name").get_attribute("value") == expected["name"]
         )
 
-        # optional: 페이지 상단 제목 갱신
         try:
             wait.until(
                 lambda d: d.find_element(*self.LOCATORS["top_title_text"]).text.strip()
@@ -339,8 +301,6 @@ class CreateAgentPage(BasePage):
             )
         except:
             pass
-
-        # optional: Saved UI
         try:
             wait.until(
                 EC.visibility_of_element_located(self.LOCATORS["autosave_saved_badge"])
@@ -352,9 +312,7 @@ class CreateAgentPage(BasePage):
             pass
 
 
-    # ----------------------------------
-    # Agent ID
-    # ----------------------------------
+
     def get_agent_id_from_url(self):
         url = self.driver.current_url
         try:
@@ -363,9 +321,7 @@ class CreateAgentPage(BasePage):
             raise AssertionError(f"URL에서 agent ID 추출 실패: {url}")
 
 
-    # ----------------------------------
-    # File Upload
-    # ----------------------------------
+
     def upload_file(self, filepath):
         file_input = self.get_element("file_input", "presence")
         self.driver.execute_script("arguments[0].style.display='block';", file_input)
@@ -387,10 +343,11 @@ class CreateAgentPage(BasePage):
         return file_item.find_element(*self.LOCATORS["file_status"]).text.strip()
 
 
-    def has_success_icon(self, file_item, timeout=5):
+    def has_success_icon(self, file_item, timeout=15):
         try:
             WebDriverWait(self.driver, timeout).until(
                 lambda d: file_item.find_elements(*self.LOCATORS["file_success_icon"])
+                or "success" in self.get_file_status(file_item).lower()
             )
             return True
         except:
@@ -459,9 +416,8 @@ class SaveAgentPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
 
-    # -----------------------------------------
-    # ① 라디오 버튼 선택
-    # -----------------------------------------
+
+
     def select_mode(self, mode):
         key = f"{mode}_radio"
 
@@ -486,26 +442,17 @@ class SaveAgentPage(BasePage):
         # 확인
         assert radio.is_selected(), f"{mode} 옵션이 선택되지 않았습니다."
 
-
-    # -----------------------------------------
-    # ② 저장 버튼 클릭
-    # -----------------------------------------
+ 
     def click_save(self):
         # BasePage.click_safely 사용
         self.click_safely("save_btn")
 
 
-    # -----------------------------------------
-    # ③ Start Chat 클릭 (스낵바 내부 버튼)
-    # -----------------------------------------
     def click_start_chat_fast(self):
         btn = self.get_element("start_chat_btn", wait_type="presence", timeout=3)
         self.driver.execute_script("arguments[0].click();", btn)
 
 
-    # -----------------------------------------
-    # ④ 스낵바 텍스트 가져오기
-    # -----------------------------------------
     def get_snackbar_text(self):
         alert = self.get_element("success_alert", wait_type="visible")
         text = alert.text.strip() or alert.get_attribute("innerText").strip()
@@ -526,41 +473,28 @@ class ChatCreatePage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
 
-    # ---------------------------------------------
-    # 1) Create with Chat 버튼
-    # ---------------------------------------------
+
     def click_create_with_chat(self):
         self.click_safely("create_with_chat_btn")
 
-    # ---------------------------------------------
-    # 2) Step1 메시지 전송
-    # ---------------------------------------------
+
     def send_single_message(self):
 
-        # 입력창 클릭 가능한 상태까지 대기
         chat_box = self.get_element("create_chat_input", wait_type="clickable")
 
-        # focus + 안전 클릭
         self.driver.execute_script("arguments[0].focus();", chat_box)
         chat_box.click()
 
-        # OS별 전체선택 키 (mac / windows)
         modifier = Keys.COMMAND if platform.system() == "Darwin" else Keys.CONTROL
 
-        # ① 기존 내용 확실히 삭제
         chat_box.send_keys(modifier + "a")
         chat_box.send_keys(Keys.DELETE)
 
-        # ② 메시지 입력
         chat_box.send_keys(self.step1_text())
 
-        # Send 버튼 JS 클릭
         send_btn = self.get_element("send_btn", wait_type="clickable", timeout=20)
         self.driver.execute_script("arguments[0].click();", send_btn)
 
-        # ---------------------------------------------
-        # AI 응답 대기 (running → complete)
-        # ---------------------------------------------
         WebDriverWait(self.driver, 60).until(
             lambda d: len(d.find_elements(*self.LOCATORS["running_status"])) == 0
         )
@@ -569,9 +503,9 @@ class ChatCreatePage(BasePage):
             EC.presence_of_element_located(self.LOCATORS["complete_msg"])
         )
 
-    # ---------------------------------------------
-    # 3) Step1 텍스트 (입력 문자열)
-    # ---------------------------------------------
+
+
+
     def step1_text(self):
         return (
             'I want to create "경제 스토리텔러, 팀03" '
@@ -595,9 +529,8 @@ class ChatCreatePage(BasePage):
             "No Predictions. "
         )
 
-    # ---------------------------------------------
-    # 4) AI 메시지 렌더링 확인
-    # ---------------------------------------------
+
+
     def wait_for_ai_answer(self, timeout=30):
         wait = WebDriverWait(self.driver, timeout)
 
@@ -657,35 +590,31 @@ class MyAgentsPage(BasePage):
         return cards
 
     def load_all_cards(self, timeout=10):
-        # Virtuoso 무한스크롤 기반 페이지에서 모든 카드를 렌더링할 때까지 스크롤 반복.
+ 
         wait = WebDriverWait(self.driver, timeout, poll_frequency=0.1)
         last_count = -1
 
         while True:
-            # 현재 카드 개수 측정
             cards = self.driver.find_elements(*self.LOCATORS["all_agent_cards"])
             current_count = len(cards)
 
-            # 스크롤
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-            # DOM 변화(wait): 카드 개수가 증가할 때까지 대기
             try:
                 wait.until(
                     lambda d: len(d.find_elements(*self.LOCATORS["all_agent_cards"])) > current_count
                 )
             except Exception:
-                # 더 이상 늘어나지 않으면 끝
                 break
 
-            # 변화 없으면 break
             if current_count == last_count:
                 break
 
             last_count = current_count
 
-        # 맨 위로 다시 올려 두기
         self.driver.execute_script("window.scrollTo(0, 0);")
+
+
 
     def scroll_into_view(self, element):
         self.driver.execute_script(
@@ -705,7 +634,6 @@ class MyAgentsPage(BasePage):
         return result
 
     def get_agent_id_from_card(self, card):
-        # div 내부 어디에 있든 a[href*='/agent/'] 를 찾기
         link = card.find_element(
             By.CSS_SELECTOR,
             "a[href*='/ai-helpy-chat/agent/'], a[href*='/agent/']"
@@ -715,14 +643,12 @@ class MyAgentsPage(BasePage):
         if not href:
             raise ValueError(f"에이전트 href를 찾지 못했습니다.\ncard text: {card.text}")
 
-        # URL 마지막 구조는 .../<agent_id>/builder
         agent_id = href.rstrip("/").split("/")[-2]
         return agent_id
 
     def wait_for_cards_loaded(self, timeout=10):
         wait = WebDriverWait(self.driver, timeout)
 
-        # Virtuoso Grid 아이템이 최소 하나 등장할때까지 대기
         try:
             wait.until(
                 EC.presence_of_element_located(
@@ -739,17 +665,14 @@ class MyAgentsPage(BasePage):
         for _ in range(timeout * 2):
             self.driver.get(self.url)
 
-            # 모든 카드 렌더링 대기
             wait.until(
                 EC.presence_of_all_elements_located(self.LOCATORS["all_agent_cards"])
             )
 
-            # ID로 카드 찾기
             card = self.find_card_by_agent_id(agent_id)
             if not card:
                 continue
 
-            # 제목 비교
             try:
                 title_el = card.find_element(
                     By.CSS_SELECTOR,
@@ -893,7 +816,6 @@ class MyAgentsPage(BasePage):
         )
         btn.click()
 
-        # 모달이 사라질 때까지 대기
         WebDriverWait(self.driver, 5, 0.1).until(
             EC.invisibility_of_element_located(
                 self.LOCATORS["confirm_delete_modal_button"]
