@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+import re
 import xml.etree.ElementTree as ET
 
 # 🌐 환경변수 설정
@@ -64,6 +65,10 @@ def parse_junit_results(xml_path):
     print(f"[INFO] Found {len(failed_tests)} failed tests, {len(passed_tests)} passed tests.")
     return failed_tests, passed_tests
 
+def escape_jql_value(value: str) -> str:
+    """JQL에서 특수문자 이스케이프"""
+    # Jira JQL 문법상 이스케이프해야 하는 문자: \ " ' [ ] ( ) : ,
+    return re.sub(r'(["\'\[\]\(\):,])', r'\\\1', value)
 
 # 🧩 JIRA 세션 생성
 def make_jira_session():
@@ -79,9 +84,10 @@ def make_jira_session():
 # 🧩 JIRA 이슈 생성 / 코멘트 / 종료
 def create_or_comment_issue(session, test):
     summary = make_summary(test)
+    escaped_summary = escape_jql_value(summary)
 
-    # 기존 오픈 이슈 검색
-    jql = f'project = "{JIRA_PROJECT}" AND summary ~ "{summary}" AND statusCategory != Done ORDER BY created DESC'
+    # 1️⃣ 기존 오픈 이슈 정확히 검색 (summary = )
+    jql = f'project = "{JIRA_PROJECT}" AND summary = "{escaped_summary}" AND statusCategory != Done ORDER BY created DESC'
     search_url = f"{JIRA_URL}/rest/api/3/search"
     search_resp = session.get(search_url, params={"jql": jql})
 
@@ -89,7 +95,7 @@ def create_or_comment_issue(session, test):
         issues = search_resp.json().get("issues", [])
         if issues:
             issue_key = issues[0]["key"]
-            print(f"[INFO] 기존 이슈 발견: {issue_key} — 코멘트만 추가")
+            print(f"[INFO] 기존 이슈 발견: {issue_key} — 코멘트 추가")
 
             comment_text = (
                 f"🚨 *자동화 테스트가 다시 실패했습니다!*\n\n"
@@ -99,12 +105,18 @@ def create_or_comment_issue(session, test):
             )
 
             comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
-            session.post(comment_url, json={"body": make_adf_text(comment_text)})
+            resp = session.post(comment_url, json={"body": make_adf_text(comment_text)})
+            if resp.status_code >= 400:
+                print(f"[ERROR] 코멘트 추가 실패 ({issue_key}): {resp.status_code} {resp.text}")
+            else:
+                print(f"[INFO] ✅ 코멘트 추가 완료: {issue_key}")
             return issue_key
 
-    # 새로운 이슈 생성
-    print(f"[INFO] 새로운 이슈 생성: {summary}")
+    else:
+        print(f"[WARN] Jira 검색 실패 ({search_resp.status_code}): {search_resp.text}")
 
+    # 2️⃣ 새 이슈 생성 (기존 이슈 없음)
+    print(f"[INFO] 새로운 이슈 생성: {summary}")
     desc_text = (
         f"테스트 실패 감지됨 🚨\n\n"
         f"*테스트:* `{test['classname']}::{test['name']}`\n"
