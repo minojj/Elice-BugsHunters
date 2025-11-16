@@ -24,20 +24,40 @@ def parse_failed_tests(junit_path: str):
         return []
 
     print(f"[INFO] Parsing JUnit file: {junit_path}")
+
+    # 파일 내용도 한 번 찍어보자 (앞부분만)
+    try:
+        with open(junit_path, "r", encoding="utf-8") as f:
+            head = f.read(500)
+        print("[DEBUG] JUnit file head:")
+        print(head.replace("\n", "\\n")[:300], "...")
+    except Exception as e:
+        print(f"[WARN] Failed to read junit file as text: {e}")
+
     tree = ET.parse(junit_path)
     root = tree.getroot()
 
+    # 여기서 실제로 몇 개의 <testcase> 를 보는지 찍어보자
+    all_tcs = list(root.findall(".//testcase"))
+    print(f"[DEBUG] Total <testcase> nodes found: {len(all_tcs)}")
+
+    for i, tc in enumerate(all_tcs[:10]):  # 너무 많으면 앞 10개만
+        print(f"[DEBUG] testcase[{i}] name={tc.attrib.get('name')}, "
+              f"class={tc.attrib.get('classname')}, children={[child.tag for child in tc]}")
+
     failed = []
 
-    # ✅ pytest가 만든 JUnit(XML) 구조: <testsuites>/<testsuite>/<testcase>/<failure|error>
-    for tc in root.findall(".//testcase"):
+    for tc in all_tcs:
         name = tc.attrib.get("name")
         classname = tc.attrib.get("classname")
 
         failure = tc.find("failure")
         error = tc.find("error")
 
-        if failure is None and error is None:
+        has_failure = failure is not None
+        has_error = error is not None
+
+        if not (has_failure or has_error):
             continue
 
         msg = ""
@@ -46,6 +66,7 @@ def parse_failed_tests(junit_path: str):
         elif error is not None:
             msg = (error.attrib.get("message", "") or "") + "\n" + (error.text or "")
 
+        print(f"[DEBUG] ==> FAILED testcase: {classname}::{name}")
         failed.append({
             "name": name,
             "classname": classname,
