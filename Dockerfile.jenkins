@@ -2,25 +2,34 @@ FROM jenkins/jenkins:lts
 
 USER root
 
-# 1) 기본 유틸 + docker CLI + Python 설치
-RUN apt-get update && \
+RUN set -eux; \
+    apt-get update; \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
         git \
-        docker.io \
         python3 \
         python3-pip \
-    && rm -rf /var/lib/apt/lists/*
-
-# 2) python 심볼릭 링크 + Jira 스크립트용 라이브러리 설치
-RUN ln -sf /usr/bin/python3 /usr/bin/python && \
+    ; \
+    rm -rf /var/lib/apt/lists/*; \
+    \
+    # 🐳 docker CLI (정적 바이너리) 설치 - 아키텍처에 맞게
+    mkdir -p /usr/bin; \
+    ARCH="$(uname -m)"; \
+    case "$ARCH" in \
+      x86_64|amd64)   DOCKER_ARCH="x86_64" ;; \
+      aarch64|arm64)  DOCKER_ARCH="aarch64" ;; \
+      *) echo "Unsupported arch: $ARCH" && exit 1 ;; \
+    esac; \
+    curl -fsSL "https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/docker-26.1.4.tgz" \
+      | tar -xz -C /usr/bin --strip-components=1 docker/docker; \
+    /usr/bin/docker --version; \
+    \
+    # 🐍 python 편의 링크 + Jira 스크립트용 패키지 설치
+    ln -sf /usr/bin/python3 /usr/bin/python; \
     pip3 install --no-cache-dir --break-system-packages requests jira
 
-# 3) jenkins 유저가 docker.sock 쓸 수 있게 그룹 추가
-RUN usermod -aG docker jenkins
-
-# host의 /var/run/docker.sock 을 쓸 거라서 DOCKER_HOST 설정
+# Jenkins에서 host docker.sock 사용
 ENV DOCKER_HOST=unix:///var/run/docker.sock
 
 USER jenkins
