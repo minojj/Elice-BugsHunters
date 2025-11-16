@@ -160,7 +160,7 @@ pipeline {
 
                     export JENKINS_JOB_NAME="${JOB_NAME}"
                     export JENKINS_BUILD_NUMBER="${BUILD_NUMBER}"
-                    export JENKINS_BRANCH_NAME="${BRANCH_NAME}"
+                    export JENKINS_BRANCH_NAME="${BRANCH_NAME:-unknown}"
                     export JENKINS_BUILD_URL="${BUILD_URL}"
 
                     python tools/report_failed_tests_to_jira.py || echo "JIRA 스크립트 실행 중 오류 발생 (무시)"
