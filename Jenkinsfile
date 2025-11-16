@@ -2,29 +2,35 @@ pipeline {
     agent any
 
     environment {
-        REPORT_DIR       = "reports"
-        SCREENSHOT_DIR   = "screenshots"
-        DOCKER_IMAGE     = "elice-bugshunters"
         PYTHONUNBUFFERED = "1"
         HEADLESS         = "true"
         WDM_LOCAL        = "1"
         WDM_CACHE        = "${WORKSPACE}/.wdm"
         HOME             = "${WORKSPACE}"
         PYTHONPATH       = "${WORKSPACE}:${PYTHONPATH}"
+
+        REPORT_DIR       = "reports"
+        SCREENSHOT_DIR   = "screenshots"
+        DOCKER_IMAGE     = "elice-bugshunters"
     }
 
     stages {
         stage('Checkout') {
-            steps { checkout scm }
+            steps {
+                checkout scm
+            }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
                     sh '''
+                        set -eux
+                        echo "🐳 Docker 이미지 빌드 시작"
                         docker builder prune -f || true
                         docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} -f Dockerfile .
                         docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest
+                        docker images | head
                     '''
                 }
             }
@@ -33,48 +39,63 @@ pipeline {
         stage('Run Tests in Container') {
             steps {
                 withCredentials([
-                    usernamePassword(credentialsId: 'login-id', usernameVariable: 'MAIN_EMAIL', passwordVariable: 'MAIN_PASSWORD'),
-                    usernamePassword(credentialsId: 'sub-id',   usernameVariable: 'SUB_EMAIL',  passwordVariable: 'SUB_PASSWORD')
+                    usernamePassword(
+                        credentialsId: 'login-id',
+                        usernameVariable: 'MAIN_EMAIL',
+                        passwordVariable: 'MAIN_PASSWORD'
+                    ),
+                    usernamePassword(
+                        credentialsId: 'sub-id',
+                        usernameVariable: 'SUB_EMAIL',
+                        passwordVariable: 'SUB_PASSWORD'
+                    )
                 ]) {
                     sh '''
                         set -eux
 
-                        echo "➡ PWD in shell:"
+                        echo "➡ PWD:"
                         pwd
-                        echo "➡ WORKSPACE env:"
-                        echo "${WORKSPACE}"
+                        echo "➡ WORKSPACE:"
+                        echo "$WORKSPACE"
 
-                        REPORT_DIR_HOST="${WORKSPACE}/reports"
-                        REPORT_DIR_CONT="/app/reports"
+                        REPORT_DIR_HOST="$WORKSPACE/${REPORT_DIR}"
+                        REPORT_DIR_CONT="/app/${REPORT_DIR}"
+                        SCREENSHOT_DIR_HOST="$WORKSPACE/${SCREENSHOT_DIR}"
+                        SCREENSHOT_DIR_CONT="/app/${SCREENSHOT_DIR}"
 
-                        echo "🧹 기존 리포트 정리"
-                        rm -rf "${REPORT_DIR_HOST}"
-                        mkdir -p "${REPORT_DIR_HOST}"
+                        echo "🧹 기존 리포트/스크린샷 정리"
+                        rm -rf "$REPORT_DIR_HOST" "$SCREENSHOT_DIR_HOST"
+                        mkdir -p "$REPORT_DIR_HOST" "$SCREENSHOT_DIR_HOST"
 
-                        echo "🐳 docker run"
+                        echo "🐳 테스트 컨테이너 실행 (pytest)"
                         docker run --rm \
-                        --shm-size=2g \
-                        -e CHROME_BIN=/usr/bin/chromium \
-                        -e CHROMEDRIVER=/usr/bin/chromedriver \
-                        -e MAIN_EMAIL="${MAIN_EMAIL}" \
-                        -e MAIN_PASSWORD="${MAIN_PASSWORD}" \
-                        -e SUB_EMAIL="${SUB_EMAIL}" \
-                        -e SUB_PASSWORD="${SUB_PASSWORD}" \
-                        -v "${REPORT_DIR_HOST}:${REPORT_DIR_CONT}" \
-                        ${DOCKER_IMAGE}:latest \
-                        tests -v \
+                          --shm-size=2g \
+                          -e HEADLESS=true \
+                          -e WDM_SKIP=1 \
+                          -e CHROME_BIN=/usr/bin/chromium \
+                          -e CHROMEDRIVER=/usr/bin/chromedriver \
+                          -e MAIN_EMAIL="$MAIN_EMAIL" \
+                          -e MAIN_PASSWORD="$MAIN_PASSWORD" \
+                          -e SUB_EMAIL="$SUB_EMAIL" \
+                          -e SUB_PASSWORD="$SUB_PASSWORD" \
+                          -v "$REPORT_DIR_HOST:$REPORT_DIR_CONT" \
+                          -v "$SCREENSHOT_DIR_HOST:$SCREENSHOT_DIR_CONT" \
+                          ${DOCKER_IMAGE}:latest \
+                          tests -v \
                             --junitxml=${REPORT_DIR_CONT}/test-results.xml \
                             --html=${REPORT_DIR_CONT}/report.html \
                             --self-contained-html \
                             --tb=short
 
-                        echo "📂 WORKSPACE reports 내용:"
-                        ls -lah "${REPORT_DIR_HOST}" || true
+                        echo "📂 docker run 이후 리포트 디렉토리 내용:"
+                        ls -lah "$REPORT_DIR_HOST" || true
+
+                        echo "📂 docker run 이후 스크린샷 디렉토리 내용:"
+                        ls -lah "$SCREENSHOT_DIR_HOST" || true
                     '''
                 }
             }
         }
-
     }
 
     post {
@@ -82,6 +103,7 @@ pipeline {
             script {
                 echo "📦 JUnit 리포트 수집 시도"
                 try {
+                    // WORKSPACE 기준: reports/test-results.xml
                     junit 'reports/test-results.xml'
                 } catch (err) {
                     echo "JUnit 리포트를 찾지 못했습니다: ${err}"
@@ -90,12 +112,12 @@ pipeline {
                 echo "📊 HTML 리포트 게시 시도"
                 try {
                     publishHTML(target: [
-                        allowMissing:          true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll:               true,
-                        reportDir:             'reports',
-                        reportFiles:           'report.html',
-                        reportName:            'Pytest HTML Report'
+                        allowMissing:           true,
+                        alwaysLinkToLastBuild:  true,
+                        keepAll:                true,
+                        reportDir:              'reports',
+                        reportFiles:            'report.html',
+                        reportName:             'Pytest HTML Report'
                     ])
                 } catch (err) {
                     echo "HTML 리포트를 게시하지 못했습니다: ${err}"
@@ -118,6 +140,7 @@ pipeline {
                 }
             }
 
+            // 선택: Docker 자원 정리 (원치 않으면 주석 처리)
             sh 'docker system prune -f || true'
         }
     }
