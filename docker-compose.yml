@@ -4,7 +4,7 @@ services:
   jenkins:
     build:
       context: .
-      dockerfile: Dockerfile.jenkins
+      dockerfile: Dockerfile
     container_name: elice-jenkins
     user: root
     ports:
