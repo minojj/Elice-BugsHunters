@@ -127,13 +127,32 @@ def create_jira_issue(session, test):
         "*메시지:*",
         f"{{code}}\n{test['message']}\n{{code}}"
     ]
-    description = "\n".join([line for line in description_lines if line != ""])
+    description_text = "\n".join([line for line in description_lines if line != ""])
+
+    # ✅ Atlassian Document Format(ADF)로 변환하는 함수
+    def make_adf_description(text: str) -> dict:
+        return {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": text
+                        }
+                    ]
+                }
+            ]
+        }
 
     payload = {
         "fields": {
             "project": {"key": JIRA_PROJECT},
             "summary": summary,
-            "description": description,
+            # ✅ 문자열 대신 ADF 구조 전달
+            "description": make_adf_description(description_text),
             "labels": [LABEL_AUTOTEST],
             "issuetype": {"name": "Bug"}
         }
