@@ -150,22 +150,9 @@ pipeline {
             ]) {
                 sh '''
                     set -eux
-                        echo "🐞 JIRA 이슈 자동 동기화 시작"
+                    echo "🐞 JIRA 이슈 자동 동기화 시작"
 
-                        # JIRA용 환경변수
-                        export JIRA_URL="${JIRA_URL}"
-                        export JIRA_PROJECT="${JIRA_PROJECT}"
-                        export JIRA_USER="${JIRA_USER}"
-                        export JIRA_API_TOKEN="${JIRA_API_TOKEN}"
-                        export JUNIT_PATH="reports/test-results.xml"
-
-                        export JENKINS_JOB_NAME="${JOB_NAME}"
-                        export JENKINS_BUILD_NUMBER="${BUILD_NUMBER}"
-                        export JENKINS_BRANCH_NAME="${BRANCH_NAME:-unknown}"
-                        export JENKINS_BUILD_URL="${BUILD_URL}"
-
-                        # 🔥 pytest 엔트리포인트를 무시하고 python으로 실행
-                        docker run --rm \
+                    docker run --rm \
                         --entrypoint python \
                         -e JIRA_URL="${JIRA_URL}" \
                         -e JIRA_PROJECT="${JIRA_PROJECT}" \
@@ -177,9 +164,8 @@ pipeline {
                         -e JENKINS_BRANCH_NAME="${BRANCH_NAME:-unknown}" \
                         -e JENKINS_BUILD_URL="${BUILD_URL}" \
                         -v "$WORKSPACE/reports:/app/reports" \
-                        -v "$WORKSPACE/tools:/app/tools" \
                         -w /app \
-                        elice-bugshunters:latest \
+                        ${DOCKER_IMAGE}:latest \
                         tools/report_failed_tests_to_jira.py || echo "JIRA 스크립트 실행 중 오류 발생 (무시)"
                 '''
             }

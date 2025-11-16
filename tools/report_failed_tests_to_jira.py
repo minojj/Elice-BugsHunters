@@ -4,8 +4,8 @@ import requests
 from urllib.parse import quote
 
 
-JIRA_URL        = os.getenv("JIRA_URL")          # e.g. https://your-domain.atlassian.net
-JIRA_PROJECT    = os.getenv("JIRA_PROJECT")      # e.g. BUG
+JIRA_URL        = os.getenv("JIRA_URL")          # e.g. 
+JIRA_PROJECT    = os.getenv("JIRA_PROJECT")      # e.g. 
 JIRA_USER       = os.getenv("JIRA_USER")
 JIRA_API_TOKEN  = os.getenv("JIRA_API_TOKEN")
 JUNIT_PATH      = os.getenv("JUNIT_PATH", "reports/test-results.xml")
