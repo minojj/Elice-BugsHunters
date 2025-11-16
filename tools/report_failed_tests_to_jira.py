@@ -29,8 +29,7 @@ def parse_failed_tests(junit_path: str):
 
     failed = []
 
-    # 1) 표준 JUnit (pytest가 내보내는 형태) 처리
-    #    <testsuites> / <testsuite> / <testcase> / <failure|error>
+    # ✅ pytest가 만든 JUnit(XML) 구조: <testsuites>/<testsuite>/<testcase>/<failure|error>
     for tc in root.findall(".//testcase"):
         name = tc.attrib.get("name")
         classname = tc.attrib.get("classname")
@@ -50,39 +49,11 @@ def parse_failed_tests(junit_path: str):
         failed.append({
             "name": name,
             "classname": classname,
-            "message": msg.strip()
+            "message": (msg or "").strip()
         })
 
-    if failed:
-        print(f"[INFO] Found {len(failed)} failed tests from <testcase> nodes.")
-        return failed
-
-    # 2) 혹시 모를 Jenkins 내부 junitResult.xml 구조까지 커버 (예비용)
-    #    <result>/<suites>/<suite>/<cases>/<case> 구조
-    for case in root.findall(".//case"):
-        name = case.findtext("testName")
-        classname = case.findtext("className")
-        err_stack = case.find("errorStackTrace")
-        err_details = case.find("errorDetails")
-
-        if err_stack is None and err_details is None:
-            continue
-
-        msg_parts = []
-        if err_stack is not None and (err_stack.text or "").strip():
-            msg_parts.append(err_stack.text.strip())
-        if err_details is not None and (err_details.text or "").strip():
-            msg_parts.append(err_details.text.strip())
-
-        failed.append({
-            "name": name,
-            "classname": classname,
-            "message": "\n".join(msg_parts)
-        })
-
-    print(f"[INFO] Found {len(failed)} failed tests from <case> nodes (junitResult.xml style).")
+    print(f"[INFO] Found {len(failed)} failed tests from <testcase> nodes.")
     return failed
-
 
 def make_summary(test):
     return f"[AutoTest] Failed: {test['classname']}::{test['name']}"
