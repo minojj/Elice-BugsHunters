@@ -152,6 +152,12 @@ pipeline {
                     set -eux
                     echo "🐞 JIRA 이슈 자동 동기화 시작"
 
+                    echo "📂 reports 디렉토리 내용:"
+                    ls -lah "$WORKSPACE/reports" || true
+
+                    echo "📄 test-results.xml 내용 일부:"
+                    head -n 40 "$WORKSPACE/reports/test-results.xml" || true
+
                     docker run --rm \
                         --entrypoint python \
                         -e JIRA_URL="${JIRA_URL}" \
