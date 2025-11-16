@@ -166,12 +166,10 @@ pipeline {
                     python tools/report_failed_tests_to_jira.py || echo "JIRA 스크립트 실행 중 오류 발생 (무시)"
                 '''
             }
-
-        }
-    
-
-        // 선택: Docker 자원 정리 (원치 않으면 주석 처리)
-        sh 'docker system prune -f || true'
+            // 선택: Docker 자원 정리 (원치 않으면 주석 처리)
+            sh 'docker system prune -f || true'
         
+        
+        }
     }
 }
