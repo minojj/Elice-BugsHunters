@@ -84,9 +84,14 @@ def parse_junit_results(xml_path):
     return failed_tests, passed_tests
 
 def escape_jql_value(value: str) -> str:
-    """JQL에서 특수문자 이스케이프"""
-    # Jira JQL 문법상 이스케이프해야 하는 문자: \ " ' [ ] ( ) : ,
-    return re.sub(r'(["\'\[\]\(\):,])', r'\\\1', value)
+    """
+    Jira JQL에서 안전하게 사용할 수 있도록 최소한의 이스케이프 처리만 적용
+    - 허용되지 않는 \[ \] 제거
+    - 큰따옴표, 작은따옴표, 백슬래시만 이스케이프
+    """
+    value = value.replace('[', ' ').replace(']', ' ')  # 대괄호는 제거
+    value = re.sub(r'(["\'\\])', r'\\\1', value)       # " ' \ 만 escape
+    return value.strip()
 
 # 🧩 JIRA 세션 생성
 def make_jira_session():
