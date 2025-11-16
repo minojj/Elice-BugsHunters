@@ -169,7 +169,8 @@ pipeline {
                         -e JENKINS_BUILD_NUMBER="${BUILD_NUMBER}" \
                         -e JENKINS_BRANCH_NAME="${BRANCH_NAME:-unknown}" \
                         -e JENKINS_BUILD_URL="${BUILD_URL}" \
-                        -v "$WORKSPACE/reports:/app/reports" \
+                        -v $PWD/reports:/app/reports \
+                        -v $PWD/tools:/app/tools \
                         -w /app \
                         ${DOCKER_IMAGE}:latest \
                         tools/report_failed_tests_to_jira.py || echo "JIRA 스크립트 실행 중 오류 발생 (무시)"
