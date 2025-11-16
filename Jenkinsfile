@@ -144,7 +144,7 @@ pipeline {
             }
 
             withCredentials([
-            string(credentialsId: 'jira-account', usernameVariable: 'JIRA_USER',
+            usernamePassword(credentialsId: 'jira-account', usernameVariable: 'JIRA_USER',
                     passwordVariable: 'JIRA_API_TOKEN'),
             
             ]) {
