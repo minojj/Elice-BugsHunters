@@ -12,6 +12,8 @@ pipeline {
         REPORT_DIR       = "reports"
         SCREENSHOT_DIR   = "screenshots"
         DOCKER_IMAGE     = "elice-bugshunters"
+        JIRA_URL     = 'https://nwwe.atlassian.net'
+        JIRA_PROJECT = 'Q31'
     }
 
     stages {
@@ -141,8 +143,35 @@ pipeline {
                 }
             }
 
-            // 선택: Docker 자원 정리 (원치 않으면 주석 처리)
-            sh 'docker system prune -f || true'
+            withCredentials([
+            string(credentialsId: 'jira-account', usernameVariable: 'JIRA_USER',
+                    passwordVariable: 'JIRA_API_TOKEN'),
+            
+            ]) {
+                sh '''
+                    set -eux
+                    echo "🐞 JIRA 이슈 자동 동기화 시작"
+
+                    export JIRA_URL="${JIRA_URL}"
+                    export JIRA_PROJECT="${JIRA_PROJECT}"
+                    export JIRA_USER="${JIRA_USER}"
+                    export JIRA_API_TOKEN="${JIRA_API_TOKEN}"
+                    export JUNIT_PATH="reports/test-results.xml"
+
+                    export JENKINS_JOB_NAME="${JOB_NAME}"
+                    export JENKINS_BUILD_NUMBER="${BUILD_NUMBER}"
+                    export JENKINS_BRANCH_NAME="${BRANCH_NAME}"
+                    export JENKINS_BUILD_URL="${BUILD_URL}"
+
+                    python tools/report_failed_tests_to_jira.py || echo "JIRA 스크립트 실행 중 오류 발생 (무시)"
+                '''
+            }
+
         }
+    
+
+        // 선택: Docker 자원 정리 (원치 않으면 주석 처리)
+        sh 'docker system prune -f || true'
+        
     }
 }
