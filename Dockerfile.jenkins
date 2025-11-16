@@ -15,7 +15,7 @@ RUN apt-get update && \
 
 # 2) python 심볼릭 링크 + Jira 스크립트용 라이브러리 설치
 RUN ln -sf /usr/bin/python3 /usr/bin/python && \
-    pip3 install --no-cache-dir requests jira
+    pip3 install --no-cache-dir --break-system-packages requests jira
 
 # 3) jenkins 유저가 docker.sock 쓸 수 있게 그룹 추가
 RUN usermod -aG docker jenkins
