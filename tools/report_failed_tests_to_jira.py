@@ -1,277 +1,189 @@
 import os
-import xml.etree.ElementTree as ET
+import sys
 import requests
-from urllib.parse import quote
+import xml.etree.ElementTree as ET
+
+# 🌐 환경변수 설정
+JIRA_URL = os.getenv("JIRA_URL")
+JIRA_PROJECT = os.getenv("JIRA_PROJECT")
+JIRA_USER = os.getenv("JIRA_USER")
+JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN")
+JUNIT_PATH = os.getenv("JUNIT_PATH", "reports/test-results.xml")
+JOB_NAME = os.getenv("JENKINS_JOB_NAME", "unknown-job")
+BUILD_NUMBER = os.getenv("JENKINS_BUILD_NUMBER", "0")
+BRANCH_NAME = os.getenv("JENKINS_BRANCH_NAME", "unknown")
+BUILD_URL = os.getenv("JENKINS_BUILD_URL", "")
+LABEL_AUTOTEST = "autotest"
 
 
-JIRA_URL        = os.getenv("JIRA_URL")          # e.g. 
-JIRA_PROJECT    = os.getenv("JIRA_PROJECT")      # e.g. 
-JIRA_USER       = os.getenv("JIRA_USER")
-JIRA_API_TOKEN  = os.getenv("JIRA_API_TOKEN")
-JUNIT_PATH      = os.getenv("JUNIT_PATH", "reports/test-results.xml")
-
-JOB_NAME        = os.getenv("JENKINS_JOB_NAME", "")
-BUILD_NUMBER    = os.getenv("JENKINS_BUILD_NUMBER", "")
-BRANCH_NAME     = os.getenv("JENKINS_BRANCH_NAME", "")
-BUILD_URL       = os.getenv("JENKINS_BUILD_URL", "")
-
-LABEL_AUTOTEST  = "autotest-failure"  # 자동 생성 티켓에 붙일 라벨
-
-
-def parse_failed_tests(junit_path: str):
-    if not os.path.exists(junit_path):
-        print(f"[WARN] JUnit file not found: {junit_path}")
-        return []
-
-    print(f"[INFO] Parsing JUnit file: {junit_path}")
-
-    # 파일 내용도 한 번 찍어보자 (앞부분만)
-    try:
-        with open(junit_path, "r", encoding="utf-8") as f:
-            head = f.read(500)
-        print("[DEBUG] JUnit file head:")
-        print(head.replace("\n", "\\n")[:300], "...")
-    except Exception as e:
-        print(f"[WARN] Failed to read junit file as text: {e}")
-
-    tree = ET.parse(junit_path)
-    root = tree.getroot()
-
-    # 여기서 실제로 몇 개의 <testcase> 를 보는지 찍어보자
-    all_tcs = list(root.findall(".//testcase"))
-    print(f"[DEBUG] Total <testcase> nodes found: {len(all_tcs)}")
-
-    for i, tc in enumerate(all_tcs[:10]):  # 너무 많으면 앞 10개만
-        print(f"[DEBUG] testcase[{i}] name={tc.attrib.get('name')}, "
-              f"class={tc.attrib.get('classname')}, children={[child.tag for child in tc]}")
-
-    failed = []
-
-    for tc in all_tcs:
-        name = tc.attrib.get("name")
-        classname = tc.attrib.get("classname")
-
-        failure = tc.find("failure")
-        error = tc.find("error")
-
-        has_failure = failure is not None
-        has_error = error is not None
-
-        if not (has_failure or has_error):
-            continue
-
-        msg = ""
-        if failure is not None:
-            msg = (failure.attrib.get("message", "") or "") + "\n" + (failure.text or "")
-        elif error is not None:
-            msg = (error.attrib.get("message", "") or "") + "\n" + (error.text or "")
-
-        print(f"[DEBUG] ==> FAILED testcase: {classname}::{name}")
-        failed.append({
-            "name": name,
-            "classname": classname,
-            "message": (msg or "").strip()
-        })
-
-    print(f"[INFO] Found {len(failed)} failed tests from <testcase> nodes.")
-    return failed
-
+# 🧩 유틸 함수
 def make_summary(test):
     return f"[AutoTest] Failed: {test['classname']}::{test['name']}"
 
+def make_adf_text(text: str):
+    """ADF(Atlassian Document Format) 포맷 변환"""
+    return {
+        "type": "doc",
+        "version": 1,
+        "content": [
+            {"type": "paragraph", "content": [{"type": "text", "text": text}]}
+        ],
+    }
 
-def jira_session():
-    if not (JIRA_URL and JIRA_PROJECT and JIRA_USER and JIRA_API_TOKEN):
-        raise RuntimeError("JIRA env vars not set (JIRA_URL, JIRA_PROJECT, JIRA_USER, JIRA_API_TOKEN)")
 
-    s = requests.Session()
-    s.auth = (JIRA_USER, JIRA_API_TOKEN)
-    s.headers.update({
+# 🧩 JUnit XML 파싱
+def parse_junit_results(xml_path):
+    failed_tests = []
+    passed_tests = []
+    print(f"[INFO] Parsing JUnit file: {xml_path}")
+
+    try:
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+    except Exception as e:
+        print(f"[ERROR] XML 파싱 실패: {e}")
+        return failed_tests, passed_tests
+
+    for testcase in root.iter("testcase"):
+        name = testcase.attrib.get("name")
+        classname = testcase.attrib.get("classname")
+        failure = testcase.find("failure")
+
+        if failure is not None:
+            failed_tests.append({
+                "name": name,
+                "classname": classname,
+                "message": failure.attrib.get("message", "")[:1000]
+            })
+        else:
+            passed_tests.append({
+                "name": name,
+                "classname": classname
+            })
+
+    print(f"[INFO] Found {len(failed_tests)} failed tests, {len(passed_tests)} passed tests.")
+    return failed_tests, passed_tests
+
+
+# 🧩 JIRA 세션 생성
+def make_jira_session():
+    session = requests.Session()
+    session.auth = (JIRA_USER, JIRA_API_TOKEN)
+    session.headers.update({
         "Accept": "application/json",
         "Content-Type": "application/json"
     })
-    return s
+    return session
 
 
-def find_existing_issue(session, summary):
-    jql = (
-        f'project = "{JIRA_PROJECT}" '
-        f'AND summary ~ "{summary.replace("\"", "\\\"")}" '
-        f'AND labels = {LABEL_AUTOTEST} '
-        f'AND statusCategory != Done'
-    )
-
-    data = jira_search(session, jql, max_results=1)
-    if not data:
-        return None
-
-    issues = data.get("issues", [])
-    if not issues:
-        return None
-    return issues[0]["key"]
-
-
-
-def create_jira_issue(session, test):
+# 🧩 JIRA 이슈 생성 / 코멘트 / 종료
+def create_or_comment_issue(session, test):
     summary = make_summary(test)
 
-    description_lines = [
-        "*자동 생성된 테스트 실패 리포트*",
-        "",
-        f"*테스트:* `{test['classname']}::{test['name']}`",
-        f"*브랜치:* `{BRANCH_NAME}`" if BRANCH_NAME else "",
-        f"*잡:* `{JOB_NAME}`",
-        f"*빌드 번호:* `{BUILD_NUMBER}`",
-        f"*빌드 URL:* {BUILD_URL}" if BUILD_URL else "",
-        "",
-        "*메시지:*",
-        f"{{code}}\n{test['message']}\n{{code}}"
-    ]
-    description_text = "\n".join([line for line in description_lines if line != ""])
+    # 기존 오픈 이슈 검색
+    jql = f'project = "{JIRA_PROJECT}" AND summary ~ "{summary}" AND statusCategory != Done ORDER BY created DESC'
+    search_url = f"{JIRA_URL}/rest/api/3/search"
+    search_resp = session.get(search_url, params={"jql": jql})
 
-    # ✅ Atlassian Document Format(ADF)로 변환하는 함수
-    def make_adf_description(text: str) -> dict:
-        return {
-            "type": "doc",
-            "version": 1,
-            "content": [
-                {
-                    "type": "paragraph",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": text
-                        }
-                    ]
-                }
-            ]
-        }
+    if search_resp.status_code == 200:
+        issues = search_resp.json().get("issues", [])
+        if issues:
+            issue_key = issues[0]["key"]
+            print(f"[INFO] 기존 이슈 발견: {issue_key} — 코멘트만 추가")
+
+            comment_text = (
+                f"🚨 *자동화 테스트가 다시 실패했습니다!*\n\n"
+                f"*테스트:* `{test['classname']}::{test['name']}`\n"
+                f"*빌드:* [{JOB_NAME} #{BUILD_NUMBER}]({BUILD_URL})\n\n"
+                f"*실패 요약:*\n{test['message'][:500]}..."
+            )
+
+            comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
+            session.post(comment_url, json={"body": make_adf_text(comment_text)})
+            return issue_key
+
+    # 새로운 이슈 생성
+    print(f"[INFO] 새로운 이슈 생성: {summary}")
+
+    desc_text = (
+        f"테스트 실패 감지됨 🚨\n\n"
+        f"*테스트:* `{test['classname']}::{test['name']}`\n"
+        f"*빌드:* [{JOB_NAME} #{BUILD_NUMBER}]({BUILD_URL})\n\n"
+        f"*오류 메시지 요약:*\n{test['message'][:500]}..."
+    )
 
     payload = {
         "fields": {
             "project": {"key": JIRA_PROJECT},
             "summary": summary,
-            # ✅ 문자열 대신 ADF 구조 전달
-            "description": make_adf_description(description_text),
+            "description": make_adf_text(desc_text),
             "labels": [LABEL_AUTOTEST],
-            "issuetype": {"name": "Bug"}
+            "issuetype": {"name": "Bug"},
         }
     }
 
-    url = f"{JIRA_URL}/rest/api/3/issue"
-    resp = session.post(url, json=payload)
+    create_url = f"{JIRA_URL}/rest/api/3/issue"
+    resp = session.post(create_url, json=payload)
 
     if resp.status_code >= 400:
         print(f"[ERROR] Failed to create issue for {summary}: {resp.status_code} {resp.text}")
         return None
-    key = resp.json().get("key")
-    print(f"[INFO] Created JIRA issue: {key} for {summary}")
-    return key
+
+    issue_key = resp.json().get("key")
+    print(f"[INFO] 🆕 Created JIRA issue: {issue_key}")
+    return issue_key
 
 
-def comment_on_issue(session, issue_key, text):
-    url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
-    payload = {
-        "body": text
-    }
-    resp = session.post(url, json=payload)
-    if resp.status_code >= 400:
-        print(f"[WARN] Failed to comment on {issue_key}: {resp.status_code} {resp.text}")
-    else:
-        print(f"[INFO] Commented on {issue_key}")
+def close_passed_issues(session, passed_tests):
+    """✅ 통과된 테스트가 기존 실패 이슈를 닫도록 처리"""
+    for test in passed_tests:
+        summary = f"[AutoTest] Failed: {test['classname']}::{test['name']}"
+        jql = f'project = "{JIRA_PROJECT}" AND summary ~ "{summary}" AND statusCategory != Done ORDER BY created DESC'
+        search_url = f"{JIRA_URL}/rest/api/3/search"
+        resp = session.get(search_url, params={"jql": jql})
 
+        if resp.status_code == 200:
+            issues = resp.json().get("issues", [])
+            for issue in issues:
+                issue_key = issue["key"]
+                print(f"[INFO] ✅ 테스트 통과 — 이슈 {issue_key} 닫기 시도 중")
 
-def handle_failed_tests(session, failed_tests):
-    """
-    실패한 테스트들에 대해:
-    - 같은 summary를 가진 이슈가 열려 있으면 → 코멘트만 추가
-    - 없으면 → 새 Bug 이슈 생성
-    """
-    for test in failed_tests:
-        summary = make_summary(test)
-        existing_key = find_existing_issue(session, summary)
+                # 1️⃣ 코멘트 추가
+                comment_text = (
+                    f"✅ *자동화 테스트가 통과했습니다!*\n\n"
+                    f"*테스트:* `{test['classname']}::{test['name']}`\n"
+                    f"*빌드:* [{JOB_NAME} #{BUILD_NUMBER}]({BUILD_URL})\n\n"
+                    f"이전 실패 이슈를 자동으로 닫습니다."
+                )
+                comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
+                session.post(comment_url, json={"body": make_adf_text(comment_text)})
 
-        if existing_key:
-            print(f"[INFO] Existing issue found for {summary}: {existing_key}, adding comment")
-            comment_text = (
-                f"*자동 테스트 실패 재발생*\n\n"
-                f"- 브랜치: `{BRANCH_NAME}`\n"
-                f"- 잡: `{JOB_NAME}`\n"
-                f"- 빌드 번호: `{BUILD_NUMBER}`\n"
-                f"- 빌드 URL: {BUILD_URL}\n"
-                f"- 메시지:\n"
-                f"{{code}}\n{test['message']}\n{{code}}"
-            )
-            comment_on_issue(session, existing_key, comment_text)
-        else:
-            key = create_jira_issue(session, test)
-            if key:
-                # 첫 생성 시에는 코멘트까지는 굳이 안 달고 summary/description만으로 충분
-                pass
+                # 2️⃣ 상태 전환 (Done)
+                transition_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/transitions"
+                trans_resp = session.get(transition_url)
+                if trans_resp.status_code == 200:
+                    transitions = trans_resp.json().get("transitions", [])
+                    done_transition = next((t for t in transitions if "Done" in t["name"]), None)
+                    if done_transition:
+                        transition_id = done_transition["id"]
+                        session.post(transition_url, json={"transition": {"id": transition_id}})
+                        print(f"[INFO] 🔒 이슈 {issue_key} → Done 으로 전환 완료")
+                    else:
+                        print(f"[WARN] Done 상태 전환 옵션을 찾지 못했습니다 ({issue_key})")
 
-
-def handle_all_passed(session):
-    jql = (
-        f'project = "{JIRA_PROJECT}" '
-        f'AND labels = {LABEL_AUTOTEST} '
-        f'AND statusCategory != Done'
-    )
-
-    data = jira_search(session, jql, max_results=50)
-    if not data:
-        return
-
-    issues = data.get("issues", [])
-    if not issues:
-        print("[INFO] No open autotest issues to comment on.")
-        return
-
-    for issue in issues:
-        key = issue["key"]
-        comment_text = (
-            f"*자동 테스트 통과 알림*\n\n"
-            f"- 브랜치: `{BRANCH_NAME}`\n"
-            f"- 잡: `{JOB_NAME}`\n"
-            f"- 빌드 번호: `{BUILD_NUMBER}`\n"
-            f"- 빌드 URL: {BUILD_URL}\n\n"
-            f"이 빌드에서는 관련 자동 테스트가 모두 통과했습니다."
-        )
-        comment_on_issue(session, key, comment_text)
-
-        
-def jira_search(session, jql, max_results=50):
-    """
-    Jira Cloud의 새로운 검색 API:
-    POST /rest/api/3/search/jql
-    body에 { "jql": "...", "maxResults": N } 형태로 보냄
-    """
-    url = f"{JIRA_URL}/rest/api/3/search/jql"
-    payload = {
-        "jql": jql,
-        "maxResults": max_results
-    }
-    resp = session.post(url, json=payload)
-    if resp.status_code >= 400:
-        print(f"[WARN] JIRA search failed ({resp.status_code}): {resp.text}")
-        return None
-    return resp.json()
-
-def main():
-    try:
-        session = jira_session()
-    except RuntimeError as e:
-        print(f"[ERROR] {e}")
-        return
-
-    failed_tests = parse_failed_tests(JUNIT_PATH)
-
-    if failed_tests:
-        print(f"[INFO] Found {len(failed_tests)} failed tests. Creating/updating JIRA issues.")
-        handle_failed_tests(session, failed_tests)
-    else:
-        print("[INFO] No failed tests found. Commenting on existing autotest issues if any.")
-        handle_all_passed(session)
-
+# 🚀 메인 실행
 
 if __name__ == "__main__":
-    main()
+    failed_tests, passed_tests = parse_junit_results(JUNIT_PATH)
+    session = make_jira_session()
+
+    if failed_tests:
+        print(f"[INFO] 🚨 {len(failed_tests)}개의 실패 테스트 이슈 생성/갱신 중...")
+        for t in failed_tests:
+            create_or_comment_issue(session, t)
+    else:
+        print("[INFO] No failed tests found.")
+
+    if passed_tests:
+        print(f"[INFO] ✅ {len(passed_tests)}개의 통과 테스트 이슈 닫기 중...")
+        close_passed_issues(session, passed_tests)
