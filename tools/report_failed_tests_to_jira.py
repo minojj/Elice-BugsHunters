@@ -18,21 +18,25 @@ BUILD_URL       = os.getenv("JENKINS_BUILD_URL", "")
 LABEL_AUTOTEST  = "autotest-failure"  # 자동 생성 티켓에 붙일 라벨
 
 
-def parse_failed_tests(junit_path):
+def parse_failed_tests(junit_path: str):
     if not os.path.exists(junit_path):
         print(f"[WARN] JUnit file not found: {junit_path}")
         return []
 
+    print(f"[INFO] Parsing JUnit file: {junit_path}")
     tree = ET.parse(junit_path)
     root = tree.getroot()
 
     failed = []
 
-    for testcase in root.iter("testcase"):
-        name = testcase.attrib.get("name")
-        classname = testcase.attrib.get("classname")
-        failure = testcase.find("failure")
-        error = testcase.find("error")
+    # 1) 표준 JUnit (pytest가 내보내는 형태) 처리
+    #    <testsuites> / <testsuite> / <testcase> / <failure|error>
+    for tc in root.findall(".//testcase"):
+        name = tc.attrib.get("name")
+        classname = tc.attrib.get("classname")
+
+        failure = tc.find("failure")
+        error = tc.find("error")
 
         if failure is None and error is None:
             continue
@@ -49,6 +53,34 @@ def parse_failed_tests(junit_path):
             "message": msg.strip()
         })
 
+    if failed:
+        print(f"[INFO] Found {len(failed)} failed tests from <testcase> nodes.")
+        return failed
+
+    # 2) 혹시 모를 Jenkins 내부 junitResult.xml 구조까지 커버 (예비용)
+    #    <result>/<suites>/<suite>/<cases>/<case> 구조
+    for case in root.findall(".//case"):
+        name = case.findtext("testName")
+        classname = case.findtext("className")
+        err_stack = case.find("errorStackTrace")
+        err_details = case.find("errorDetails")
+
+        if err_stack is None and err_details is None:
+            continue
+
+        msg_parts = []
+        if err_stack is not None and (err_stack.text or "").strip():
+            msg_parts.append(err_stack.text.strip())
+        if err_details is not None and (err_details.text or "").strip():
+            msg_parts.append(err_details.text.strip())
+
+        failed.append({
+            "name": name,
+            "classname": classname,
+            "message": "\n".join(msg_parts)
+        })
+
+    print(f"[INFO] Found {len(failed)} failed tests from <case> nodes (junitResult.xml style).")
     return failed
 
 
