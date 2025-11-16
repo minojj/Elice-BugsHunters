@@ -37,66 +37,66 @@ pipeline {
             }
         }
 
-        stage('Run Tests in Container') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'login-id',
-                        usernameVariable: 'MAIN_EMAIL',
-                        passwordVariable: 'MAIN_PASSWORD'
-                    ),
-                    usernamePassword(
-                        credentialsId: 'sub-id',
-                        usernameVariable: 'SUB_EMAIL',
-                        passwordVariable: 'SUB_PASSWORD'
-                    )
-                ]) {
-                    sh '''
-                        set -eux
+    stage('Run Tests in Container') {
+        steps {
+            withCredentials([
+                usernamePassword(
+                    credentialsId: 'login-id',
+                    usernameVariable: 'MAIN_EMAIL',
+                    passwordVariable: 'MAIN_PASSWORD'
+                ),
+                usernamePassword(
+                    credentialsId: 'sub-id',
+                    usernameVariable: 'SUB_EMAIL',
+                    passwordVariable: 'SUB_PASSWORD'
+                )
+            ]) {
+                sh '''
+                    set -eux
 
-                        echo "➡ PWD:"
-                        pwd
-                        echo "➡ WORKSPACE:"
-                        echo "$WORKSPACE"
+                    echo "➡ PWD:"
+                    pwd
+                    echo "➡ WORKSPACE:"
+                    echo "$WORKSPACE"
 
-                        REPORT_DIR_HOST="$WORKSPACE/${REPORT_DIR}"
-                        REPORT_DIR_CONT="/app/${REPORT_DIR}"
-                        SCREENSHOT_DIR_HOST="$WORKSPACE/${SCREENSHOT_DIR}"
-                        SCREENSHOT_DIR_CONT="/app/${SCREENSHOT_DIR}"
+                    # 워크스페이스 기준 경로 (Jenkins 컨테이너, 테스트 컨테이너 둘 다 동일하게 사용)
+                    REPORT_DIR="reports"
+                    SCREENSHOT_DIR="screenshots"
 
-                        echo "🧹 기존 리포트/스크린샷 정리"
-                        rm -rf "$REPORT_DIR_HOST" "$SCREENSHOT_DIR_HOST"
-                        mkdir -p "$REPORT_DIR_HOST" "$SCREENSHOT_DIR_HOST"
+                    echo "🧹 기존 리포트/스크린샷 정리"
+                    rm -rf "$REPORT_DIR" "$SCREENSHOT_DIR"
+                    mkdir -p "$REPORT_DIR" "$SCREENSHOT_DIR"
 
-                        echo "🐳 테스트 컨테이너 실행 (pytest)"
-                        docker run --rm \
-                          --shm-size=2g \
-                          -e HEADLESS=true \
-                          -e WDM_SKIP=1 \
-                          -e CHROME_BIN=/usr/bin/chromium \
-                          -e CHROMEDRIVER=/usr/bin/chromedriver \
-                          -e MAIN_EMAIL="$MAIN_EMAIL" \
-                          -e MAIN_PASSWORD="$MAIN_PASSWORD" \
-                          -e SUB_EMAIL="$SUB_EMAIL" \
-                          -e SUB_PASSWORD="$SUB_PASSWORD" \
-                          -v "$REPORT_DIR_HOST:$REPORT_DIR_CONT" \
-                          -v "$SCREENSHOT_DIR_HOST:$SCREENSHOT_DIR_CONT" \
-                          ${DOCKER_IMAGE}:latest \
-                          tests -v \
-                            --junitxml=${REPORT_DIR_CONT}/test-results.xml \
-                            --html=${REPORT_DIR_CONT}/report.html \
-                            --self-contained-html \
-                            --tb=short
+                    echo "🐳 테스트 컨테이너 실행 (Jenkins 볼륨 공유)"
+                    docker run --rm \
+                    --volumes-from elice-jenkins \
+                    -w "$WORKSPACE" \
+                    --shm-size=2g \
+                    -e HEADLESS=true \
+                    -e WDM_SKIP=1 \
+                    -e CHROME_BIN=/usr/bin/chromium \
+                    -e CHROMEDRIVER=/usr/bin/chromedriver \
+                    -e MAIN_EMAIL="$MAIN_EMAIL" \
+                    -e MAIN_PASSWORD="$MAIN_PASSWORD" \
+                    -e SUB_EMAIL="$SUB_EMAIL" \
+                    -e SUB_PASSWORD="$SUB_PASSWORD" \
+                    ${DOCKER_IMAGE}:latest \
+                    pytest tests -v \
+                        --junitxml=${REPORT_DIR}/test-results.xml \
+                        --html=${REPORT_DIR}/report.html \
+                        --self-contained-html \
+                        --tb=short
 
-                        echo "📂 docker run 이후 리포트 디렉토리 내용:"
-                        ls -lah "$REPORT_DIR_HOST" || true
+                    echo "📂 docker run 이후 리포트 디렉토리 내용:"
+                    ls -lah "$REPORT_DIR" || true
 
-                        echo "📂 docker run 이후 스크린샷 디렉토리 내용:"
-                        ls -lah "$SCREENSHOT_DIR_HOST" || true
-                    '''
-                }
+                    echo "📂 docker run 이후 스크린샷 디렉토리 내용:"
+                    ls -lah "$SCREENSHOT_DIR" || true
+                '''
             }
         }
+    }
+
     }
 
     post {
