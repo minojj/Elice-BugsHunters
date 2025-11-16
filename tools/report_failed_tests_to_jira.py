@@ -70,26 +70,22 @@ def jira_session():
 
 
 def find_existing_issue(session, summary):
-    """
-    같은 summary를 가진, 아직 닫히지 않은 자동 생성 이슈가 있는지 JQL로 검색
-    """
     jql = (
         f'project = "{JIRA_PROJECT}" '
         f'AND summary ~ "{summary.replace("\"", "\\\"")}" '
         f'AND labels = {LABEL_AUTOTEST} '
         f'AND statusCategory != Done'
     )
-    url = f"{JIRA_URL}/rest/api/3/search?jql={quote(jql)}&maxResults=1"
-    resp = session.get(url)
 
-    if resp.status_code >= 400:
-        print(f"[WARN] JIRA search failed: {resp.status_code} {resp.text}")
+    data = jira_search(session, jql, max_results=1)
+    if not data:
         return None
 
-    issues = resp.json().get("issues", [])
+    issues = data.get("issues", [])
     if not issues:
         return None
     return issues[0]["key"]
+
 
 
 def create_jira_issue(session, test):
@@ -172,25 +168,17 @@ def handle_failed_tests(session, failed_tests):
 
 
 def handle_all_passed(session):
-    """
-    이번 빌드에서 실패한 테스트가 하나도 없을 때:
-    - 자동 생성된 이슈들을 찾아서
-    - "현재 빌드에서 테스트가 통과했다"는 코멘트만 남김
-    (상태 전환은 워크플로우마다 달라서 여기서는 코멘트까지만)
-    """
     jql = (
         f'project = "{JIRA_PROJECT}" '
         f'AND labels = {LABEL_AUTOTEST} '
         f'AND statusCategory != Done'
     )
-    url = f"{JIRA_URL}/rest/api/3/search?jql={quote(jql)}&maxResults=50"
-    resp = session.get(url)
 
-    if resp.status_code >= 400:
-        print(f"[WARN] JIRA search for open autotest issues failed: {resp.status_code} {resp.text}")
+    data = jira_search(session, jql, max_results=50)
+    if not data:
         return
 
-    issues = resp.json().get("issues", [])
+    issues = data.get("issues", [])
     if not issues:
         print("[INFO] No open autotest issues to comment on.")
         return
@@ -207,6 +195,23 @@ def handle_all_passed(session):
         )
         comment_on_issue(session, key, comment_text)
 
+        
+def jira_search(session, jql, max_results=50):
+    """
+    Jira Cloud의 새로운 검색 API:
+    POST /rest/api/3/search/jql
+    body에 { "jql": "...", "maxResults": N } 형태로 보냄
+    """
+    url = f"{JIRA_URL}/rest/api/3/search/jql"
+    payload = {
+        "jql": jql,
+        "maxResults": max_results
+    }
+    resp = session.post(url, json=payload)
+    if resp.status_code >= 400:
+        print(f"[WARN] JIRA search failed ({resp.status_code}): {resp.text}")
+        return None
+    return resp.json()
 
 def main():
     try:
