@@ -681,7 +681,8 @@ class ChatExpansePage:
                 long_wait.until(
                     EC.presence_of_element_located(self.locators["image_generation_indicator"])
                 )
-                time.sleep(10)
+                time.sleep(15)
+                self.wait_for_response()
             except TimeoutException:                
                 self.wait_for_response()
             return True
