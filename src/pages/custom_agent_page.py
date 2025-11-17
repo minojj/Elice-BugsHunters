@@ -421,30 +421,24 @@ class SaveAgentPage(BasePage):
     def select_mode(self, mode):
         key = f"{mode}_radio"
 
-        # 모달이 먼저 나타나야 radio를 찾을 수 있음
         WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "div.MuiDialog-paper"))
         )
 
         radio = self.get_element(key, wait_type="presence")
-
-        # 이미 선택된 경우 PASS
         if radio.is_selected():
             return
 
-        # label[for="id"] 클릭해야 실제 radio가 선택됨 (MUI 특성)
         radio_id = radio.get_attribute("id")
         label = self.driver.find_element(By.CSS_SELECTOR, f"label[for='{radio_id}']")
 
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", label)
         self.driver.execute_script("arguments[0].click();", label)
 
-        # 확인
         assert radio.is_selected(), f"{mode} 옵션이 선택되지 않았습니다."
 
  
     def click_save(self):
-        # BasePage.click_safely 사용
         self.click_safely("save_btn")
 
 
