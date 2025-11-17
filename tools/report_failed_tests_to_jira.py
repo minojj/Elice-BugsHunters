@@ -31,21 +31,25 @@ def make_adf_text(text: str):
         ],
     }
 def jira_search_issues(session, jql):
-    url = f"{JIRA_URL}/rest/api/3/search"
+    # ✅ 새 검색 엔드포인트
+    url = f"{JIRA_URL}/rest/api/3/search/jql"
 
-    payload = {
+    # ✅ 쿼리 파라미터 이름은 'jql' 이 필수!
+    params = {
         "jql": jql,
-        "maxResults": 50,                 # Jira가 요구하는 필드
-        "fields": ["summary", "status"]   # 필요한 최소 필드만 받기 (성능↑ / 오류↓)
+        "maxResults": 50,
+        "fields": "summary,status"   # 최소 필드만 가져오면 성능도 좋고 응답 가벼움
     }
 
-    resp = session.post(url, json=payload)
+    resp = session.get(url, params=params)
 
     if resp.status_code != 200:
         print(f"[WARN] Jira 검색 실패 ({resp.status_code}): {resp.text}")
+        print(f"[DEBUG] 요청 URL: {resp.request.method} {resp.request.url}")
         return []
 
-    return resp.json().get("issues", [])
+    data = resp.json()
+    return data.get("issues", [])
 
 
 
