@@ -38,26 +38,27 @@ def make_adf_text(text: str):
 
 def jira_search_issues(session, jql):
     """
-    ✅ 공식 Jira Cloud REST API v3 검색
-    https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-get
+    ✅ Jira Cloud REST API v3 검색 (POST 방식)
+    https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-post
     """
     url = f"{JIRA_URL}/rest/api/3/search"
     
-    params = {
+    # POST 요청으로 변경
+    payload = {
         "jql": jql,
         "maxResults": 50,
-        "fields": ["key", "summary", "status"]  # 리스트로 전달
+        "fields": ["key", "summary", "status"]
     }
     
     print(f"[DEBUG] 검색 URL: {url}")
     print(f"[DEBUG] JQL: {jql}")
     
-    resp = session.get(url, params=params, timeout=30)
+    # GET → POST 변경
+    resp = session.post(url, json=payload, timeout=30)
     
     if resp.status_code != 200:
         print(f"[ERROR] Jira 검색 실패 ({resp.status_code})")
         print(f"[ERROR] 응답: {resp.text}")
-        print(f"[ERROR] 요청 URL: {resp.url}")
         return []
     
     data = resp.json()
@@ -106,13 +107,11 @@ def parse_junit_results(xml_path):
 
 def escape_jql_value(value: str) -> str:
     """
-    JQL 검색용 이스케이프 (summary 필드 전용)
+    JQL 검색용 이스케이프
     - 특수문자 제거
     - 공백 정규화
     """
-    # 특수문자 제거 (알파벳, 숫자, 공백, 하이픈, 언더스코어만 유지)
     value = re.sub(r'[^\w\s\-:]', ' ', value)
-    # 연속 공백 정리
     value = re.sub(r'\s+', ' ', value)
     return value.strip()
 
@@ -127,19 +126,16 @@ def make_jira_session():
     return session
 
 
-# 🧩 JIRA 이슈 생성 / 코멘트 / 종료
+# 🧩 JIRA 이슈 생성 / 코멘트
 def create_or_comment_issue(session, test):
     summary = make_summary(test)
-    
-    # ✅ JQL에서는 부분 일치 검색 (~) 사용
-    # summary 필드의 핵심 키워드만 추출
     test_identifier = f"{test['classname']} {test['name']}"
     escaped_identifier = escape_jql_value(test_identifier)
     
     jql = (
         f'project = "{JIRA_PROJECT}" '
         f'AND labels = "{LABEL_AUTOTEST}" '
-        f'AND summary ~ "{escaped_identifier}" '  # ~ 연산자로 부분 일치
+        f'AND summary ~ "{escaped_identifier}" '
         f'AND statusCategory != Done '
         f'ORDER BY created DESC'
     )
@@ -173,7 +169,7 @@ def create_or_comment_issue(session, test):
             
             return issue_key
 
-    # 🔁 새로운 이슈 생성
+    # 새로운 이슈 생성
     print(f"[INFO] 기존 이슈 없음 → 새로운 이슈 생성")
     print(f"[INFO] Summary: {summary}")
     
@@ -182,7 +178,7 @@ def create_or_comment_issue(session, test):
         f"테스트: {test['classname']}::{test['name']}\n"
         f"빌드: {JOB_NAME} #{BUILD_NUMBER}\n"
         f"링크: {BUILD_URL}\n\n"
-        f"오류 메시지 요약:\n{test['message'][:500]}"
+        f"오류 메시지:\n{test['message'][:500]}"
     )
     
     payload = {
@@ -210,7 +206,7 @@ def create_or_comment_issue(session, test):
 
 
 def close_passed_issues(session, passed_tests):
-    """✅ 통과된 테스트가 기존 실패 이슈를 닫도록 처리"""
+    """✅ 통과된 테스트의 기존 실패 이슈 닫기"""
     for test in passed_tests:
         test_identifier = f"{test['classname']} {test['name']}"
         escaped_identifier = escape_jql_value(test_identifier)
@@ -230,9 +226,9 @@ def close_passed_issues(session, passed_tests):
             if not issue_key:
                 continue
                 
-            print(f"[INFO] ✅ 테스트 통과 — 이슈 {issue_key} 닫기 시도 중")
+            print(f"[INFO] ✅ 테스트 통과 — 이슈 {issue_key} 닫기")
 
-            # 1️⃣ 코멘트 추가
+            # 코멘트 추가
             comment_text = (
                 f"✅ 자동화 테스트가 통과했습니다!\n\n"
                 f"테스트: {test['classname']}::{test['name']}\n"
@@ -243,7 +239,7 @@ def close_passed_issues(session, passed_tests):
             comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
             session.post(comment_url, json={"body": make_adf_text(comment_text)}, timeout=30)
 
-            # 2️⃣ 상태 전환 (Done)
+            # 상태 전환 (Done)
             transition_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/transitions"
             trans_resp = session.get(transition_url, timeout=30)
             if trans_resp.status_code == 200:
@@ -252,19 +248,14 @@ def close_passed_issues(session, passed_tests):
                 if done_transition:
                     transition_id = done_transition["id"]
                     session.post(transition_url, json={"transition": {"id": transition_id}}, timeout=30)
-                    print(f"[INFO] 🔒 이슈 {issue_key} → Done 으로 전환 완료")
+                    print(f"[INFO] 🔒 이슈 {issue_key} → Done")
                 else:
-                    print(f"[WARN] Done 상태 전환 옵션을 찾지 못했습니다 ({issue_key})")
+                    print(f"[WARN] Done 상태 전환 옵션 없음 ({issue_key})")
 
 # 🚀 메인 실행
 if __name__ == "__main__":
-    # 필수 환경변수 확인
     if not all([JIRA_URL, JIRA_PROJECT, JIRA_USER, JIRA_API_TOKEN]):
-        print("[ERROR] 필수 환경변수가 설정되지 않았습니다:")
-        print(f"  JIRA_URL: {JIRA_URL}")
-        print(f"  JIRA_PROJECT: {JIRA_PROJECT}")
-        print(f"  JIRA_USER: {JIRA_USER}")
-        print(f"  JIRA_API_TOKEN: {'설정됨' if JIRA_API_TOKEN else '없음'}")
+        print("[ERROR] 필수 환경변수가 설정되지 않았습니다")
         sys.exit(1)
     
     failed_tests, passed_tests = parse_junit_results(JUNIT_PATH)
@@ -275,7 +266,7 @@ if __name__ == "__main__":
         for t in failed_tests:
             create_or_comment_issue(session, t)
     else:
-        print("[INFO] No failed tests found.")
+        print("[INFO] 실패한 테스트 없음")
 
     if passed_tests:
         print(f"[INFO] ✅ {len(passed_tests)}개의 통과 테스트 이슈 닫기 중...")
