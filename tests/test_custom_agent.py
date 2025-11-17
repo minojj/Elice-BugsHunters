@@ -446,7 +446,7 @@ def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
 
     # save 버튼 안정적 클릭
     save_btn = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable(save_page.LOCATORS["save_btn"])
+        EC.element_to_be_clickable(save_page.locators["save_btn"])
     )
     driver.execute_script("arguments[0].click();", save_btn)
 
@@ -502,7 +502,7 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
 
     edit_btn = my_agent_page._find_button_in_card(
         updated_card,
-        my_agent_page.LOCATORS["edit_icon"]
+        my_agent_page.locators["edit_icon"]
     )
     assert edit_btn, "❌ CA_010_Edit 버튼 탐색 실패"
 
@@ -592,7 +592,7 @@ def test_ca_012_delete_agent_permanently(my_agents_page_loaded):
     try:
         WebDriverWait(driver, 5).until(
             EC.invisibility_of_element_located(
-                my_agent_page.LOCATORS["confirm_delete_modal_button"]
+                my_agent_page.locators["confirm_delete_modal_button"]
             )
         )
     except Exception:

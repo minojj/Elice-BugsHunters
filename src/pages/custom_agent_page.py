@@ -2,9 +2,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import platform
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
 from .base import BasePage
 
 
@@ -12,7 +11,7 @@ from .base import BasePage
 
 class AgentExplorerPage(BasePage):
 
-    LOCATORS = {
+    locators = {
         "agent_explorer_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent"]'),
         "create_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/builder"]'),
         "all_agent_cards": (By.CSS_SELECTOR, "a[href*='/ai-helpy-chat/agent/']"),
@@ -22,7 +21,7 @@ class AgentExplorerPage(BasePage):
     }
 
     def __init__(self, driver):
-        self.driver = driver
+        super().__init__(driver)   
         self.url = "https://qaproject.elice.io/ai-helpy-chat/agent"
 
 
@@ -30,7 +29,7 @@ class AgentExplorerPage(BasePage):
 
     def click_agent_card_by_id(self, agent_id, timeout=15):
         wait = WebDriverWait(self.driver, timeout)
-        locator = self.LOCATORS["all_agent_cards"]
+        locator = self.locators["all_agent_cards"]
 
         patterns = [
             f'a[href="/ai-helpy-chat/agent/{agent_id}"]',
@@ -95,7 +94,7 @@ class AgentExplorerPage(BasePage):
             card
         )
 
-        menu_btn = card.find_element(*self.LOCATORS["menu_btn_in_card"])
+        menu_btn = card.find_element(*self.locators["menu_btn_in_card"])
 
         self.driver.execute_script("""
             arguments[0].style.display='flex';
@@ -117,13 +116,13 @@ class AgentExplorerPage(BasePage):
 
         try:
             wait.until(
-                EC.presence_of_element_located(self.LOCATORS["fixed_target_card"])
+                EC.presence_of_element_located(self.locators["fixed_target_card"])
             )
         except TimeoutException:
             print("❌ 타겟 카드 미발견")
             return False
 
-        card = self.driver.find_element(*self.LOCATORS["fixed_target_card"])
+        card = self.driver.find_element(*self.locators["fixed_target_card"])
 
 
         if not self.open_card_menu(card):
@@ -132,7 +131,7 @@ class AgentExplorerPage(BasePage):
 
         try:
             delete_icon = short_wait.until(
-                EC.presence_of_element_located(self.LOCATORS["delete_icon"])
+                EC.presence_of_element_located(self.locators["delete_icon"])
             )
             delete_btn = delete_icon.find_element(
                 By.XPATH, "./ancestor::*[self::button or self::li][1]"
@@ -145,7 +144,7 @@ class AgentExplorerPage(BasePage):
         try:
             modal_delete_btn = short_wait.until(
                 EC.element_to_be_clickable(
-                    my_agents_page.LOCATORS["confirm_delete_modal_button"]
+                    my_agents_page.locators["confirm_delete_modal_button"]
                 )
             )
 
@@ -156,7 +155,7 @@ class AgentExplorerPage(BasePage):
 
             snackbar = wait.until(
                 EC.visibility_of_element_located(
-                    save_page.LOCATORS["success_alert"]
+                    save_page.locators["success_alert"]
                 )
             )
             msg = snackbar.text.lower()
@@ -176,7 +175,7 @@ class AgentExplorerPage(BasePage):
 
 class CreateAgentPage(BasePage):
 
-    LOCATORS = {
+    locators = {
 
         "name": (By.NAME, "name"),
         "description": (By.CSS_SELECTOR, 'input[name="description"]'),
@@ -296,17 +295,17 @@ class CreateAgentPage(BasePage):
 
         try:
             wait.until(
-                lambda d: d.find_element(*self.LOCATORS["top_title_text"]).text.strip()
+                lambda d: d.find_element(*self.locators["top_title_text"]).text.strip()
                 == expected["name"]
             )
         except:
             pass
         try:
             wait.until(
-                EC.visibility_of_element_located(self.LOCATORS["autosave_saved_badge"])
+                EC.visibility_of_element_located(self.locators["autosave_saved_badge"])
             )
             wait.until(
-                EC.visibility_of_element_located(self.LOCATORS["autosave_check_icon"])
+                EC.visibility_of_element_located(self.locators["autosave_check_icon"])
             )
         except:
             pass
@@ -333,20 +332,20 @@ class CreateAgentPage(BasePage):
         wait = WebDriverWait(self.driver, timeout)
 
         wait.until(
-            lambda d: len(d.find_elements(*self.LOCATORS["file_item"])) > 0
+            lambda d: len(d.find_elements(*self.locators["file_item"])) > 0
         )
 
-        return self.driver.find_elements(*self.LOCATORS["file_item"])[-1]
+        return self.driver.find_elements(*self.locators["file_item"])[-1]
 
 
     def get_file_status(self, file_item):
-        return file_item.find_element(*self.LOCATORS["file_status"]).text.strip()
+        return file_item.find_element(*self.locators["file_status"]).text.strip()
 
 
     def has_success_icon(self, file_item, timeout=15):
         try:
             WebDriverWait(self.driver, timeout).until(
-                lambda d: file_item.find_elements(*self.LOCATORS["file_success_icon"])
+                lambda d: file_item.find_elements(*self.locators["file_success_icon"])
                 or "success" in self.get_file_status(file_item).lower()
             )
             return True
@@ -357,7 +356,7 @@ class CreateAgentPage(BasePage):
     def has_failed_icon(self, file_item, timeout=5):
         try:
             WebDriverWait(self.driver, timeout).until(
-                lambda d: file_item.find_elements(*self.LOCATORS["file_failed_icon"])
+                lambda d: file_item.find_elements(*self.locators["file_failed_icon"])
             )
             return True
         except:
@@ -365,19 +364,19 @@ class CreateAgentPage(BasePage):
 
 
     def get_error_msg(self, file_item):
-        els = file_item.find_elements(*self.LOCATORS["file_error_msg"])
+        els = file_item.find_elements(*self.locators["file_error_msg"])
         return els[0].text.strip() if els else None
 
 
     def wait_for_new_upload_item(self, timeout=10):
         wait = WebDriverWait(self.driver, timeout)
-        old = len(self.driver.find_elements(*self.LOCATORS["file_item"]))
+        old = len(self.driver.find_elements(*self.locators["file_item"]))
 
         wait.until(
-            lambda d: len(d.find_elements(*self.LOCATORS["file_item"])) > old
+            lambda d: len(d.find_elements(*self.locators["file_item"])) > old
         )
 
-        return self.driver.find_elements(*self.LOCATORS["file_item"])[-1]
+        return self.driver.find_elements(*self.locators["file_item"])[-1]
 
 
     def wait_for_status(self, file_item, expected, timeout=10):
@@ -393,7 +392,7 @@ class CreateAgentPage(BasePage):
     def wait_for_error_msg(self, file_item, timeout=10):
         wait = WebDriverWait(self.driver, timeout)
         return wait.until(
-            lambda d: file_item.find_element(*self.LOCATORS["file_error_msg"]).text.strip()
+            lambda d: file_item.find_element(*self.locators["file_error_msg"]).text.strip()
         )
 
 
@@ -404,7 +403,7 @@ class CreateAgentPage(BasePage):
 
 class SaveAgentPage(BasePage):
 
-    LOCATORS = {
+    locators = {
         "private_radio": (By.CSS_SELECTOR, "input[value='private']"),
         "organization_radio": (By.CSS_SELECTOR, "input[value='organization']"),
         "save_btn": (By.CSS_SELECTOR, "button[type='submit'][form='publish-setting-form']"),
@@ -456,7 +455,7 @@ class SaveAgentPage(BasePage):
     
 class ChatCreatePage(BasePage):
 
-    LOCATORS = {
+    locators = {
         "create_with_chat_btn": (By.CSS_SELECTOR, "button[type='button'][value='chat']"),
         "create_chat_input": (By.CSS_SELECTOR, "textarea[name='input']"),
         "send_btn": (By.CSS_SELECTOR, "button[aria-label='Send']"),
@@ -490,11 +489,11 @@ class ChatCreatePage(BasePage):
         self.driver.execute_script("arguments[0].click();", send_btn)
 
         WebDriverWait(self.driver, 60).until(
-            lambda d: len(d.find_elements(*self.LOCATORS["running_status"])) == 0
+            lambda d: len(d.find_elements(*self.locators["running_status"])) == 0
         )
 
         WebDriverWait(self.driver, 60).until(
-            EC.presence_of_element_located(self.LOCATORS["complete_msg"])
+            EC.presence_of_element_located(self.locators["complete_msg"])
         )
 
 
@@ -551,7 +550,7 @@ class ChatCreatePage(BasePage):
 
 
 class MyAgentsPage(BasePage):
-    LOCATORS = {
+    locators = {
         "my_agents_btn": (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat/agent/mine"]'),
         "all_agent_cards": (By.CSS_SELECTOR, "div.MuiGrid-item"),
         "draft_chip": (By.CSS_SELECTOR, ".MuiChip-label"),
@@ -570,13 +569,13 @@ class MyAgentsPage(BasePage):
     def get_all_cards(self):
         self.driver.execute_script("window.scrollTo(0, 0);")
         WebDriverWait(self.driver, 5).until(
-            EC.presence_of_all_elements_located(self.LOCATORS["all_agent_cards"])
+            EC.presence_of_all_elements_located(self.locators["all_agent_cards"])
         )
 
         previous = -1
         for _ in range(10):
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            cards = self.driver.find_elements(*self.LOCATORS["all_agent_cards"])
+            cards = self.driver.find_elements(*self.locators["all_agent_cards"])
             if len(cards) == previous:
                 break
             previous = len(cards)
@@ -589,14 +588,14 @@ class MyAgentsPage(BasePage):
         last_count = -1
 
         while True:
-            cards = self.driver.find_elements(*self.LOCATORS["all_agent_cards"])
+            cards = self.driver.find_elements(*self.locators["all_agent_cards"])
             current_count = len(cards)
 
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
             try:
                 wait.until(
-                    lambda d: len(d.find_elements(*self.LOCATORS["all_agent_cards"])) > current_count
+                    lambda d: len(d.find_elements(*self.locators["all_agent_cards"])) > current_count
                 )
             except Exception:
                 break
@@ -660,7 +659,7 @@ class MyAgentsPage(BasePage):
             self.driver.get(self.url)
 
             wait.until(
-                EC.presence_of_all_elements_located(self.LOCATORS["all_agent_cards"])
+                EC.presence_of_all_elements_located(self.locators["all_agent_cards"])
             )
 
             card = self.find_card_by_agent_id(agent_id)
@@ -707,7 +706,7 @@ class MyAgentsPage(BasePage):
         result = []
         for card in cards:
             try:
-                card.find_element(*self.LOCATORS["private_icon"])
+                card.find_element(*self.locators["private_icon"])
                 result.append(card)
             except Exception:
                 continue
@@ -718,7 +717,7 @@ class MyAgentsPage(BasePage):
         result = []
         for card in cards:
             try:
-                card.find_element(*self.LOCATORS["organization_icon"])
+                card.find_element(*self.locators["organization_icon"])
                 result.append(card)
             except Exception:
                 continue
@@ -767,7 +766,7 @@ class MyAgentsPage(BasePage):
         card = cards[index]
         self.scroll_into_view(card)
 
-        edit_btn = self._find_button_in_card(card, self.LOCATORS["edit_icon"])
+        edit_btn = self._find_button_in_card(card, self.locators["edit_icon"])
         if not edit_btn:
             raise NoSuchElementException(
                 f"{card_type} 카드에서 Edit 버튼을 찾지 못했습니다."
@@ -787,7 +786,7 @@ class MyAgentsPage(BasePage):
         card = cards[index]
         self.scroll_into_view(card)
 
-        delete_btn = self._find_button_in_card(card, self.LOCATORS["delete_icon"])
+        delete_btn = self._find_button_in_card(card, self.locators["delete_icon"])
         if not delete_btn:
             raise NoSuchElementException(
                 f"{card_type} 카드에서 Delete 버튼을 찾지 못했습니다."
@@ -800,19 +799,19 @@ class MyAgentsPage(BasePage):
 
     def confirm_delete_modal(self):
         btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.LOCATORS["confirm_delete_modal_button"])
+            EC.element_to_be_clickable(self.locators["confirm_delete_modal_button"])
         )
         btn.click()
 
     def cancel_delete_modal(self):
         btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.LOCATORS["cancel_delete_modal_button"])
+            EC.element_to_be_clickable(self.locators["cancel_delete_modal_button"])
         )
         btn.click()
 
         WebDriverWait(self.driver, 5, 0.1).until(
             EC.invisibility_of_element_located(
-                self.LOCATORS["confirm_delete_modal_button"]
+                self.locators["confirm_delete_modal_button"]
             )
         )
 
@@ -820,7 +819,7 @@ class MyAgentsPage(BasePage):
         try:
             WebDriverWait(self.driver, timeout).until(
                 EC.visibility_of_element_located(
-                    self.LOCATORS["confirm_delete_modal_button"]
+                    self.locators["confirm_delete_modal_button"]
                 )
             )
             return True
