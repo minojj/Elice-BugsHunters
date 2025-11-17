@@ -10,7 +10,7 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
 )
-from src.pages.base import BasePage
+from .base_page import BasePage
 
 DEFAULT_TIMEOUT = 10
 MAIN_URL = "https://qaproject.elice.io/ai-helpy-chat"
@@ -24,8 +24,7 @@ class MainPage(BasePage):
     URL = MAIN_URL
 
     def __init__(self, driver):
-        # BasePage 쪽 초기화
-        self.init(driver)
+        super().__init__(driver)
 
     def open(self):
         # 메인 URL로 이동
@@ -85,12 +84,9 @@ class ChatSidebar(BasePage):
             By.CSS_SELECTOR,
             "aside svg[data-testid='magnifying-glassIcon']",
         ),
-    }
-
-    # --- 0) 생성자: BasePage.init() 연결 ---
+        }
     def __init__(self, driver):
-        # BasePage에는 __init__이 없고 init만 있으니까 이렇게 호출
-        self.init(driver)
+        super().__init__(driver)
 
     # --- 0-1) 이 클래스 안에서만 get_element / get_elements 재정의 ---
     # (BasePage 파일은 그대로 두고, ChatSidebar 전용으로 고쳐 쓰는 느낌)
@@ -283,8 +279,7 @@ class Composer(BasePage):
     }
 
     def __init__(self, driver):
-        # BasePage에는 __init__이 없고 init만 있으니까 이렇게 초기화
-        self.init(driver)
+        super().__init__(driver)
 
     # --- 이 클래스 안에서만 get_element / visible / clickable 재정의 ---
     def get_element(self, key, wait_type="visible", timeout=10):
@@ -354,9 +349,7 @@ class Dialogs(BasePage):
     }
 
     def __init__(self, driver):
-        # BasePage에는 __init__이 없고 init만 있으니까 이렇게 초기화
-        self.init(driver)
-
+        super().__init__(driver)
     # --- 이 클래스 안에서만 사용할 헬퍼들 ---
 
     def get_element(self, key, wait_type="visible", timeout=10):
@@ -423,8 +416,9 @@ class SearchOverlay(BasePage):
     }
 
     def __init__(self, driver):
-        # BasePage에는 __init__이 없고 init만 있으니까 이렇게 초기화
-        self.init(driver)
+        super().__init__(driver)
+
+
 
     # --- 이 클래스 안에서만 쓸 헬퍼들 ---
 
@@ -542,8 +536,7 @@ class AgentExplorerPage(BasePage):
     }
 
     def __init__(self, driver):
-        # BasePage는 __init__ 대신 init만 있으니까 이렇게 초기화
-        self.init(driver)
+        super().__init__(driver)
 
     # --- 이 클래스 전용 헬퍼들 ---
 

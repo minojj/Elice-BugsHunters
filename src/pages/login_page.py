@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from .base import BasePage
+from .base_page import BasePage
 
 class LoginFunction(BasePage):
     locators = {
@@ -21,7 +21,10 @@ class LoginFunction(BasePage):
         "remove_history": (By.XPATH, "//a[text()='Remove history']"),
         "avatar_btn": (By.XPATH, "//button[.//*[@data-testid='PersonIcon']]"),
         "logout_any": (By.XPATH, "//*[text()='Logout' or text()='로그아웃']"),
-    }
+        }
+
+    
+
 
     def __init__(self, driver):
         super().__init__(driver)

@@ -3,9 +3,9 @@ import os
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
-from .base import BasePage
+from .base_page import BasePage
 
 class ChatPage(BasePage):
     def __init__(self, driver):
@@ -26,7 +26,7 @@ class ChatPage(BasePage):
         "first_article": (By.XPATH, '(//div[@role="article"])[1]'),
         "scroll_latest_btn": (By.CSS_SELECTOR, 'button.h-9.w-9.rounded-full'),
         "ai_response": "//div[@role='article'][contains(text(), '{text}')]",
-    }
+        }
 
     # === Page Actions ===
 

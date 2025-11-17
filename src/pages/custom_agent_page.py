@@ -4,7 +4,7 @@ from selenium.webdriver.common.keys import Keys
 import platform
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
-from .base import BasePage
+from .base_page import BasePage
 
 
 
@@ -18,7 +18,7 @@ class AgentExplorerPage(BasePage):
         "fixed_target_card": (By.CSS_SELECTOR, 'a[href*="8f701da7-7c53-4f54-b26d-b6eeb39a4479"]'),
         "menu_btn_in_card": (By.CSS_SELECTOR, "button[aria-label='menu']"),
         "delete_icon": (By.CSS_SELECTOR, "svg[data-icon='trash']"),
-    }
+        }
 
     def __init__(self, driver):
         super().__init__(driver)   
@@ -194,7 +194,7 @@ class CreateAgentPage(BasePage):
         "autosave_saved_badge": (By.CSS_SELECTOR, "span.MuiTypography-caption.css-10z10oy"),
         "autosave_check_icon": (By.CSS_SELECTOR, "svg[data-icon='circle-check']"),
         "top_title_text": (By.CSS_SELECTOR, "p.MuiTypography-body2"),
-    }
+        }
 
 
     def __init__(self, driver):
@@ -410,7 +410,7 @@ class SaveAgentPage(BasePage):
         "success_alert": (By.CSS_SELECTOR, "div#notistack-snackbar"),
         "start_chat_btn": (By.CSS_SELECTOR, "div#notistack-snackbar button[type='button']"),
         "chat_input": (By.CSS_SELECTOR, "textarea[name='input']"),
-    }
+        }
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -461,7 +461,7 @@ class ChatCreatePage(BasePage):
         "send_btn": (By.CSS_SELECTOR, "button[aria-label='Send']"),
         "running_status": (By.CSS_SELECTOR, "div[data-status='running']"),
         "complete_msg": (By.CSS_SELECTOR, "div.aichatkit-md[data-status='complete'] p"),
-    }
+        }
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -560,7 +560,7 @@ class MyAgentsPage(BasePage):
         "delete_icon": (By.CSS_SELECTOR, "svg[data-icon='trash']"),
         "confirm_delete_modal_button": (By.CSS_SELECTOR, "button.MuiButton-containedError"),
         "cancel_delete_modal_button": (By.CSS_SELECTOR, "button.MuiButton-containedInherit"),
-    }
+        }
 
     def __init__(self, driver):
         self.driver = driver

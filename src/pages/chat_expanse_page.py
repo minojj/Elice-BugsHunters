@@ -1,5 +1,4 @@
 import time
-import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,10 +10,7 @@ from selenium.common.exceptions import (
     StaleElementReferenceException,
 )
 from selenium.webdriver import ActionChains
-
-from src.utils.helpers import Utils
-from tests.conftest import driver
-from .base import BasePage
+from .base_page import BasePage
 
 
 class ChatExpansePage(BasePage):
@@ -52,7 +48,7 @@ class ChatExpansePage(BasePage):
         "deep_dive_menu": (By.XPATH, "//span[text()='심층 조사']"),
         "deep_dive_create_btn": (By.XPATH, "//button[.//span[text()='시작']]"),
         "loading_indicator": (By.CSS_SELECTOR, "div.thinking-dots-container[role='status']"),
-    }
+        }
 
     error_selectors = [
         # 실제 HTML 구조
