@@ -32,9 +32,10 @@ def make_adf_text(text: str):
     }
 def jira_search_issues(session, jql):
     url = f"{JIRA_URL}/rest/api/3/search/jql"
+
     params = {
         "query": jql,
-        "maxResults": 20
+        "maxResults": 50      # 🔥 Jira Cloud가 요구하는 제한
     }
 
     resp = session.get(url, params=params)
@@ -43,8 +44,7 @@ def jira_search_issues(session, jql):
         print(f"[WARN] Jira 검색 실패 ({resp.status_code}): {resp.text}")
         return []
 
-    data = resp.json()
-    return data.get("issues", [])
+    return resp.json().get("issues", [])
 
 
 
