@@ -22,15 +22,15 @@ class BasePage:
         else:
             wait.until(EC.visibility_of_element_located(locator))
 
-        return self.driver.find_element(*locator)
-    
-    
+        return self.driver.find_element(locator)
+
+
     def get_elements(self, key, timeout=10):
         locator = self.locators[key]
         wait = WebDriverWait(self.driver, timeout)
         wait.until(EC.presence_of_all_elements_located(locator))
-        return self.driver.find_elements(*locator)
-    
+        return self.driver.find_elements(locator)
+
 
     def click_safely(self, key, timeout=10):
         locator = self.locators[key]
@@ -44,8 +44,7 @@ class BasePage:
         self.driver.execute_script("arguments[0].click();", element)
 
         return element
-    
+
 
     def wait(self, sec=None):
-        return WebDriverWait(self.drv, sec or self.timeout)
-    
+        return WebDriverWait(self.driver, sec or 10)
