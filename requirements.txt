@@ -22,3 +22,5 @@ python-dotenv==1.0.1            # 환경변수(.env) 파일 관리
 # Optional Utilities 
 selenium-wire==5.1.0            # (선택) 네트워크 요청 추적용
 
+# Jira Integration
+jira==3.8.0                     # Jira 이슈 트래킹 연동
