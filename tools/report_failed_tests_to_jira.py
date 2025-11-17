@@ -107,10 +107,10 @@ def make_jira_session():
 # 🧩 JIRA 이슈 생성 / 코멘트 / 종료
 def create_or_comment_issue(session, test):
     summary = make_summary(test)
-    escaped_summary = escape_jql_value(summary)
+    safe_summary = summary.replace('"', '\\"')  # 따옴표만 escape
 
-    # 🔍 1️⃣ 기존 오픈 이슈 정확 검색 (새 API 사용)
-    jql = f'project = "{JIRA_PROJECT}" AND summary = "{escaped_summary}" AND statusCategory != Done ORDER BY created DESC'
+    # ✅ 부분일치 검색으로 변경 (대괄호 허용)
+    jql = f'project = "{JIRA_PROJECT}" AND summary ~ "\\"{safe_summary}\\"" AND statusCategory != Done ORDER BY created DESC'
     issues = jira_search_issues(session, jql)
 
     if issues:
@@ -132,9 +132,8 @@ def create_or_comment_issue(session, test):
             print(f"[INFO] ✅ 코멘트 추가 완료: {issue_key}")
         return issue_key
 
-    # 🔁 2️⃣ 여기까지 왔으면 기존 이슈 없음 → 새로 생성
+    # 🆕 기존 이슈 없을 때만 새로 생성
     print(f"[INFO] 새로운 이슈 생성: {summary}")
-
     desc_text = (
         f"테스트 실패 감지됨 🚨\n\n"
         f"*테스트:* `{test['classname']}::{test['name']}`\n"
@@ -162,6 +161,7 @@ def create_or_comment_issue(session, test):
     issue_key = resp.json().get("key")
     print(f"[INFO] 🆕 Created JIRA issue: {issue_key}")
     return issue_key
+
 
 
 def close_passed_issues(session, passed_tests):
