@@ -38,12 +38,12 @@ def make_adf_text(text: str):
 
 def jira_search_issues(session, jql):
     """
-    ✅ Jira Cloud REST API v3 검색 (POST 방식)
-    https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-search/#api-rest-api-3-search-post
+    ✅ Jira Cloud REST API v3 검색 (새로운 엔드포인트)
+    https://developer.atlassian.com/changelog/#CHANGE-2046
     """
-    url = f"{JIRA_URL}/rest/api/3/search"
+    # ✅ 변경: /rest/api/3/search → /rest/api/3/search/jql
+    url = f"{JIRA_URL}/rest/api/3/search/jql"
     
-    # POST 요청으로 변경
     payload = {
         "jql": jql,
         "maxResults": 50,
@@ -53,23 +53,27 @@ def jira_search_issues(session, jql):
     print(f"[DEBUG] 검색 URL: {url}")
     print(f"[DEBUG] JQL: {jql}")
     
-    # GET → POST 변경
-    resp = session.post(url, json=payload, timeout=30)
+    try:
+        resp = session.post(url, json=payload, timeout=30)
+        
+        if resp.status_code != 200:
+            print(f"[ERROR] Jira 검색 실패 ({resp.status_code})")
+            print(f"[ERROR] 응답: {resp.text}")
+            return []
+        
+        data = resp.json()
+        issues = data.get("issues", [])
+        print(f"[DEBUG] 검색된 이슈 수: {len(issues)}")
+        
+        if issues:
+            for issue in issues[:3]:  # 처음 3개만 로그
+                print(f"[DEBUG] - {issue.get('key')}: {issue.get('fields', {}).get('summary', 'N/A')}")
+        
+        return issues
     
-    if resp.status_code != 200:
-        print(f"[ERROR] Jira 검색 실패 ({resp.status_code})")
-        print(f"[ERROR] 응답: {resp.text}")
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] Jira API 요청 실패: {e}")
         return []
-    
-    data = resp.json()
-    issues = data.get("issues", [])
-    print(f"[DEBUG] 검색된 이슈 수: {len(issues)}")
-    
-    if issues:
-        for issue in issues[:3]:  # 처음 3개만 로그
-            print(f"[DEBUG] - {issue.get('key')}: {issue.get('fields', {}).get('summary', 'N/A')}")
-    
-    return issues
 
 
 # 🧩 JUnit XML 파싱
@@ -160,12 +164,15 @@ def create_or_comment_issue(session, test):
             )
             
             comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
-            resp = session.post(comment_url, json={"body": make_adf_text(comment_text)}, timeout=30)
-            
-            if resp.status_code >= 400:
-                print(f"[ERROR] 코멘트 추가 실패 ({issue_key}): {resp.status_code} {resp.text}")
-            else:
-                print(f"[INFO] ✅ 코멘트 추가 완료: {issue_key}")
+            try:
+                resp = session.post(comment_url, json={"body": make_adf_text(comment_text)}, timeout=30)
+                
+                if resp.status_code >= 400:
+                    print(f"[ERROR] 코멘트 추가 실패 ({issue_key}): {resp.status_code} {resp.text}")
+                else:
+                    print(f"[INFO] ✅ 코멘트 추가 완료: {issue_key}")
+            except requests.exceptions.RequestException as e:
+                print(f"[ERROR] 코멘트 추가 중 오류: {e}")
             
             return issue_key
 
@@ -192,17 +199,22 @@ def create_or_comment_issue(session, test):
     }
     
     create_url = f"{JIRA_URL}/rest/api/3/issue"
-    resp = session.post(create_url, json=payload, timeout=30)
+    try:
+        resp = session.post(create_url, json=payload, timeout=30)
+        
+        if resp.status_code >= 400:
+            print(f"[ERROR] 이슈 생성 실패: {resp.status_code}")
+            print(f"[ERROR] 응답: {resp.text}")
+            return None
+        
+        issue_key = resp.json().get("key")
+        print(f"[INFO] 🆕 생성된 JIRA 이슈: {issue_key}")
+        print(f"[INFO] 링크: {JIRA_URL}/browse/{issue_key}")
+        return issue_key
     
-    if resp.status_code >= 400:
-        print(f"[ERROR] 이슈 생성 실패: {resp.status_code}")
-        print(f"[ERROR] 응답: {resp.text}")
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] 이슈 생성 중 오류: {e}")
         return None
-    
-    issue_key = resp.json().get("key")
-    print(f"[INFO] 🆕 생성된 JIRA 이슈: {issue_key}")
-    print(f"[INFO] 링크: {JIRA_URL}/browse/{issue_key}")
-    return issue_key
 
 
 def close_passed_issues(session, passed_tests):
@@ -237,20 +249,26 @@ def close_passed_issues(session, passed_tests):
                 f"이전 실패 이슈를 자동으로 닫습니다."
             )
             comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
-            session.post(comment_url, json={"body": make_adf_text(comment_text)}, timeout=30)
+            try:
+                session.post(comment_url, json={"body": make_adf_text(comment_text)}, timeout=30)
+            except requests.exceptions.RequestException as e:
+                print(f"[WARN] 코멘트 추가 실패: {e}")
 
             # 상태 전환 (Done)
             transition_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/transitions"
-            trans_resp = session.get(transition_url, timeout=30)
-            if trans_resp.status_code == 200:
-                transitions = trans_resp.json().get("transitions", [])
-                done_transition = next((t for t in transitions if "Done" in t["name"]), None)
-                if done_transition:
-                    transition_id = done_transition["id"]
-                    session.post(transition_url, json={"transition": {"id": transition_id}}, timeout=30)
-                    print(f"[INFO] 🔒 이슈 {issue_key} → Done")
-                else:
-                    print(f"[WARN] Done 상태 전환 옵션 없음 ({issue_key})")
+            try:
+                trans_resp = session.get(transition_url, timeout=30)
+                if trans_resp.status_code == 200:
+                    transitions = trans_resp.json().get("transitions", [])
+                    done_transition = next((t for t in transitions if "Done" in t["name"]), None)
+                    if done_transition:
+                        transition_id = done_transition["id"]
+                        session.post(transition_url, json={"transition": {"id": transition_id}}, timeout=30)
+                        print(f"[INFO] 🔒 이슈 {issue_key} → Done")
+                    else:
+                        print(f"[WARN] Done 상태 전환 옵션 없음 ({issue_key})")
+            except requests.exceptions.RequestException as e:
+                print(f"[WARN] 상태 전환 실패: {e}")
 
 # 🚀 메인 실행
 if __name__ == "__main__":
