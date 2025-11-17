@@ -134,7 +134,7 @@ def get_wait(driver):
 def driver():
     d = create_driver()
     yield d
-    d.quit()
+    # d.quit()
 
 
 # 7) 로그인 (메인 계정)
