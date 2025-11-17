@@ -112,7 +112,13 @@ def create_or_comment_issue(session, test):
     summary = make_summary(test)
     escaped_summary = escape_jql_value(summary)
 
-    jql = f'project = "{JIRA_PROJECT}" AND summary = "{escaped_summary}" AND statusCategory != Done ORDER BY created DESC'
+    jql = (
+        f'project = "{JIRA_PROJECT}" '
+        f'AND labels = "{LABEL_AUTOTEST}" '
+        f'AND summary = "{escaped_summary}" '
+        f'AND statusCategory != Done '
+        f'ORDER BY created DESC'
+    )
     issues = jira_search_issues(session, jql)
 
     if issues:
