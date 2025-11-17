@@ -107,33 +107,44 @@ def make_jira_session():
 # 🧩 JIRA 이슈 생성 / 코멘트 / 종료
 def create_or_comment_issue(session, test):
     summary = make_summary(test)
-    safe_summary = summary.replace('"', '\\"')  # 따옴표만 escape
+    escaped_summary = escape_jql_value(summary)
 
-    # ✅ 부분일치 검색으로 변경 (대괄호 허용)
-    jql = f'project = "{JIRA_PROJECT}" AND summary ~ "\\"{safe_summary}\\"" AND statusCategory != Done ORDER BY created DESC'
+    jql = f'project = "{JIRA_PROJECT}" AND summary = "{escaped_summary}" AND statusCategory != Done ORDER BY created DESC'
     issues = jira_search_issues(session, jql)
 
     if issues:
-        issue_key = issues[0]["key"]
-        print(f"[INFO] 기존 이슈 발견: {issue_key} — 코멘트 추가")
+        issue = issues[0]
 
-        comment_text = (
-            f"🚨 *자동화 테스트가 다시 실패했습니다!*\n\n"
-            f"*테스트:* `{test['classname']}::{test['name']}`\n"
-            f"*빌드:* [{JOB_NAME} #{BUILD_NUMBER}]({BUILD_URL})\n\n"
-            f"*실패 요약:*\n{test['message'][:500]}..."
+        # ✅ key / id / issueId 중 있는 걸 사용
+        issue_id_or_key = (
+            issue.get("key")
+            or issue.get("id")
+            or issue.get("issueId")
         )
 
-        comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
-        resp = session.post(comment_url, json={"body": make_adf_text(comment_text)})
-        if resp.status_code >= 400:
-            print(f"[ERROR] 코멘트 추가 실패 ({issue_key}): {resp.status_code} {resp.text}")
+        if not issue_id_or_key:
+            print(f"[WARN] 검색 결과에서 key / id / issueId를 찾지 못했습니다. raw issue: {issue}")
         else:
-            print(f"[INFO] ✅ 코멘트 추가 완료: {issue_key}")
-        return issue_key
+            print(f"[INFO] 기존 이슈 발견: {issue_id_or_key} — 코멘트 추가")
 
-    # 🆕 기존 이슈 없을 때만 새로 생성
+            comment_text = (
+                f"🚨 *자동화 테스트가 다시 실패했습니다!*\n\n"
+                f"*테스트:* `{test['classname']}::{test['name']}`\n"
+                f"*빌드:* [{JOB_NAME} #{BUILD_NUMBER}]({BUILD_URL})\n\n"
+                f"*실패 요약:*\n{test['message'][:500]}..."
+            )
+
+            comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_id_or_key}/comment"
+            resp = session.post(comment_url, json={"body": make_adf_text(comment_text)})
+            if resp.status_code >= 400:
+                print(f"[ERROR] 코멘트 추가 실패 ({issue_id_or_key}): {resp.status_code} {resp.text}")
+            else:
+                print(f"[INFO] ✅ 코멘트 추가 완료: {issue_id_or_key}")
+            return issue_id_or_key
+
+    # 🔁 여기까지 왔다 = 기존 열린 이슈 없음 → 새로 생성
     print(f"[INFO] 새로운 이슈 생성: {summary}")
+
     desc_text = (
         f"테스트 실패 감지됨 🚨\n\n"
         f"*테스트:* `{test['classname']}::{test['name']}`\n"
@@ -158,7 +169,7 @@ def create_or_comment_issue(session, test):
         print(f"[ERROR] Failed to create issue for {summary}: {resp.status_code} {resp.text}")
         return None
 
-    issue_key = resp.json().get("key")
+    issue_key = resp.json().get("key") or resp.json().get("id")
     print(f"[INFO] 🆕 Created JIRA issue: {issue_key}")
     return issue_key
 
