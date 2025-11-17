@@ -15,53 +15,64 @@ dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
 load_dotenv(dotenv_path)
 
 
-# 1) Chrome OPTIONS (환경별 분리)
+
+# 1) HEADLESS 설정
+
+def is_headless():
+    """
+    macOS는 기본값 false
+    Windows/Linux/Jenkins 기본값 true
+    (사용자가 .env 에서 override 가능)
+    """
+    system = platform.system()
+
+    default = "false" if system == "Darwin" else "true"
+    return os.getenv("HEADLESS", default).lower() == "true"
+
+
+
+
+# 2) Chrome OPTIONS (환경별 완전 분기)
+
 
 def build_options():
     opts = webdriver.ChromeOptions()
-    opts.page_load_strategy = "eager"
 
-    system = platform.system()  # Windows / Linux / Darwin
-    is_jenkins = bool(os.getenv("JENKINS_HOME"))
+    # page_load_strategy → mac headless 안정화를 위해 eager 제거
+    opts.page_load_strategy = "normal"
 
- 
-    # HEADLESS 설정 (공통)
+    system = platform.system()
 
-    if os.getenv("HEADLESS", "true").lower() == "true":
+    # 🔥 Headless 설정
+    if is_headless():
         opts.add_argument("--headless=new")
+        opts.add_argument("--disable-gpu")  # headless 안정화
+        opts.add_argument("--disable-software-rasterizer")  # mac 렌더링 버그 해결
+        opts.add_argument("--use-gl=swiftshader")  # mac headless WebGL 강화
 
-    # 환경별 분기
+  
+    # 공통 옵션
 
-    # (1) Jenkins / Docker / Linux
-    if is_jenkins or system == "Linux":
-        print("🐧 Linux/Jenkins 환경 → 강력한 headless 옵션 적용")
+    for a in [
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--window-size=1920,1080",
+        "--disable-extensions",
+        "--disable-infobars"
+    ]:
+        opts.add_argument(a)
+
+
+    # macOS ONLY 옵션
+ 
+    if system == "Darwin":
         opts.add_argument("--disable-gpu")
-        opts.add_argument("--no-sandbox")
-        opts.add_argument("--disable-dev-shm-usage")
-        opts.add_argument("--window-size=1920,1080")
-
-    # (2) macOS
-    elif system == "Darwin":
-        print("🍎 macOS 환경 → 안정적 headless + window-size")
-        opts.add_argument("--window-size=1920,1080")
-
-    # (3) Windows
-    elif system == "Windows":
-        print("🪟 Windows 환경 → scale-factor 적용")
-        opts.add_argument("--window-size=1920,1080")
-        opts.add_argument("--force-device-scale-factor=1")
-
-    else:
-        print(f"🌍 Unknown OS detected: {system}")
-        opts.add_argument("--window-size=1920,1080")
+        opts.add_argument("--disable-software-rasterizer")
+        opts.add_argument("--use-angle=metal")
 
 
-    # 공통 최적화 옵션
+    # 이미지 로딩 비활성화
 
-    opts.add_argument("--disable-extensions")
-    opts.add_argument("--disable-infobars")
-
-    # 이미지 비활성화 (성능 개선)
     opts.add_experimental_option(
         "prefs", {"profile.managed_default_content_settings.images": 2}
     )
@@ -70,49 +81,70 @@ def build_options():
 
 
 
-# 2) ChromeDriver 경로 결정 (팀원 코드 유지)
+# 3) ChromeDriver 경로 결정 (팀원 기능 그대로 유지)
+
 
 def resolve_driver_path():
     sys_driver = os.getenv("CHROMEDRIVER")
 
-    # 1) 직접 chromedriver 경로 지정된 경우
+    # 1) 환경변수로 시스템 chromedriver 지정한 경우
     if sys_driver and os.path.exists(sys_driver):
         print(f"🔧 Using system ChromeDriver: {sys_driver}")
         return sys_driver
 
-    # 2) 기본: webdriver_manager 사용
+    # 2) webdriver_manager 사용 (path 파라미터 제거!)
     try:
         from webdriver_manager.chrome import ChromeDriverManager
-        return ChromeDriverManager().install()   # path 제거 (에러 방지)
+        return ChromeDriverManager().install()
     except Exception as e:
         print("❌ webdriver_manager failed:", e)
         raise
 
 
-# 3) 최종 Chrome driver 생성
+# 4) Driver 생성 + 환경 메시지
+
 
 def create_driver():
+    system = platform.system()
+
+    if os.getenv("JENKINS_HOME"):
+        print("🌐 Running on Jenkins (Linux CI)")
+    else:
+        print(f"💻 Running on {system} | headless={is_headless()}")
+
     options = build_options()
     service = Service(resolve_driver_path())
     return webdriver.Chrome(service=service, options=options)
 
 
+# 5) macOS headless 안정화 → wait 2배 증가
 
-# 4) session-level driver
+
+def get_wait(driver):
+    if platform.system() == "Darwin" and is_headless():
+        return WebDriverWait(driver, 20)
+    return WebDriverWait(driver, 10)
+
+
+
+# 6) session-level driver
+
 
 @pytest.fixture(scope="session")
 def driver():
     d = create_driver()
     yield d
-    d.quit()
+    # d.quit()
 
 
+# 7) 로그인 (메인 계정)
 
-# 5) 메인 계정 로그인 (module-level)
 
 @pytest.fixture(scope="module")
 def logged_in_driver(driver):
     login_page = LoginFunction(driver)
+    wait = get_wait(driver)
+
     login_page.open()
     login_page.login(
         os.getenv("MAIN_EMAIL"),
@@ -120,8 +152,10 @@ def logged_in_driver(driver):
     )
 
     try:
-        WebDriverWait(driver, 15).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]'))
+        wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')
+            )
         )
     except TimeoutException:
         Utils(driver).wait_for(timeout=15)
@@ -129,17 +163,29 @@ def logged_in_driver(driver):
     yield driver
 
 
+# 8) 로그인 (서브 계정)
 
-# 6) 서브 계정 로그인 (별도 driver 생성)
 
 @pytest.fixture(scope="module")
 def logged_in_driver_sub_account():
     d = create_driver()
+    wait = get_wait(d)
+
     login_page = LoginFunction(d)
     login_page.open()
     login_page.login(
         os.getenv("SUB_EMAIL"),
         os.getenv("SUB_PASSWORD")
     )
+
+    try:
+        wait.until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'a[href="/ai-helpy-chat"]')
+            )
+        )
+    except TimeoutException:
+        Utils(d).wait_for(timeout=15)
+
     yield d
     d.quit()
