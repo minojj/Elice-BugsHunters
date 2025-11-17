@@ -100,7 +100,7 @@ class ChatSidebar(BasePage):
                 raise AssertionError("메뉴에 '이름 변경'이 없습니다.")
         self.scroll_center(item)
         try:
-            self.clickable((By.XPATH, XPATH_MENU_RENAME), sec=5)
+            item = self.clickable((By.XPATH, XPATH_MENU_RENAME), sec=5)
             item.click()
         except TimeoutException:
             self.js_click(item)
@@ -117,7 +117,7 @@ class ChatSidebar(BasePage):
                 raise AssertionError("메뉴에 '삭제'가 없습니다.")
         self.scroll_center(item)
         try:
-            self.clickable((By.XPATH, XPATH_MENU_DELETE), sec=5)
+            item = self.clickable((By.XPATH, XPATH_MENU_DELETE), sec=5)
             item.click()
         except TimeoutException:
             self.js_click(item)

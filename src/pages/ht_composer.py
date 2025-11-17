@@ -9,8 +9,9 @@ SEL_TEXTAREA = (
 SEL_SUBMIT_ENABLED = (By.CSS_SELECTOR, "button#chat-submit:not([disabled])")
 
 class Composer(BasePage):
-    def wait_ready(self):
-        self.visible(SEL_TEXTAREA)
+    def wait_ready(self, sec=None):
+        # 처음 준비 + 응답 끝난 뒤 “다시” 준비 둘 다 여기로
+        self.visible(SEL_TEXTAREA, sec)
 
     def send(self, text: str):
         ta = self.clickable(SEL_TEXTAREA)
