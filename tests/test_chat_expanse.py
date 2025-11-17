@@ -2,7 +2,7 @@ import time
 import pytest
 from pathlib import Path
 # from src.pages.login_page import LoginFunction
-from src.pages.chat_expance_page import ChatExpancePage
+from src.pages.chat_expanse_page import ChatExpancePage
 
 TEST_FILES_DIR = Path(__file__).parent.parent /"resources" / "testdata"
 TEST_FILENAME = TEST_FILES_DIR / "git.pdf"
