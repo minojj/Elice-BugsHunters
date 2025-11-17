@@ -121,7 +121,7 @@ def test_ca_002_validate_required_fields_behavior(create_page):
     wait = WebDriverWait(driver, 10)
     create_agent_page = CreateAgentPage(driver)
 
-    # 1️⃣ name 제외 입력
+    #1️⃣ name 제외 입력
     create_agent_page.fill_form(
         "",
         "test description",
@@ -131,7 +131,7 @@ def test_ca_002_validate_required_fields_behavior(create_page):
 
     create_btn = create_agent_page.get_element("create_btn", wait_type="presence")
 
-    # 2️⃣ name 오류문구 + 버튼 disabled 체크
+    #2️⃣ name 오류문구 + 버튼 disabled 체크
     try:
         err = wait.until(
             EC.visibility_of_element_located(
@@ -145,7 +145,7 @@ def test_ca_002_validate_required_fields_behavior(create_page):
         print("❌ CA_002_name 필드 검증 실패!")
         return
 
-    # 3️⃣ name 입력 / rules 삭제
+    #3️⃣ name 입력 / rules 삭제
     name_input = create_agent_page.get_element("name")
     name_input.click()
     name_input.send_keys("Test Agent")
@@ -157,7 +157,7 @@ def test_ca_002_validate_required_fields_behavior(create_page):
     wait.until(lambda d: rules_input.get_attribute("value") == "")
     name_input.click()  # focus 이동
 
-    # 4️⃣ rules 오류문구 + 버튼 disabled 체크
+    #4️⃣ rules 오류문구 + 버튼 disabled 체크
     try:
         err2 = wait.until(
             EC.visibility_of_element_located(
@@ -178,7 +178,7 @@ def test_ca_003_1_create_private_agent_successfully(create_page, request):
     wait = WebDriverWait(driver, 10)
     create_agent_page = CreateAgentPage(driver)
 
-    # 1️⃣ 입력
+    #1️⃣ 입력
     create_agent_page.fill_form(
         "project team",
         "for the team project",
@@ -186,24 +186,24 @@ def test_ca_003_1_create_private_agent_successfully(create_page, request):
         "Hello, we're team 03"
     )
 
-    # 2️⃣ Create 버튼
+    #2️⃣ Create 버튼
     create_agent_page.click_safely("create_btn")
 
-    # 3️⃣ 저장
+    #3️⃣ 저장
     save_page = SaveAgentPage(driver)
     save_page.select_mode("private")
     save_page.click_save()
 
-    # 4️⃣ 스낵바 메시지는 반드시 성공해야 한다 → 실패하면 FAIL
+    #4️⃣ 스낵바 메시지는 반드시 성공해야 한다 → 실패하면 FAIL
     message = save_page.get_snackbar_text().lower()
     assert "created" in message, f"❌ CA_003_1_예상과 다른 메시지: {message}"
 
-    # 5️⃣ agent_id 저장 → 실패하면 FAIL
+    #5️⃣ agent_id 저장 → 실패하면 FAIL
     agent_id = create_agent_page.get_agent_id_from_url()
     assert agent_id, "❌ CA_003_1_agent_id 추출 실패"
     request.config.cache.set("private_agent_id", agent_id)
 
-    # 6️⃣ 자동 이동은 실패해도 PASS
+    #6️⃣ 자동 이동은 실패해도 PASS
     try:
         wait.until(lambda d: "builder#form" not in d.current_url)
     except TimeoutException:
@@ -219,7 +219,7 @@ def test_ca_003_2_create_organization_agent_successfully(create_page, request):
     wait = WebDriverWait(driver, 10)
     create_agent_page = CreateAgentPage(driver)
 
-    # 1️⃣ 필드 입력
+    #1️⃣ 필드 입력
     create_agent_page.fill_form(
         "project team",
         "for the team project",
@@ -227,15 +227,15 @@ def test_ca_003_2_create_organization_agent_successfully(create_page, request):
         "Hello, we're team 03"
     )
 
-    # 2️⃣ Create 버튼 안정적 클릭 (scroll + JS click)
+    #2️⃣ Create 버튼 안정적 클릭 (scroll + JS click)
     create_agent_page.click_safely("create_btn")
 
-    # 3️⃣ 저장 모달 → organization 선택 → 저장
+    #3️⃣ 저장 모달 → organization 선택 → 저장
     save_page = SaveAgentPage(driver)
     save_page.select_mode("organization")
     save_page.click_save()
 
-    # 4️⃣ 스낵바 메시지
+    #4️⃣ 스낵바 메시지
     try:
         message = save_page.get_snackbar_text().lower()
         assert "created" in message, f"❌ CA_003_2_예상과 다른 메시지: {message}"
@@ -243,7 +243,7 @@ def test_ca_003_2_create_organization_agent_successfully(create_page, request):
         print("❌ CA_003_2_스낵바 메시지 미출력!")
         return
 
-    # 5️⃣ 생성된 에이전트 ID 저장
+    #5️⃣ 생성된 에이전트 ID 저장
     try:
         agent_id = create_agent_page.get_agent_id_from_url()
         request.config.cache.set("organization_agent_id", agent_id)
@@ -251,7 +251,7 @@ def test_ca_003_2_create_organization_agent_successfully(create_page, request):
         print("❌ CA_003_2_agent_id 추출 실패!")
         return
 
-    # 6️⃣ 자동 라우팅 확인 (테스트 실패 X, 모니터링 only)
+    #6️⃣ 자동 라우팅 확인 (테스트 실패 X, 모니터링 only)
     try:
         wait.until(lambda d: "builder#form" not in d.current_url)
     except TimeoutException:
@@ -264,21 +264,21 @@ def test_ca_004_test_create_with_chat_generates_ai_response(create_page, pages):
     driver = create_page
     chat_page = pages["chat_create"]
 
-    # 1️⃣ create with chat 클릭 (scroll + JS click)
+    #1️⃣ create with chat 클릭 (scroll + JS click)
     try:
         chat_page.click_safely("create_with_chat_btn")  
     except Exception:
         print("❌ CA_004_Create-with-Chat 버튼 클릭 실패!")
         return
 
-    # 2️⃣ 챗봇에 메시지 입력
+    #2️⃣ 챗봇에 메시지 입력
     try:
         chat_page.send_single_message()
     except Exception:
         print("❌ CA_004_메시지 전송 실패!")
         return
 
-    # 3️⃣ AI 응답 생성 확인
+    #3️⃣ AI 응답 생성 확인
     try:
         assert chat_page.wait_for_ai_answer(), "❌ CA_004_AI 답변 생성 실패"
     except Exception:
@@ -293,7 +293,7 @@ def test_ca_005_prevent_duplicate_agent_creation(create_page):
     driver = create_page
     create_agent_page = CreateAgentPage(driver)
 
-    # 1️⃣ 동일 이름 입력 후 생성 시도
+    #1️⃣ 동일 이름 입력 후 생성 시도
     create_agent_page.fill_form(
         "project team",
         "for the team project",
@@ -301,14 +301,13 @@ def test_ca_005_prevent_duplicate_agent_creation(create_page):
         "Hello, we're team 03"
     )
 
-    # Create 버튼 클릭 (scroll + JS click)
     try:
         create_agent_page.click_safely("create_btn")
     except Exception:
         print("❌ CA_005_Create 버튼 클릭 실패!")
         return
 
-    # 2️⃣ 저장 시도
+    #2️⃣ 저장 시도
     save_page = SaveAgentPage(driver)
     save_page.select_mode("organization")
 
@@ -318,14 +317,14 @@ def test_ca_005_prevent_duplicate_agent_creation(create_page):
         print("❌ CA_005_Save 버튼 클릭 실패!")
         return
 
-    # 3️⃣ 스낵바 메시지 확인
+    #3️⃣ 스낵바 메시지 확인
     try:
         message = save_page.get_snackbar_text().lower()
     except Exception:
         print("❌ CA_005_스낵바 메시지 감지 실패!")
         return
 
-    # 4️⃣ 메시지 분석 (테스트 실패 처리 없음, 로깅 only)
+    #4️⃣ 메시지 분석 (테스트 실패 처리 없음, 로깅 only)
     if "created" in message or "success" in message or "성공" in message:
         print("❌ CA_005_중복 검증 누락 가능성 (성공 메시지 표시됨)")
     elif "duplicate" in message or "이미 존재" in message or "동일한 이름" in message:
@@ -341,12 +340,12 @@ def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request
     driver = explorer_page_loaded
     explorer_page = AgentExplorerPage(driver)
 
-    # 1️⃣ 이전에 저장된 두 개의 ID 가져오기
+    #1️⃣ 이전에 저장된 두 개의 ID 가져오기
     private_id = request.config.cache.get("private_agent_id", None)
     org_id = request.config.cache.get("organization_agent_id", None)
     assert private_id or org_id, "❌ CA_006_이전 테스트의 agent_id를 불러올 수 없습니다."
 
-    # 2️⃣ Private/Organization 카드 확인
+    #2️⃣ Private/Organization 카드 확인
     if private_id:
         result = explorer_page.click_agent_card_by_id(private_id)
         assert result, f"❌ CA_006_Private 카드 미노출 (ID: {private_id})"
@@ -367,7 +366,6 @@ def test_ca_007_display_agent_cards_in_my_agents(my_agents_page_loaded):
 
     assert my_agent_page.wait_for_cards_loaded(), "❌ My Agents 카드 재로드 실패"
 
-    # 🚀 Virtuoso 렌더링 후 다시 불러오기 (중요!)
     draft_cards = my_agent_page.get_draft_cards()
     private_cards = my_agent_page.get_private_cards()
     organization_cards = my_agent_page.get_organization_cards()
@@ -413,7 +411,7 @@ def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
     create_agent_page = CreateAgentPage(driver)
     save_page = SaveAgentPage(driver)
 
-    # 1️⃣ Draft 카드 로딩 + edit 클릭
+    #1️⃣ Draft 카드 로딩 + edit 클릭
     my_agent_page.load_all_cards()  # 무한 스크롤 안정화
 
     # 추가 안전장치: 카드가 로딩되었는지 보장
@@ -424,7 +422,7 @@ def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
     # edit 버튼 클릭 (POM이 JS click + scrollIntoView까지 처리함)
     my_agent_page.click_edit_button_by_card_type("draft")
 
-    # 2️⃣ 모든 필드 안정적으로 입력
+    #2️⃣ 모든 필드 안정적으로 입력
     create_agent_page.fill_form(
         "project team",
         "for the team project",
@@ -438,7 +436,7 @@ def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", create_btn)
     driver.execute_script("arguments[0].click();", create_btn)
 
-    # 3️⃣ 저장 모달 안정화
+    #3️⃣ 저장 모달 안정화
     WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "div.MuiDialog-paper"))
     )
@@ -452,7 +450,7 @@ def test_ca_009__publish_draft_agent_successfully(my_agents_page_loaded):
     )
     driver.execute_script("arguments[0].click();", save_btn)
 
-    # 4️⃣ 스낵바 안정적 대기
+    #4️⃣ 스낵바 안정적 대기
     message = save_page.get_snackbar_text().lower()
 
     assert "created" in message, f"❌ CA_009_예상과 다른 메시지: {message}"
@@ -465,7 +463,7 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
     my_agent_page = pages["my_agents"]
     create_agent_page = pages["create"]
 
-    # 1️⃣ My Agents 카드 로드 보장
+    #1️⃣ My Agents 카드 로드 보장
     assert my_agent_page.wait_for_cards_loaded(), "My Agents 카드 로드 실패"
     my_agent_page.load_all_cards()
 
@@ -475,11 +473,9 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
     target_card = draft_cards[0]
     agent_id = my_agent_page.get_agent_id_from_card(target_card)
 
-
-    # ✏️ POM을 이용해서 첫 번째 Draft 카드 edit 진입 (JS click + scrollIntoView 포함)
     my_agent_page.click_edit_button_by_card_type("draft")
 
-    # 2️⃣ 값 입력 + auto-save 대기
+    #2️⃣ 값 입력 + auto-save 대기
     TARGET_TITLE = "draft test"
     expected_values = create_agent_page.fill_form_with_trigger(
         TARGET_TITLE,
@@ -488,11 +484,11 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
         ""
     )
 
-    # 🔁 auto-save 완료 대기 (sleep 대신 값/UX 기준 polling)
+    # auto-save 완료 대기용
     time.sleep(1)
     create_agent_page.wait_for_autosave(expected_values, timeout=25)
 
-    # 3️⃣ My Agents로 돌아간 뒤, 해당 Draft 카드의 제목이 갱신될 때까지 대기
+    #3️⃣ My Agents로 돌아간 뒤, 해당 Draft 카드의 제목이 갱신될 때까지 대기
     driver.back()
 
     updated_card = my_agent_page.wait_for_card_update(
@@ -501,10 +497,9 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
         timeout=20
     )
 
-    # 4️⃣ 갱신된 Draft 카드 다시 편집 진입
+    #4️⃣ 갱신된 Draft 카드 다시 편집 진입
     my_agent_page.scroll_into_view(updated_card)
 
-    # 카드 내에서 edit 버튼을 다시 안정적으로 찾고 JS click
     edit_btn = my_agent_page._find_button_in_card(
         updated_card,
         my_agent_page.LOCATORS["edit_icon"]
@@ -513,12 +508,11 @@ def test_ca_010_autosave_draft_agent_persists_changes(my_agents_page_loaded, pag
 
     driver.execute_script("arguments[0].click();", edit_btn)
 
-    # name 필드 값이 로드될 때까지 대기
     WebDriverWait(driver, 10).until(
         lambda d: d.find_element(By.NAME, "name").get_attribute("value") != ""
     )
 
-    # 5️⃣ 필드 값 전체 비교
+    #5️⃣ 필드 값 전체 비교
     actual_values = create_agent_page.get_all_field_values()
 
     assert actual_values["name"] == expected_values["name"], (
@@ -536,14 +530,14 @@ def test_ca_011_cancel_agent_deletion_modal(my_agents_page_loaded):
     driver = my_agents_page_loaded
     my_agent_page = MyAgentsPage(driver)
 
-    # 1️⃣ 카드 로드 + 무한스크롤 안정화
+    #1️⃣ 카드 로드 + 무한스크롤 안정화
     assert my_agent_page.wait_for_cards_loaded(), "My Agents 카드 로드 실패"
     my_agent_page.load_all_cards()
 
-    # 2️⃣ 두 번째 organization 카드 삭제 버튼 클릭
+    #2️⃣ 두 번째 organization 카드 삭제 버튼 클릭
     my_agent_page.click_delete_button_by_card_type("organization", index=1)
 
-    # 3️⃣ 삭제 모달 등장 대기 (Modal Root 기준)
+    #3️⃣ 삭제 모달 등장 대기 (Modal Root 기준)
     modal_root = (By.CSS_SELECTOR, "div.MuiDialog-container")
 
     WebDriverWait(driver, 10).until(
@@ -553,10 +547,10 @@ def test_ca_011_cancel_agent_deletion_modal(my_agents_page_loaded):
     assert my_agent_page.is_delete_modal_visible(), \
         "❌ CA_011_삭제 팝업 모달 미출력"
 
-    # 4️⃣ Cancel 클릭 (JS click + 안정화)
+    #4️⃣ Cancel 클릭 (JS click + 안정화)
     my_agent_page.cancel_delete_modal()
 
-    # 5️⃣ Modal이 완전히 사라질 때까지 invisibility 검사
+    #5️⃣ Modal이 완전히 사라질 때까지 invisibility 검사
     WebDriverWait(driver, 10).until(
         EC.invisibility_of_element_located(modal_root)
     )
@@ -575,31 +569,26 @@ def test_ca_012_delete_agent_permanently(my_agents_page_loaded):
     my_agent_page = MyAgentsPage(driver)
     save_page = SaveAgentPage(driver)
 
-    # 1) 카드 로드
+    #1️⃣ 카드 로드
     assert my_agent_page.wait_for_cards_loaded(), "My Agents 카드 로드 실패"
     my_agent_page.load_all_cards()
-
-    # 🔥 안정화 추가 ① — organization 카드 수량 체크
+  
     org_cards = my_agent_page.get_organization_cards()
     assert len(org_cards) > 1, "❌ CA_012_Organization 카드가 2개 이상 필요합니다."
-
-    # 삭제할 카드
+  
     target_card = org_cards[1]
 
-    # 🔥 안정화 추가 ② — 스크롤 + DOM 안정화
     my_agent_page.scroll_into_view(target_card)
     WebDriverWait(driver, 5).until(lambda d: target_card.is_displayed())
 
-    # 2) 삭제 클릭
+    #2️⃣ 삭제 클릭
     my_agent_page.click_delete_button_by_card_type("organization", index=1)
 
-    # 3) 모달 확인
+    #3️⃣ 모달 확인 및 confirm 클릭
     assert my_agent_page.is_delete_modal_visible(), "❌ CA_012_삭제 모달 미출력"
-
-    # 4) confirm 클릭
     my_agent_page.confirm_delete_modal()
 
-    # 5) invisibility 체크 (optional)
+    #4️⃣ invisibility 체크 (optional)
     try:
         WebDriverWait(driver, 5).until(
             EC.invisibility_of_element_located(
@@ -609,7 +598,7 @@ def test_ca_012_delete_agent_permanently(my_agents_page_loaded):
     except Exception:
         pass  # print 없이 통과
 
-    # 6) snackbar
+    #5️⃣ snackbar
     message = save_page.get_snackbar_text().lower()
     assert (
         "success" in message
@@ -645,14 +634,14 @@ def test_ca_014_validate_file_upload_and_size_limit(create_page, pages, dummy_fi
     driver = create_page
     create = pages["create"]
 
-    # 작은 파일
+    #1️⃣ 작은 파일
     create.upload_file(dummy_files["small"])
     small_item = create.get_last_uploaded_item()
 
     assert create.has_success_icon(small_item)
     assert "success" in create.get_file_status(small_item).lower()
 
-    # 큰 파일
+    #2️⃣ 큰 파일
     create.upload_file(dummy_files["big"])
     big_item = create.get_last_uploaded_item()
 
@@ -672,11 +661,11 @@ def test_ca_015_private_agent_hidden_from_sub_account(logged_in_driver_sub_accou
     driver = logged_in_driver_sub_account
     explorer_page = AgentExplorerPage(driver)
 
-    # 1️⃣ Private ID 불러오기
+    #1️⃣ Private ID 불러오기
     private_id = request.config.cache.get("private_agent_id", None)
     assert private_id, "❌ CA_015_private agent_id 누락"
 
-    # 2️⃣ 해당 카드 검색 후 노출 여부 확인
+    #2️⃣ 해당 카드 검색 후 노출 여부 확인
     results = explorer_page.click_agent_card_by_id(private_id)
     assert len(results) == 0, f"❌ CA_015_Private 카드 노출됨: {results}"
 

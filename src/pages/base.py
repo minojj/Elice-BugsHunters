@@ -26,7 +26,7 @@ class BasePage:
 
 
     def get_elements(self, key, timeout=10):
-        locator = self.locators[key]
+        locator = self.LOCATORS[key]
         wait = WebDriverWait(self.driver, timeout)
         wait.until(EC.presence_of_all_elements_located(locator))
         return self.driver.find_elements(locator)

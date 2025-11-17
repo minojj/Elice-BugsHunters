@@ -10,7 +10,7 @@ TEST_FILENAME = TEST_FILES_DIR / "git.pdf"
 TEST_DOG_IMAGE = TEST_FILES_DIR / "dog.png"
 
 
-def test_cb_001(logged_in_driver):
+def test_cb_001_ai_chat(logged_in_driver):
     chat_page = ChatPage(logged_in_driver)
     # 현재 기사 수 기준선 저장 후 전송
     count_before = len(chat_page.driver.find_elements(By.XPATH, "//div[@role='article']"))
@@ -21,7 +21,7 @@ def test_cb_001(logged_in_driver):
     print("테스트 완료")
 
 
-def test_cb_005(driver):
+def test_cb_002_copy(driver):
     chat_page = ChatPage(driver)
     ai_response = chat_page.get_ai_response("안녕하세요")
     assert ai_response, "AI 응답을 찾을 수 없습니다"
@@ -34,7 +34,7 @@ def test_cb_005(driver):
     assert result, "복사 버튼 클릭 실패"
 
 
-def test_cb_007(driver):
+def test_cb_003_edit_message(driver):
     chat_page = ChatPage(driver)
     count_before = len(chat_page.driver.find_elements(By.XPATH, "//div[@role='article']"))
     chat_page.edit_message("안녕하세요", "애국가 4절까지 가사 알려줘")
@@ -44,7 +44,7 @@ def test_cb_007(driver):
     )
 
 
-def test_cb_008(driver):
+def test_cb_004_scroll_and_click(driver):
     chat_page = ChatPage(driver)
     
     sleep(3)
@@ -54,13 +54,13 @@ def test_cb_008(driver):
     sleep(3)  # 버튼 클릭 후 충분한 대기
 
 
-def test_cb_004(driver):
+def test_cb_005_make_image(driver):
     chat_page = ChatPage(driver)
     chat_page.send_message("태극기를 그려줘")
     assert chat_page.check_image_exists(), "태극기 이미지를 찾을 수 없습니다"
 
 
-def test_cb_002(logged_in_driver):
+def test_cb_006_upload_file(logged_in_driver):
     chat_page = ChatPage(logged_in_driver)
     chat_page.upload_file(str(TEST_FILENAME.absolute()))
     WebDriverWait(chat_page.driver, 30).until(
@@ -73,7 +73,7 @@ def test_cb_002(logged_in_driver):
     )
 
 
-def test_cb_003(driver):
+def test_cb_007_make_image(driver):
     chat_page = ChatPage(driver)
     chat_page.upload_file(str(TEST_DOG_IMAGE.absolute()))
     WebDriverWait(chat_page.driver, 30).until(
