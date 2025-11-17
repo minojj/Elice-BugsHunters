@@ -30,17 +30,14 @@ def make_adf_text(text: str):
             {"type": "paragraph", "content": [{"type": "text", "text": text}]}
         ],
     }
-def jira_search_issues(session, jql: str):
-    """
-    Jira Cloud용 신규 검색 API:
-    POST /rest/api/3/search/jql
-    """
+def jira_search_issues(session, jql):
     url = f"{JIRA_URL}/rest/api/3/search/jql"
-    payload = {
-        "jql": jql,
-        "maxResults": 10
+    params = {
+        "query": jql,
+        "maxResults": 20
     }
-    resp = session.post(url, json=payload)
+
+    resp = session.get(url, params=params)
 
     if resp.status_code != 200:
         print(f"[WARN] Jira 검색 실패 ({resp.status_code}): {resp.text}")
@@ -48,6 +45,7 @@ def jira_search_issues(session, jql: str):
 
     data = resp.json()
     return data.get("issues", [])
+
 
 
 # 🧩 JUnit XML 파싱
