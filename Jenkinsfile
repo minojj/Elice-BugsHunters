@@ -83,7 +83,7 @@ pipeline {
                     -e SUB_EMAIL="$SUB_EMAIL" \
                     -e SUB_PASSWORD="$SUB_PASSWORD" \
                     ${DOCKER_IMAGE}:latest \
-                    pytest -n auto \
+                    tests -n auto \
                         --junitxml=${REPORT_DIR}/test-results.xml \
                         --html=${REPORT_DIR}/report.html \
                         --self-contained-html \
