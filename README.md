@@ -23,3 +23,15 @@ Selenium + pytest 기반의 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 
 ├─ Jenkinsfile          # Jenkins 파이프라인 스크립트
 ├─ requirements.txt     # Python 패키지 의존성
 └─ pytest.ini           # pytest 설정
+
+🧰 Tech Stack
+
+Language: Python (3.10+ 권장)
+
+Test Framework: pytest
+
+Browser Automation: Selenium WebDriver
+
+CI/CD: GitHub Actions, Jenkins
+
+Container: Docker, docker-compose
