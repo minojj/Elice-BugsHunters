@@ -791,4 +791,3 @@ class ChatExpansePage:
         except Exception as e:
             print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
             return False
-        
