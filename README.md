@@ -4,7 +4,7 @@ Elice BugsHunters는 엘리스 플랫폼의 **AI Helpy Chat** 웹 애플리케�
 자동화 테스트 & 버그 헌팅 프로젝트입니다.  
 Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포함합니다.
 
----
+
 
 ## 📌 프로젝트 소개 (Overview)
 
@@ -15,7 +15,7 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
   - 명시적 대기를 활용한 안정적인 테스트
   - CI 환경(GitHub Actions, Jenkins, Docker) 연동
 
----
+
 
 ## 🧰 Tech Stack
 
@@ -25,7 +25,7 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
 - **CI/CD**: GitHub Actions, Jenkins
 - **Container**: Docker, docker-compose
 
----
+
 
 ## 📁 폴더 구조
 
