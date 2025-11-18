@@ -187,7 +187,7 @@ def create_or_comment_issue(session, test):
             "summary": summary,
             "description": make_adf_text(desc_text),
             "labels": [LABEL_AUTOTEST],
-            "issuetype": {"name": "Sub-task"},  # ✅ Sub-task로 생성
+            "issuetype": {"name": "Bug"},  # ✅ Bug로 생성
             "parent": {"key": JIRA_EPIC_KEY}     # ✅ 부모 이슈 지정
         }
     }
