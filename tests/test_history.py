@@ -6,12 +6,15 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 
 # POM 컴포넌트들
-from src.pages.ht_composer import Composer
-from src.pages.ht_chat_sidebar import ChatSidebar
-from src.pages.ht_search_overlay import SearchOverlay
-from src.pages.ht_dialogs import Dialogs
-from src.pages.ht_agent_explorer_page import AgentExplorerPage
-from src.pages.ht_main_page import MainPage
+from src.pages.history_pages_all_in_one import (
+    MainPage,
+    ChatSidebar,
+    Composer,
+    Dialogs,
+    SearchOverlay,
+    AgentExplorerPage,
+)
+
 
 
 
@@ -356,7 +359,7 @@ def test_ht_007_chat_history_ordered_by_time(logged_in_driver):
 
     first_msg = "첫번째테스트"
     composer.send(first_msg)            # textarea/submit 에 대한 명시적 대기 포함
-
+    time.sleep(3)                       # 응답 대기
     # 첫 번째 스레드 href가 생길 때까지 명시적 대기 후 저장
     try:
         before_top = WebDriverWait(drv, 10).until(

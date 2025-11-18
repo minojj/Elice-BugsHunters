@@ -40,7 +40,6 @@ def build_options():
 
     # page_load_strategy → mac headless 안정화를 위해 eager 제거
     opts.page_load_strategy = "normal"
-
     system = platform.system()
 
     # 🔥 Headless 설정
@@ -134,7 +133,7 @@ def get_wait(driver):
 def driver():
     d = create_driver()
     yield d
-    # d.quit()
+    d.quit()
 
 
 # 7) 로그인 (메인 계정)
