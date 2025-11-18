@@ -12,7 +12,7 @@ from selenium.common.exceptions import (
 )
 from src.pages.base_page import BasePage
 
-MAIN_URL = "https://qaproject.elice.io/ai-helpy-chat"
+
 
 
 # =====================================================================
@@ -20,7 +20,7 @@ MAIN_URL = "https://qaproject.elice.io/ai-helpy-chat"
 # =====================================================================
 
 class MainPage(BasePage):
-    URL = MAIN_URL
+    URL = "https://qaproject.elice.io/ai-helpy-chat"
 
     def __init__(self, driver):
         # BasePage 초기화
