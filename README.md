@@ -45,4 +45,15 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
 ├─ Jenkinsfile
 ├─ requirements.txt
 └─ pytest.ini
+```
+## 🚀 시작하기 (Getting Started)
+
+### 1) 레포지토리 클론
+
+```bash
+git clone https://github.com/minojj/Elice-BugsHunters.git
+cd Elice-BugsHunters
+git checkout develop
+
+
 
