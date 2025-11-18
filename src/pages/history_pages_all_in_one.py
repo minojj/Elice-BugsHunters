@@ -1,5 +1,3 @@
-# src/pages/ht_pages_all_in_one.py
-
 import time
 
 from selenium.webdriver.common.by import By
@@ -12,66 +10,10 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     StaleElementReferenceException,
 )
+from .base_page import BasePage
 
 DEFAULT_TIMEOUT = 10
 MAIN_URL = "https://qaproject.elice.io/ai-helpy-chat"
-
-
-# =====================================================================
-# BasePage
-# =====================================================================
-
-class BasePage:
-    def __init__(self, drv, timeout=DEFAULT_TIMEOUT):
-        self.drv = drv
-        self.timeout = timeout
-
-    # locator / WebElement / 문자열 키(self.locators[]용) 모두 지원
-    def _resolve(self, target):
-        # 이미 WebElement면 그대로 사용
-        if hasattr(target, "is_displayed"):
-            return target
-
-        # (By, value) 튜플이면 그대로
-        if isinstance(target, tuple):
-            return target
-
-        # 문자열이면 self.locators 딕셔너리에서 조회
-        if isinstance(target, str) and hasattr(self, "locators"):
-            locs = getattr(self, "locators", {})
-            if target in locs:
-                return locs[target]
-
-        # 그 외에는 그대로 반환 (EC가 처리하도록)
-        return target
-
-    def wait(self, sec=None):
-        return WebDriverWait(self.drv, sec or self.timeout)
-
-    def visible(self, locator, sec=None):
-        target = self._resolve(locator)
-        if hasattr(target, "is_displayed"):  # WebElement
-            return self.wait(sec).until(EC.visibility_of(target))
-        return self.wait(sec).until(EC.visibility_of_element_located(target))
-
-    def present(self, locator, sec=None):
-        target = self._resolve(locator)
-        if hasattr(target, "is_displayed"):  # 이미 찾은 Element
-            return target
-        return self.wait(sec).until(EC.presence_of_element_located(target))
-
-    def clickable(self, locator, sec=None):
-        target = self._resolve(locator)
-        return self.wait(sec).until(EC.element_to_be_clickable(target))
-
-    def js_click(self, el):
-        self.drv.execute_script("arguments[0].click();", el)
-
-    def scroll_center(self, el):
-        self.drv.execute_script(
-            "arguments[0].scrollIntoView({block:'center'});",
-            el,
-        )
 
 
 # =====================================================================
@@ -81,10 +23,15 @@ class BasePage:
 class MainPage(BasePage):
     URL = MAIN_URL
 
+    def __init__(self, driver):
+        super().__init__(driver)
+
     def open(self):
-        self.drv.get(self.URL)
+        # 메인 URL로 이동
+        self.driver.get(self.URL)
+
         # 메인 도착 확인: Composer 준비될 때까지 대기
-        composer = Composer(self.drv)
+        composer = Composer(self.driver)
         composer.wait_ready()
 
 
@@ -137,25 +84,68 @@ class ChatSidebar(BasePage):
             By.CSS_SELECTOR,
             "aside svg[data-testid='magnifying-glassIcon']",
         ),
-    }
+        }
+    def __init__(self, driver):
+        super().__init__(driver)
 
+    # --- 0-1) 이 클래스 안에서만 get_element / get_elements 재정의 ---
+    # (BasePage 파일은 그대로 두고, ChatSidebar 전용으로 고쳐 쓰는 느낌)
+    def get_element(self, key, wait_type="visible", timeout=10):
+        locator = self.locators[key]
+        wait = WebDriverWait(self.driver, timeout)
+
+        if wait_type == "clickable":
+            return wait.until(EC.element_to_be_clickable(locator))
+        elif wait_type == "presence":
+            return wait.until(EC.presence_of_element_located(locator))
+        else:
+            return wait.until(EC.visibility_of_element_located(locator))
+
+    def get_elements(self, key, timeout=10):
+        locator = self.locators[key]
+        wait = WebDriverWait(self.driver, timeout)
+        return wait.until(EC.presence_of_all_elements_located(locator))
+
+    # --- 0-2) 예전에 쓰던 헬퍼 함수들 ChatSidebar 안에만 정의 ---
+    def visible(self, key, sec=10):
+        return self.get_element(key, wait_type="visible", timeout=sec)
+
+    def clickable(self, key, sec=10):
+        return self.get_element(key, wait_type="clickable", timeout=sec)
+
+    def present(self, key, sec=10):
+        return self.get_element(key, wait_type="presence", timeout=sec)
+
+    def scroll_center(self, el):
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center', inline: 'center'});", el
+        )
+
+    def js_click(self, el):
+        self.driver.execute_script("arguments[0].click();", el)
+
+    # --- 1) 새 대화 버튼 ---
     def click_new_chat(self):
-        self.clickable(self.locators["new_chat_btn"]).click()
+        # BasePage.click_safely(key) 재사용
+        self.click_safely("new_chat_btn")
 
+    # --- 2) 최상단 스레드 href ---
     def top_thread_href(self):
         try:
-            el = self.present(self.locators["top_thread"], sec=3)
+            el = self.present("top_thread", sec=3)
             return el.get_attribute("href")
         except TimeoutException:
             return None
 
+    # --- 3) 최상단 스레드 제목 ---
     def top_thread_title(self):
-        top = self.visible(self.locators["top_thread"], sec=10)
+        top = self.visible("top_thread", sec=10)
         try:
             return top.find_element(By.CSS_SELECTOR, "p").text.strip()
         except Exception:
             return (top.text or "").strip()
 
+    # --- 4) 옵션(점3개) 열기 ---
     def open_top_options(self, timeout: int = 10):
         """
         최상단 쓰레드의 점3개 옵션 메뉴를 여는 메서드.
@@ -166,17 +156,16 @@ class ChatSidebar(BasePage):
 
         while time.time() < end:
             try:
-                # 1) 그 시점의 최신 top thread 요소 가져오기
-                top = self.present(self.locators["top_thread"], sec=5)
+                top = self.present("top_thread", sec=5)
                 self.scroll_center(top)
 
-                # 2) hover 한번 해주고
-                ActionChains(self.drv).move_to_element(top).pause(0.2).perform()
+                # hover
+                ActionChains(self.driver).move_to_element(top).pause(0.2).perform()
 
-                # 3) 그 순간의 메뉴 버튼을 가져와서 클릭
-                btn = self.clickable(self.locators["top_thread_menu_btn"], sec=5)
+                # 메뉴 버튼 클릭
+                btn = self.clickable("top_thread_menu_btn", sec=5)
                 btn.click()
-                return  # 성공하면 바로 종료
+                return
 
             except StaleElementReferenceException as e:
                 last_exc = e
@@ -185,27 +174,28 @@ class ChatSidebar(BasePage):
             except TimeoutException as e:
                 last_exc = e
                 try:
-                    self.drv.execute_script(
+                    # JS로 hover 이벤트 강제
+                    self.driver.execute_script(
                         """
                         const el = arguments[0];
                         el.dispatchEvent(new MouseEvent('mouseover',{bubbles:true}));
                         el.dispatchEvent(new MouseEvent('mouseenter',{bubbles:true}));
                         el.dispatchEvent(new MouseEvent('mousemove',{bubbles:true}));
-                    """,
+                        """,
                         top,
                     )
-                    btn = self.present(self.locators["top_thread_menu_btn"], sec=5)
+                    btn = self.present("top_thread_menu_btn", sec=5)
                     self.js_click(btn)
                     return
                 except StaleElementReferenceException as e2:
                     last_exc = e2
                     time.sleep(0.2)
 
-        # 여기까지 오면 여러 번 시도해도 실패한 것
         raise last_exc or TimeoutException("최상단 쓰레드 옵션 메뉴 버튼 클릭 실패")
 
+    # --- 5) 메뉴 - 이름 변경 ---
     def click_menu_rename(self):
-        menu = self.visible(self.locators["menu_ul"], sec=5)
+        menu = self.visible("menu_ul", sec=5)
         try:
             item = menu.find_element(*self.locators["menu_rename_item"])
         except NoSuchElementException:
@@ -215,15 +205,18 @@ class ChatSidebar(BasePage):
                 item = pen.find_element(By.XPATH, "./ancestor::li[1]")
             except Exception:
                 raise AssertionError("메뉴에 '이름 변경'이 없습니다.")
+
         self.scroll_center(item)
         try:
-            item = self.clickable(self.locators["menu_rename_item"], sec=5)
+            # locator 기준으로 clickable 대기
+            item = self.clickable("menu_rename_item", sec=5)
             item.click()
         except TimeoutException:
             self.js_click(item)
 
+    # --- 6) 메뉴 - 삭제 ---
     def click_menu_delete(self):
-        menu = self.visible(self.locators["menu_ul"], sec=5)
+        menu = self.visible("menu_ul", sec=5)
         try:
             item = menu.find_element(*self.locators["menu_delete_item"])
         except NoSuchElementException:
@@ -232,36 +225,45 @@ class ChatSidebar(BasePage):
                 item = icon.find_element(By.XPATH, "./ancestor::li[1]")
             except Exception:
                 raise AssertionError("메뉴에 '삭제'가 없습니다.")
+
         self.scroll_center(item)
         try:
-            item = self.clickable(self.locators["menu_delete_item"], sec=5)
+            item = self.clickable("menu_delete_item", sec=5)
             item.click()
         except TimeoutException:
             self.js_click(item)
 
+    # --- 7) 사이드바 검색 버튼 ---
     def click_search_button(self):
+        # 1차 시도: 텍스트 버튼
         try:
-            self.clickable(self.locators["sidebar_search_btn"], sec=5).click()
+            self.click_safely("sidebar_search_btn", timeout=5)
             return
         except TimeoutException:
             pass
-        # 아이콘 폴백
-        icon = self.present(self.locators["sidebar_search_icon"], sec=5)
+
+        # 2차 시도: 아이콘 → 부모 div[role='button']
+        icon = self.present("sidebar_search_icon", sec=5)
         btn = icon.find_element(By.XPATH, "./ancestor::div[@role='button'][1]")
         self.scroll_center(btn)
+
         try:
-            self.clickable(btn, sec=2)  # type: ignore
+            WebDriverWait(self.driver, 2).until(lambda d: btn.is_enabled())
             btn.click()
         except Exception:
             self.js_click(btn)
 
+    # --- 8) 두 번째 스레드 클릭 ---
     def click_second_thread(self):
-        self.clickable(self.locators["second_thread"]).click()
+        self.click_safely("second_thread")
+
 
 
 # =====================================================================
 # Composer
 # =====================================================================
+
+
 
 class Composer(BasePage):
     locators = {
@@ -276,25 +278,52 @@ class Composer(BasePage):
         ),
     }
 
+    def __init__(self, driver):
+        super().__init__(driver)
+
+    # --- 이 클래스 안에서만 get_element / visible / clickable 재정의 ---
+    def get_element(self, key, wait_type="visible", timeout=10):
+        locator = self.locators[key]
+        wait = WebDriverWait(self.driver, timeout)
+
+        if wait_type == "clickable":
+            return wait.until(EC.element_to_be_clickable(locator))
+        elif wait_type == "presence":
+            return wait.until(EC.presence_of_element_located(locator))
+        else:
+            return wait.until(EC.visibility_of_element_located(locator))
+
+    def visible(self, key, sec=10):
+        return self.get_element(key, wait_type="visible", timeout=sec)
+
+    def clickable(self, key, sec=10):
+        return self.get_element(key, wait_type="clickable", timeout=sec)
+
+    # --- 실제 기능 메서드들 ---
+
     def wait_ready(self, sec=None):
         # 처음 준비 + 응답 끝난 뒤 “다시” 준비 둘 다 여기로
-        self.visible(self.locators["textarea"], sec)
+        self.visible("textarea", sec or 10)
 
     def send(self, text: str):
-        ta = self.clickable(self.locators["textarea"])
+        ta = self.clickable("textarea")
         try:
             ta.click()
             ta.send_keys(text)
         except Exception:
-            self.drv.execute_script(
+            # BasePage는 self.driver를 쓰니까 여기서도 driver 사용
+            self.driver.execute_script(
                 "arguments[0].value = arguments[1];"
                 "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));",
                 ta,
                 text,
             )
-        self.wait(20).until(
+
+        # BasePage.wait()는 속성 이름 충돌나서 직접 WebDriverWait 사용
+        WebDriverWait(self.driver, 20).until(
             EC.element_to_be_clickable(self.locators["submit_enabled"])
         ).click()
+
 
 
 # =====================================================================
@@ -319,8 +348,32 @@ class Dialogs(BasePage):
         ),
     }
 
+    def __init__(self, driver):
+        super().__init__(driver)
+    # --- 이 클래스 안에서만 사용할 헬퍼들 ---
+
+    def get_element(self, key, wait_type="visible", timeout=10):
+        locator = self.locators[key]
+        wait = WebDriverWait(self.driver, timeout)
+
+        if wait_type == "clickable":
+            return wait.until(EC.element_to_be_clickable(locator))
+        elif wait_type == "presence":
+            return wait.until(EC.presence_of_element_located(locator))
+        else:
+            return wait.until(EC.visibility_of_element_located(locator))
+
+    def visible(self, key, sec=10):
+        return self.get_element(key, wait_type="visible", timeout=sec)
+
+    def js_click(self, el):
+        self.driver.execute_script("arguments[0].click();", el)
+
+    # --- 실제 기능 ---
+
     def confirm_delete(self):
-        dlg = self.visible(self.locators["dialog"], sec=10)
+        # ✅ 여기서부터는 key 문자열 사용
+        dlg = self.visible("dialog", sec=10)
 
         try:
             btn = dlg.find_element(*self.locators["dialog_delete_btn"])
@@ -328,7 +381,10 @@ class Dialogs(BasePage):
             btn = dlg.find_element(*self.locators["dialog_delete_btn_fallback"])
 
         try:
-            self.wait(10).until(lambda d: btn.is_enabled() and btn.is_displayed())
+            # BasePage.wait 대신 WebDriverWait 직접 사용
+            WebDriverWait(self.driver, 10).until(
+                lambda d: btn.is_enabled() and btn.is_displayed()
+            )
             btn.click()
         except Exception:
             self.js_click(btn)
@@ -342,12 +398,14 @@ class Dialogs(BasePage):
                 # 못 찾거나 stale이면 이미 닫힌 것으로 본다
                 return True
 
-        self.wait(10).until(_dialog_closed)
+        WebDriverWait(self.driver, 10).until(_dialog_closed)
 
 
 # =====================================================================
 # SearchOverlay
 # =====================================================================
+
+
 
 class SearchOverlay(BasePage):
     locators = {
@@ -357,8 +415,37 @@ class SearchOverlay(BasePage):
         ),
     }
 
+    def __init__(self, driver):
+        super().__init__(driver)
+
+
+
+    # --- 이 클래스 안에서만 쓸 헬퍼들 ---
+
+    def get_element(self, key, wait_type="visible", timeout=10):
+        locator = self.locators[key]
+        wait = WebDriverWait(self.driver, timeout)
+
+        if wait_type == "clickable":
+            return wait.until(EC.element_to_be_clickable(locator))
+        elif wait_type == "presence":
+            return wait.until(EC.presence_of_element_located(locator))
+        else:
+            return wait.until(EC.visibility_of_element_located(locator))
+
+    def visible(self, key, sec=10):
+        return self.get_element(key, wait_type="visible", timeout=sec)
+
+    def js_click(self, el):
+        self.driver.execute_script("arguments[0].click();", el)
+
+    # --- 실제 기능 메서드들 ---
+
     def type_query(self, text, sec=10):
-        inp = self.visible(self.locators["search_input_strict"], sec=sec)
+        # 🔹 key 문자열로 사용
+        inp = self.visible("search_input_strict", sec=sec)
+
+        # 클릭 (안 되면 JS 클릭)
         try:
             inp.click()
         except Exception:
@@ -377,7 +464,7 @@ class SearchOverlay(BasePage):
         try:
             inp.send_keys(text)
         except Exception:
-            self.drv.execute_script(
+            self.driver.execute_script(
                 "arguments[0].value = arguments[1];"
                 "arguments[0].dispatchEvent(new Event('input',{bubbles:true}));",
                 inp,
@@ -385,12 +472,14 @@ class SearchOverlay(BasePage):
             )
 
         # 실제 value가 세팅될 때까지 대기
-        self.wait(5).until(lambda d: (inp.get_attribute("value") or "") == text)
+        WebDriverWait(self.driver, 5).until(
+            lambda d: (inp.get_attribute("value") or "") == text
+        )
 
     def wait_result_has_prefix(self, prefix: str, timeout=10):
         end = time.time() + timeout
         while time.time() < end:
-            ok = self.drv.execute_script(
+            ok = self.driver.execute_script(
                 """
                 const prefix = arguments[0];
                 const nodes = document.querySelectorAll("[cmdk-item][role='option']");
@@ -409,19 +498,20 @@ class SearchOverlay(BasePage):
         end = time.time() + timeout
         last = []
         while time.time() < end:
-            vals = self.drv.execute_script(
+            vals = self.driver.execute_script(
                 """
                 const nodes = document.querySelectorAll("[cmdk-item][role='option']");
                 return Array.from(nodes)
                     .map(n => (n.getAttribute("data-value") || "").trim())
                     .filter(Boolean);
-            """
+                """
             )
             last = vals or []
             if last:
                 return last
             time.sleep(0.1)
         return last
+
 
 
 # =====================================================================
@@ -445,46 +535,83 @@ class AgentExplorerPage(BasePage):
         ),
     }
 
+    def __init__(self, driver):
+        super().__init__(driver)
+
+    # --- 이 클래스 전용 헬퍼들 ---
+
+    def get_element(self, key, wait_type="visible", timeout=10):
+        locator = self.locators[key]
+        wait = WebDriverWait(self.driver, timeout)
+
+        if wait_type == "clickable":
+            return wait.until(EC.element_to_be_clickable(locator))
+        elif wait_type == "presence":
+            return wait.until(EC.presence_of_element_located(locator))
+        else:  # visible
+            return wait.until(EC.visibility_of_element_located(locator))
+
+    def clickable(self, key, sec=10):
+        return self.get_element(key, wait_type="clickable", timeout=sec)
+
+    def visible(self, key, sec=10):
+        return self.get_element(key, wait_type="visible", timeout=sec)
+
+    # --- 실제 기능 메서드들 ---
+
     def open(self):
-        self.clickable(self.locators["agent_explorer_link"]).click()
-        self.wait().until(lambda d: "/ai-helpy-chat/agent" in d.current_url)
+        # 예전: self.clickable(self.locators["agent_explorer_link"]).click()
+        self.clickable("agent_explorer_link").click()
+        WebDriverWait(self.driver, 10).until(
+            lambda d: "/ai-helpy-chat/agent" in d.current_url
+        )
 
     def search(self, text: str):
-        inp = self.clickable(self.locators["agent_search_input"])
+        inp = self.clickable("agent_search_input", sec=10)
+
         inp.click()
         try:
             inp.clear()
         except Exception:
             pass
 
+        # 기존 값 삭제
         inp.send_keys(Keys.CONTROL, "a")
         inp.send_keys(Keys.DELETE)
+
+        # 검색어 입력
         inp.send_keys(text)
 
-        self.wait(5).until(lambda d: inp.get_attribute("value") == text)
+        # 실제 value가 세팅될 때까지 대기
+        WebDriverWait(self.driver, 5).until(
+            lambda d: (inp.get_attribute("value") or "") == text
+        )
 
     def assert_all_titles_contain(self, query: str, timeout: int = 10):
         q = (query or "").strip().lower()
-        end = self.drv.execute_script("return Date.now();") + timeout * 1000
+        end = self.driver.execute_script("return Date.now();") + timeout * 1000
         last = []
 
-        while self.drv.execute_script("return Date.now();") < end:
+        while self.driver.execute_script("return Date.now();") < end:
             try:
-                elems = self.drv.find_elements(*self.locators["agent_titles"])
+                elems = self.driver.find_elements(*self.locators["agent_titles"])
                 titles = [el.text.strip() for el in elems]
             except StaleElementReferenceException:
                 time.sleep(0.1)
                 continue
 
+            # 결과 없거나 빈 텍스트가 있으면 다시 시도
             if not titles or any(not t for t in titles):
                 time.sleep(0.1)
                 continue
 
             last = titles
 
+            # 전부 query 포함하면 성공
             if all(q in t.lower() for t in titles):
                 return
 
             time.sleep(0.1)
 
+        # 여기까지 오면 실패
         raise AssertionError(f"전부 포함 실패: query='{query}', titles={last}")
