@@ -129,9 +129,9 @@ def create_or_comment_issue(session, test):
     test_identifier = f"{test['classname']} {test['name']}"
     escaped_identifier = escape_jql_value(test_identifier)
     
-    # ✅ Epic Q31-174 내에서 검색
+    # ✅ Q31-174의 Sub-task 검색
     jql = (
-        f'"Epic Link" = {JIRA_EPIC_KEY} '
+        f'parent = {JIRA_EPIC_KEY} '
         f'AND summary ~ "{escaped_identifier}" '
         f'AND statusCategory != Done '
         f'ORDER BY created DESC'
@@ -146,7 +146,7 @@ def create_or_comment_issue(session, test):
         if not issue_key:
             print(f"[ERROR] 검색된 이슈에 key가 없습니다: {issue}")
         else:
-            print(f"[INFO] Epic {JIRA_EPIC_KEY} 내 기존 이슈 발견: {issue_key} — 코멘트 추가")
+            print(f"[INFO] {JIRA_EPIC_KEY}의 Sub-task 발견: {issue_key} — 코멘트 추가")
             
             comment_text = (
                 f"🚨 자동화 테스트가 다시 실패했습니다!\n\n"
@@ -169,8 +169,8 @@ def create_or_comment_issue(session, test):
             
             return issue_key
 
-    # ✅ Epic Q31-174에 새 이슈 생성
-    print(f"[INFO] Epic {JIRA_EPIC_KEY} 내 기존 이슈 없음 → 새 이슈 생성")
+    # ✅ Q31-174의 Sub-task로 새 이슈 생성
+    print(f"[INFO] {JIRA_EPIC_KEY}의 기존 Sub-task 없음 → 새 Sub-task 생성")
     print(f"[INFO] Summary: {summary}")
     
     desc_text = (
@@ -187,9 +187,8 @@ def create_or_comment_issue(session, test):
             "summary": summary,
             "description": make_adf_text(desc_text),
             "labels": [LABEL_AUTOTEST],
-            "issuetype": {"name": "Bug"},
-            # ✅ Epic Link로 Q31-174에 연결
-            "customfield_10014": JIRA_EPIC_KEY  # Epic Link 필드 (프로젝트마다 다를 수 있음)
+            "issuetype": {"name": "Sub-task"},  # ✅ Sub-task로 생성
+            "parent": {"key": JIRA_EPIC_KEY}     # ✅ 부모 이슈 지정
         }
     }
     
@@ -198,29 +197,29 @@ def create_or_comment_issue(session, test):
         resp = session.post(create_url, json=payload, timeout=30)
         
         if resp.status_code >= 400:
-            print(f"[ERROR] 이슈 생성 실패: {resp.status_code}")
+            print(f"[ERROR] Sub-task 생성 실패: {resp.status_code}")
             print(f"[ERROR] 응답: {resp.text}")
             return None
         
         issue_key = resp.json().get("key")
-        print(f"[INFO] 🆕 Epic {JIRA_EPIC_KEY}에 생성된 이슈: {issue_key}")
+        print(f"[INFO] 🆕 {JIRA_EPIC_KEY}의 Sub-task 생성: {issue_key}")
         print(f"[INFO] 링크: {JIRA_URL}/browse/{issue_key}")
         return issue_key
     
     except requests.exceptions.RequestException as e:
-        print(f"[ERROR] 이슈 생성 중 오류: {e}")
+        print(f"[ERROR] Sub-task 생성 중 오류: {e}")
         return None
 
 
 def close_passed_issues(session, passed_tests):
-    """✅ 통과된 테스트의 Epic 내 기존 실패 이슈 닫기"""
+    """✅ 통과된 테스트의 Sub-task 닫기"""
     for test in passed_tests:
         test_identifier = f"{test['classname']} {test['name']}"
         escaped_identifier = escape_jql_value(test_identifier)
         
-        # ✅ Epic Q31-174 내에서 검색
+        # ✅ Q31-174의 Sub-task 검색
         jql = (
-            f'"Epic Link" = {JIRA_EPIC_KEY} '
+            f'parent = {JIRA_EPIC_KEY} '
             f'AND summary ~ "{escaped_identifier}" '
             f'AND statusCategory != Done '
             f'ORDER BY created DESC'
@@ -233,7 +232,7 @@ def close_passed_issues(session, passed_tests):
             if not issue_key:
                 continue
                 
-            print(f"[INFO] ✅ 테스트 통과 — Epic {JIRA_EPIC_KEY} 내 이슈 {issue_key} 닫기")
+            print(f"[INFO] ✅ 테스트 통과 — Sub-task {issue_key} 닫기")
 
             # 코멘트 추가
             comment_text = (
@@ -241,7 +240,7 @@ def close_passed_issues(session, passed_tests):
                 f"테스트: {test['classname']}::{test['name']}\n"
                 f"빌드: {JOB_NAME} #{BUILD_NUMBER}\n"
                 f"링크: {BUILD_URL}\n\n"
-                f"이전 실패 이슈를 자동으로 닫습니다."
+                f"이전 실패 Sub-task를 자동으로 닫습니다."
             )
             comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
             try:
@@ -259,7 +258,7 @@ def close_passed_issues(session, passed_tests):
                     if done_transition:
                         transition_id = done_transition["id"]
                         session.post(transition_url, json={"transition": {"id": transition_id}}, timeout=30)
-                        print(f"[INFO] 🔒 이슈 {issue_key} → Done")
+                        print(f"[INFO] 🔒 Sub-task {issue_key} → Done")
                     else:
                         print(f"[WARN] Done 상태 전환 옵션 없음 ({issue_key})")
             except requests.exceptions.RequestException as e:
