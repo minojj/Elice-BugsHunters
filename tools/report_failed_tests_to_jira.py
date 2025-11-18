@@ -9,6 +9,7 @@ JIRA_URL = os.getenv("JIRA_URL")
 JIRA_PROJECT = os.getenv("JIRA_PROJECT")
 JIRA_USER = os.getenv("JIRA_USER")
 JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN")
+JIRA_EPIC_KEY = os.getenv("JIRA_EPIC_KEY", "Q31-174")  # ✅ 에픽 키
 JUNIT_PATH = os.getenv("JUNIT_PATH", "reports/test-results.xml")
 JOB_NAME = os.getenv("JENKINS_JOB_NAME", "unknown-job")
 BUILD_NUMBER = os.getenv("JENKINS_BUILD_NUMBER", "0")
@@ -37,11 +38,7 @@ def make_adf_text(text: str):
     }
 
 def jira_search_issues(session, jql):
-    """
-    ✅ Jira Cloud REST API v3 검색 (새로운 엔드포인트)
-    https://developer.atlassian.com/changelog/#CHANGE-2046
-    """
-    # ✅ 변경: /rest/api/3/search → /rest/api/3/search/jql
+    """✅ Jira Cloud REST API v3 검색 (POST 방식)"""
     url = f"{JIRA_URL}/rest/api/3/search/jql"
     
     payload = {
@@ -66,7 +63,7 @@ def jira_search_issues(session, jql):
         print(f"[DEBUG] 검색된 이슈 수: {len(issues)}")
         
         if issues:
-            for issue in issues[:3]:  # 처음 3개만 로그
+            for issue in issues[:3]:
                 print(f"[DEBUG] - {issue.get('key')}: {issue.get('fields', {}).get('summary', 'N/A')}")
         
         return issues
@@ -110,11 +107,7 @@ def parse_junit_results(xml_path):
     return failed_tests, passed_tests
 
 def escape_jql_value(value: str) -> str:
-    """
-    JQL 검색용 이스케이프
-    - 특수문자 제거
-    - 공백 정규화
-    """
+    """JQL 검색용 이스케이프"""
     value = re.sub(r'[^\w\s\-:]', ' ', value)
     value = re.sub(r'\s+', ' ', value)
     return value.strip()
@@ -136,9 +129,9 @@ def create_or_comment_issue(session, test):
     test_identifier = f"{test['classname']} {test['name']}"
     escaped_identifier = escape_jql_value(test_identifier)
     
+    # ✅ Epic Q31-174 내에서 검색
     jql = (
-        f'project = "{JIRA_PROJECT}" '
-        f'AND labels = "{LABEL_AUTOTEST}" '
+        f'"Epic Link" = {JIRA_EPIC_KEY} '
         f'AND summary ~ "{escaped_identifier}" '
         f'AND statusCategory != Done '
         f'ORDER BY created DESC'
@@ -153,7 +146,7 @@ def create_or_comment_issue(session, test):
         if not issue_key:
             print(f"[ERROR] 검색된 이슈에 key가 없습니다: {issue}")
         else:
-            print(f"[INFO] 기존 이슈 발견: {issue_key} — 코멘트 추가")
+            print(f"[INFO] Epic {JIRA_EPIC_KEY} 내 기존 이슈 발견: {issue_key} — 코멘트 추가")
             
             comment_text = (
                 f"🚨 자동화 테스트가 다시 실패했습니다!\n\n"
@@ -176,8 +169,8 @@ def create_or_comment_issue(session, test):
             
             return issue_key
 
-    # 새로운 이슈 생성
-    print(f"[INFO] 기존 이슈 없음 → 새로운 이슈 생성")
+    # ✅ Epic Q31-174에 새 이슈 생성
+    print(f"[INFO] Epic {JIRA_EPIC_KEY} 내 기존 이슈 없음 → 새 이슈 생성")
     print(f"[INFO] Summary: {summary}")
     
     desc_text = (
@@ -195,6 +188,8 @@ def create_or_comment_issue(session, test):
             "description": make_adf_text(desc_text),
             "labels": [LABEL_AUTOTEST],
             "issuetype": {"name": "Bug"},
+            # ✅ Epic Link로 Q31-174에 연결
+            "customfield_10014": JIRA_EPIC_KEY  # Epic Link 필드 (프로젝트마다 다를 수 있음)
         }
     }
     
@@ -208,7 +203,7 @@ def create_or_comment_issue(session, test):
             return None
         
         issue_key = resp.json().get("key")
-        print(f"[INFO] 🆕 생성된 JIRA 이슈: {issue_key}")
+        print(f"[INFO] 🆕 Epic {JIRA_EPIC_KEY}에 생성된 이슈: {issue_key}")
         print(f"[INFO] 링크: {JIRA_URL}/browse/{issue_key}")
         return issue_key
     
@@ -218,14 +213,14 @@ def create_or_comment_issue(session, test):
 
 
 def close_passed_issues(session, passed_tests):
-    """✅ 통과된 테스트의 기존 실패 이슈 닫기"""
+    """✅ 통과된 테스트의 Epic 내 기존 실패 이슈 닫기"""
     for test in passed_tests:
         test_identifier = f"{test['classname']} {test['name']}"
         escaped_identifier = escape_jql_value(test_identifier)
         
+        # ✅ Epic Q31-174 내에서 검색
         jql = (
-            f'project = "{JIRA_PROJECT}" '
-            f'AND labels = "{LABEL_AUTOTEST}" '
+            f'"Epic Link" = {JIRA_EPIC_KEY} '
             f'AND summary ~ "{escaped_identifier}" '
             f'AND statusCategory != Done '
             f'ORDER BY created DESC'
@@ -238,7 +233,7 @@ def close_passed_issues(session, passed_tests):
             if not issue_key:
                 continue
                 
-            print(f"[INFO] ✅ 테스트 통과 — 이슈 {issue_key} 닫기")
+            print(f"[INFO] ✅ 테스트 통과 — Epic {JIRA_EPIC_KEY} 내 이슈 {issue_key} 닫기")
 
             # 코멘트 추가
             comment_text = (
@@ -272,15 +267,18 @@ def close_passed_issues(session, passed_tests):
 
 # 🚀 메인 실행
 if __name__ == "__main__":
-    if not all([JIRA_URL, JIRA_PROJECT, JIRA_USER, JIRA_API_TOKEN]):
+    if not all([JIRA_URL, JIRA_PROJECT, JIRA_USER, JIRA_API_TOKEN, JIRA_EPIC_KEY]):
         print("[ERROR] 필수 환경변수가 설정되지 않았습니다")
+        print("[ERROR] JIRA_URL, JIRA_PROJECT, JIRA_USER, JIRA_API_TOKEN, JIRA_EPIC_KEY 확인 필요")
         sys.exit(1)
+    
+    print(f"[INFO] Epic {JIRA_EPIC_KEY} 내에서 모든 활동이 이루어집니다")
     
     failed_tests, passed_tests = parse_junit_results(JUNIT_PATH)
     session = make_jira_session()
 
     if failed_tests:
-        print(f"[INFO] 🚨 {len(failed_tests)}개의 실패 테스트 이슈 생성/갱신 중...")
+        print(f"[INFO] 🚨 {len(failed_tests)}개의 실패 테스트 이슈 생성/갱신 중... (Epic: {JIRA_EPIC_KEY})")
         for t in failed_tests:
             create_or_comment_issue(session, t)
     else:
