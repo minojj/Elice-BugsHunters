@@ -50,7 +50,8 @@ def test_bu_003_click_usage_history(logged_in_driver):
 
     usage_page.usage_history_click()
 
-    driver.switch_to.window(driver.window_handles[-1])
+    if len(driver.window_handles) > 1:
+        driver.switch_to.window(driver.window_handles[-1])
 
     assert usage_page.is_usage_history_page(), "❌ Usage History 페이지로 이동 실패"
 
