@@ -71,4 +71,4 @@ def test_ce_012_file_upload_new_chat(driver):
 def test_ce_013_quiz_empty_new_chat(driver):
     page = ChatExpansePage(driver)
     result = page.create_quiz_and_send_empty_new_chat()
-    assert result, "✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!"
+    assert result is True, "✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!"

@@ -90,21 +90,14 @@ class ChatExpansePage(BasePage):
         self.wait_for_backdrop_disappear()
 
         try:
-            btn = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable(self.locators["plus_btn"])
-            )
-            btn.click()
+            self.get_element("plus_btn", wait_type="clickable", timeout=15).click()
             return
-        except:
-            pass  
-
-        try:
+        except (TimeoutException, NoSuchElementException):
             self.click_new_chat_button()
-        except:
-            pass
-
-        btn = self.get_element("plus_btn", wait_type="clickable", timeout=5)
-        btn.click()
+            self.wait_for_backdrop_disappear()
+            self.get_element("plus_btn", wait_type="clickable", timeout=15).click()
+            return
+            
 
     def click_file_upload_menu(self):
         btn = self.get_element("file_upload_menu_css", wait_type="clickable")
@@ -167,8 +160,10 @@ class ChatExpansePage(BasePage):
         chat_input = self.get_element("chat_input", wait_type="clickable")
         chat_input.click()
         chat_input.send_keys(message)
-        self.wait.until(lambda d: chat_input.get_attribute("value") == message)
-        chat_input.send_keys(Keys.RETURN)
+        self.wait.until(
+        lambda d: d.find_element(*self.locators["chat_input"]).get_attribute("value") == message
+    )
+        self.get_element("chat_input", wait_type="clickable").send_keys(Keys.RETURN)
 
     def wait_for_response(self, timeout: int = 60):
         loading_locator = self.locators.get("loading_indicator")
@@ -194,13 +189,8 @@ class ChatExpansePage(BasePage):
             pass
 
     def click_new_chat_button(self):
-        """새 대화 버튼 클릭 (백드롭 정리 후, 인터셉트 방지)"""
         self.wait_for_backdrop_disappear()
-        btn = self.get_element("new_chat_btn", wait_type="clickable")
-        try:
-            btn.click()
-        except ElementClickInterceptedException:
-            self.driver.execute_script("arguments[0].click();", btn)
+        self.click_safely("new_chat_btn")
         self.get_element("chat_input", wait_type="presence")
 
     def upload_file_and_send(self, filepath):
@@ -229,12 +219,18 @@ class ChatExpansePage(BasePage):
 
     def upload_file_and_send_new_chat(self, filepath):
         try:
-            self.click_new_chat_button()
-            self.click_plus_button()
+            self.wait_for_backdrop_disappear()
+            self.click_safely("new_chat_btn")
+            self.get_element("chat_input", wait_type="presence")
+
+            self.wait_for_backdrop_disappear()
+            self.get_element("plus_btn", wait_type="clickable", timeout=15).click()
+
             self.click_file_upload_menu()
             self.upload_file(filepath)
             self.close_file_dialog()
             self.wait_for_backdrop_disappear()
+
             self.send_message_with_enter()
             self.wait_for_response()
             return True
@@ -314,8 +310,13 @@ class ChatExpansePage(BasePage):
     def _clear_chat_input(self):
         chat_input = self.get_element("chat_input", wait_type="clickable")
         chat_input.clear()
-        self.wait.until(lambda d: chat_input.get_attribute("value") == "")
-        return chat_input
+
+        chat_locator = self.locators["chat_input"]
+        self.wait.until(
+        lambda d: d.find_element(*chat_locator).get_attribute("value") == ""
+    )
+        
+        return self.get_element("chat_input", wait_type="clickable")
 
     def create_quiz_and_send(self, wait_time=10):
         try:
@@ -381,10 +382,10 @@ class ChatExpansePage(BasePage):
                 raise Exception("퀴즈 생성 메뉴를 클릭할 수 없습니다.")
 
             self.wait_for_backdrop_disappear()
-
             self._clear_chat_input()
             self.send_message_with_enter()
             self.wait_for_response()
+            
             return True
 
         except TimeoutException as e:
@@ -733,8 +734,7 @@ class ChatExpansePage(BasePage):
 
     def click_deep_dive_menu(self):
         try:
-            btn = self.get_element("deep_dive_menu", wait_type="clickable")
-            btn.click()
+            self.click_safely("deep_dive_menu")
         except Exception as e:
             raise Exception("심층 조사 메뉴를 클릭할 수 없습니다.") from e
 
@@ -743,8 +743,7 @@ class ChatExpansePage(BasePage):
         chat_input.send_keys(topic)
 
     def click_create_deep_dive_button(self):
-        btn = self.get_element("deep_dive_create_btn", wait_type="clickable")
-        btn.click()
+        self.click_safely("deep_dive_create_btn")
 
     def deep_dive_and_send(self, wait_time=30):
         try:
