@@ -144,7 +144,7 @@ class AgentExplorerPage(BasePage):
         try:
             modal_delete_btn = short_wait.until(
                 EC.element_to_be_clickable(
-                    my_agents_page.locators["confirm_delete_modal_button"]
+                    my_agents_page.locators["confirm_delete_modal_btn"]
                 )
             )
 
@@ -198,7 +198,7 @@ class CreateAgentPage(BasePage):
 
 
     def __init__(self, driver):
-        self.driver = driver
+        super().__init__(driver)   
         self.url = "https://qaproject.elice.io/ai-helpy-chat/agent"
 
 
@@ -558,12 +558,12 @@ class MyAgentsPage(BasePage):
         "organization_icon": (By.CSS_SELECTOR, "svg[data-icon='buildings']"),
         "edit_icon": (By.CSS_SELECTOR, "svg[data-icon='pen']"),
         "delete_icon": (By.CSS_SELECTOR, "svg[data-icon='trash']"),
-        "confirm_delete_modal_button": (By.CSS_SELECTOR, "button.MuiButton-containedError"),
-        "cancel_delete_modal_button": (By.CSS_SELECTOR, "button.MuiButton-containedInherit"),
+        "confirm_delete_modal_btn": (By.CSS_SELECTOR, "button.MuiButton-containedError"),
+        "cancel_delete_modal_btn": (By.CSS_SELECTOR, "button.MuiButton-containedInherit"),
         }
 
     def __init__(self, driver):
-        self.driver = driver
+        super().__init__(driver)   
         self.url = "https://qaproject.elice.io/ai-helpy-chat/agent/mine"
 
     def get_all_cards(self):
@@ -799,19 +799,19 @@ class MyAgentsPage(BasePage):
 
     def confirm_delete_modal(self):
         btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.locators["confirm_delete_modal_button"])
+            EC.element_to_be_clickable(self.locators["confirm_delete_modal_btn"])
         )
         btn.click()
 
     def cancel_delete_modal(self):
         btn = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.locators["cancel_delete_modal_button"])
+            EC.element_to_be_clickable(self.locators["cancel_delete_modal_btn"])
         )
         btn.click()
 
         WebDriverWait(self.driver, 5, 0.1).until(
             EC.invisibility_of_element_located(
-                self.locators["confirm_delete_modal_button"]
+                self.locators["confirm_delete_modal_btn"]
             )
         )
 
@@ -819,7 +819,7 @@ class MyAgentsPage(BasePage):
         try:
             WebDriverWait(self.driver, timeout).until(
                 EC.visibility_of_element_located(
-                    self.locators["confirm_delete_modal_button"]
+                    self.locators["confirm_delete_modal_btn"]
                 )
             )
             return True

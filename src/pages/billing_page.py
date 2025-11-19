@@ -22,7 +22,7 @@ class BillingPage(BasePage):
         self.wait.until(lambda d: "/admin/org/billing/payments/credit" in d.current_url)
 
     def wait_usage_table_loaded(self, timeout: int = 20):
-        self.get_element("usage_table", wait_type="presence", timeout=timeout)
+        return self.get_element("usage_table", wait_type="presence", timeout=timeout)
 
 
 
@@ -119,15 +119,14 @@ class UsagePage(BasePage):
     
     def click_settings_button(self):
         self.driver.get("https://qaproject.elice.io")
-        self.driver.refresh() 
-        svg = self.get_element("settings_btn", wait_type="presence")
+        svg = self.get_element("settings_btn", wait_type="clickable")
         button = svg.find_element(By.XPATH, "./ancestor::button")
         button.click()
 
 
     def usage_history_click(self):
         self.click_settings_button()
-        self.get_element("usage_history_menu", wait_type="presence", timeout=5)
+        self.get_element("usage_history_menu", wait_type="clickable", timeout=5)
         self.click_safely("usage_history_menu")
 
 
@@ -181,7 +180,7 @@ class UsagePage(BasePage):
 
     def is_api_key_manage_page(self):
         try:
-            if not self.is_current_url("/cloud/mlapi/keys/serverless"):
+            if "/keys/serverless" not in self.driver.current_url:
                 return False
             header = self.get_element("api_key_manage_header", timeout=10)
             return "API 키 관리" in header.text
