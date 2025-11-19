@@ -1,0 +1,192 @@
+commit 792bc7687773846a7a075277ca8871ea63a2d22c
+tree a2baa290c13dc3fc8344c2f9f0a691ea66b8d401
+parent 54218dd5ee68fe481b76c1bd7b0cce206d5a56ae
+author nwweiit <nwweiit@gmail.com> 2025-11-19 12:00:24 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-19 13:09:35 +0900
+
+    stability fix
+
+
+:100644 100644 f787476059b11e8756d19f7b173221e94bc03f15 80293689a5f831a796077df61906225f4d4ba9b9 M	src/pages/billing_page.py
+:100644 100644 d414aeffb54ef69afdda59a93225811873bb6caf ec8be6dba31b766b382cff15592ed041b3259512 M	tests/test_billing_system.py
+:100644 100644 bf3fe434b7b99f686a65e48c1191e6e838f054ce 80706f1759130a7aadc7a3d084b05a19e0c9db88 M	tests/test_custom_agent.py
+commit 54218dd5ee68fe481b76c1bd7b0cce206d5a56ae
+tree 54190db01667d2c474adb84cd228c95744a12115
+parent 8e4a668777e002f445a12c1039a054b766b16b5d
+author nwweiit <nwweiit@gmail.com> 2025-11-18 21:28:31 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-19 13:09:35 +0900
+
+    Update custom_agent_page.py
+    
+    super().__init__ fix
+
+
+:100644 100644 13e0dc3e4cdbb5c3acf1833fa777f13b86bd1e83 cbc6e5bceca9a67811f2e9108da62deb83b251f9 M	src/pages/custom_agent_page.py
+commit 17f5b27dddb75656d9b3cf8445bcc973e5d9158c
+tree 5bc14de223b385ac6be052ea06af05c2cbfa6997
+parent f7779b6767dda15ec924de763fb0f1522c03947c
+author yejin1024 <yejin1024@gmail.com> 2025-11-19 12:02:22 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-19 12:02:22 +0900
+
+    Update test_chat_expanse.py
+
+
+:100644 100644 6b85dcfbcf1ee7f1ca5c45a03e2fb7c26189eeb5 91e78da26bdd3a1c62fc4927164effd1c6b20863 M	tests/test_chat_expanse.py
+commit f7779b6767dda15ec924de763fb0f1522c03947c
+tree 6738bc7edf24b366d109555822d7f0199560195d
+parent 39ad2018aca00ff8642466aacc1a6338317c48e5
+author yejin1024 <yejin1024@gmail.com> 2025-11-19 12:02:17 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-19 12:02:17 +0900
+
+    Update chat_expanse_page.py
+
+
+:100644 100644 34e6655a63d1ac837778380a3bc7004fa4ba9c79 cad1907189890e38efa266254eca72989da6a1e8 M	src/pages/chat_expanse_page.py
+commit 0cc1c60771eb5576624a8c4fd13f3856ca38408a
+tree b09309f01e117e30f8a59248f3cbcfde1622ea27
+parent 736772c7444ab7323ae1f4ca79ca12cfcd40b65c
+author nwweiit <nwweiit@gmail.com> 2025-11-19 12:00:24 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-19 12:00:24 +0900
+
+    stability fix
+
+
+:100644 100644 6af4224cff42e81c6ee816a0e63f3613bf6bf94d 8c46c98f0531290df6539c7cb775df2cffeb4e3f M	reports/test-results.xml
+:100644 100644 53254bddd1196ed2a56902bf8cef0719a5f243ad d4a61f6ce071181202987ee0387a30ad5f5d57bc M	src/pages/billing_page.py
+:100644 100644 e59668f132451f47be1133aad07ca1b5a38e57a9 07d2714763da0fc7f42ab01b3179eeeca9c5bb06 M	tests/test_billing_system.py
+:100644 100644 bf3fe434b7b99f686a65e48c1191e6e838f054ce 80706f1759130a7aadc7a3d084b05a19e0c9db88 M	tests/test_custom_agent.py
+commit 9c8b07295f1ad5edd114233ffcd4edb5013e02a8
+tree 49261096f665ae6fb009b25e751328a0d777d077
+parent 52bfbb1add116f497f0ba9ea4f2322f3ba5db666
+author minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-19 11:59:04 +0900
+committer minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-19 11:59:04 +0900
+
+    Update chat_base_page.py
+
+
+:100644 100644 b4ab7e341a5554ea1c941ce70f50b5968f163dd4 17b70360ee1662063cd86d8d710f455c1bdc5cb0 M	src/pages/chat_base_page.py
+commit ee0f349f0bda9e21e544356fa3a317318c936f32
+tree 7fc1ed734867d4d1980165dae7fd3b8570b3c7f9
+parent 7cf8554cba16ccf3366b68ea501a07e45de2fdec
+author minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-19 11:44:57 +0900
+committer minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-19 11:44:57 +0900
+
+    Update test-results.xml
+
+
+:100644 100644 e6fba6efb6c3d64d2a06bac29024ac5c90af99a1 bb52519087932cb2c171e3b2db56b4a571756ef7 M	reports/test-results.xml
+commit 39ad2018aca00ff8642466aacc1a6338317c48e5
+tree 3134a2cfb09a4ecfe5e4081673ac47ae04959659
+parent 27a9726a72b15a84935558ede77d0ee0e9f5bb88
+author yejin1024 <yejin1024@gmail.com> 2025-11-19 11:15:56 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-19 11:15:56 +0900
+
+    Update chat_expanse_page.py
+
+
+:100644 100644 a4af9a4a83ad81aca26df03ff58353e87d6626c1 34e6655a63d1ac837778380a3bc7004fa4ba9c79 M	src/pages/chat_expanse_page.py
+commit 27a9726a72b15a84935558ede77d0ee0e9f5bb88
+tree 4cffff4e41f9c28bc6e9b98e1b21a532b9e973b2
+parent bc08bdea728f0d59a98b11a34b5d9c754053dac4
+author yejin1024 <yejin1024@gmail.com> 2025-11-19 11:15:52 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-19 11:15:52 +0900
+
+    Update test_chat_expanse.py
+
+
+:100644 100644 4560f67d42b97d808cf8e5b018c81c4ba23dcadd 6b85dcfbcf1ee7f1ca5c45a03e2fb7c26189eeb5 M	tests/test_chat_expanse.py
+commit 27f618962a8d1ec5fe000e9ecf27009c1cc63bdc
+tree fe38ba219a7fc637789567ad472967e8ee64ea68
+parent b68084bb7f6ff03f6cf348e03bc2c08a852c6fef
+author junseoseki <dhfkapap@naver.com> 2025-11-19 11:12:19 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-19 11:12:19 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 ee215ca0b3d3bb12a0b51fc23eaa605625fe69d9 c0f744cfe6756d3e3dc4bb6a3aacc65281e96460 M	tools/report_failed_tests_to_jira.py
+commit 7cf8554cba16ccf3366b68ea501a07e45de2fdec
+tree 6e3ffcc50b8826951087ae609bd47b2c1a8b8135
+parent df70f5015b824784cad6a374068fb8f1a4d18838
+author minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-19 10:28:02 +0900
+committer minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-19 10:28:02 +0900
+
+    edit
+    
+    scroll
+
+
+:100644 100644 32128cabe7a8a573d758f4f717366d67da9ca1e5 e6fba6efb6c3d64d2a06bac29024ac5c90af99a1 M	reports/test-results.xml
+:100644 100644 2b24060ffa18c4b25681c205d4be2a902cc510a6 4373ae831e8a6f230e651c9b319370962a6360b5 M	src/pages/chat_base_page.py
+commit e513ff51c25ace9a6b273c8265b62a62af34d58f
+tree 7aed1069ae129d9ffbf2ef400306ba6579e9f5c6
+parent d5e9b45db1db706e394a858cec7e6b512f770363
+author flytecc <147461911+dlxorud1256@users.noreply.github.com> 2025-11-18 23:08:38 +0900
+committer GitHub <noreply@github.com> 2025-11-18 23:08:38 +0900
+
+    Create README.md
+
+:000000 100644 0000000000000000000000000000000000000000 652b7010b1a4a04c0e0bcb9ec4ce885fbebe87eb A	README.md
+commit d5e9b45db1db706e394a858cec7e6b512f770363
+tree d03717928bbb5767b06037390a12599545051beb
+parent d131b95e17adafefefa0433129ac3c4780e5a73f
+author flytecc <147461911+dlxorud1256@users.noreply.github.com> 2025-11-18 22:25:09 +0900
+committer GitHub <noreply@github.com> 2025-11-18 22:25:09 +0900
+
+    Update history_page.py
+
+:100644 100644 6fe0dd3066a5606c9c25feb35d3b8a71e308057d 40cca6dce783b580703b89d95dbb7a54bd55fa03 M	src/pages/history_page.py
+commit d131b95e17adafefefa0433129ac3c4780e5a73f
+tree 39b31cc7416ebaa3004628033cdfee738de8c753
+parent 3bab52c21465f12f58c10c62b3f112f6dbdc4b6b
+author flytecc <147461911+dlxorud1256@users.noreply.github.com> 2025-11-18 22:15:36 +0900
+committer GitHub <noreply@github.com> 2025-11-18 22:15:36 +0900
+
+    Enhance usage table loaded assertion in tests
+    
+    Update billing usage table test to check for table element.
+
+:100644 100644 e59668f132451f47be1133aad07ca1b5a38e57a9 d414aeffb54ef69afdda59a93225811873bb6caf M	tests/test_billing_system.py
+commit 3bab52c21465f12f58c10c62b3f112f6dbdc4b6b
+tree 6bafaee6e3e2efd2db641ea919cbbb3e2ccf2f0d
+parent 3438164704f2f1ef1c0cacad9d0c2245ff6272ad
+author flytecc <147461911+dlxorud1256@users.noreply.github.com> 2025-11-18 22:14:56 +0900
+committer GitHub <noreply@github.com> 2025-11-18 22:14:56 +0900
+
+    Update billing_page.py
+
+:100644 100644 53254bddd1196ed2a56902bf8cef0719a5f243ad f787476059b11e8756d19f7b173221e94bc03f15 M	src/pages/billing_page.py
+commit 736772c7444ab7323ae1f4ca79ca12cfcd40b65c
+tree d14262f74e88d88f3fe50a9a3fdec18b0088e947
+parent 3438164704f2f1ef1c0cacad9d0c2245ff6272ad
+author nwweiit <nwweiit@gmail.com> 2025-11-18 21:28:31 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-18 21:28:31 +0900
+
+    Update custom_agent_page.py
+    
+    super().__init__ fix
+
+
+:100644 100644 13e0dc3e4cdbb5c3acf1833fa777f13b86bd1e83 cbc6e5bceca9a67811f2e9108da62deb83b251f9 M	src/pages/custom_agent_page.py
+commit df70f5015b824784cad6a374068fb8f1a4d18838
+tree df11a18aad7e995e0f665866837f6a384304bdd9
+parent 735e0eb5c0f47a0db31dd2848b1c8697aec42455
+author minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-18 21:25:16 +0900
+committer minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-18 21:25:16 +0900
+
+    edit
+
+
+:000000 100644 0000000000000000000000000000000000000000 32128cabe7a8a573d758f4f717366d67da9ca1e5 A	reports/test-results.xml
+:100644 100644 1ab62b4f36c84194fd4e69d92535083cb685afec 2b24060ffa18c4b25681c205d4be2a902cc510a6 M	src/pages/chat_base_page.py
+:100644 100644 a6ea459601605e2a450e459d6278045cd407b29f b825bec548935a0223c5856dfec0e17377a6755d M	tests/test_chat_base.py
+commit 39a2f2744cab528f6fd5671e6b504b38f22a4cd9
+tree 8153512895cadd2a84df487734327abce829eaf1
+parent 735e0eb5c0f47a0db31dd2848b1c8697aec42455
+author yejin1024 <yejin1024@gmail.com> 2025-11-18 10:05:27 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-18 10:05:27 +0900
+
+    Update chat_expanse_page.py
+
+
+:100644 100644 24353012bc1d3d499a5dc98ab4e066c8b9d3f3b4 d05e3a34e3c2ab8cc248aaadd9fad21be054a1b2 M	src/pages/chat_expanse_page.py

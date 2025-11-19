@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="14" time="171.485" timestamp="2025-11-16T14:03:27.185794+00:00" hostname="f73ffc20f1e2"><testcase classname="tests.test_account" name="test_ac_001_login" time="6.713" /><testcase classname="tests.test_account" name="test_ac_002_duplicate_email" time="5.347" /><testcase classname="tests.test_account" name="test_ac_003_negative_login" time="9.918" /><testcase classname="tests.test_account" name="test_ac_004_positive_login" time="19.645" /><testcase classname="tests.test_account" name="test_ac_005_login_with_non_email_format" time="6.921" /><testcase classname="tests.test_account" name="test_ac_006_login_with_spaces" time="6.923" /><testcase classname="tests.test_account" name="test_ac_007_logout" time="10.088" /><testcase classname="tests.test_history" name="test_ht_001" time="30.031"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaae65c4c18 &lt;unknown&gt;&#10;#1 0xaaaae5fee0d0 &lt;unknown&gt;&#10;#2 0xaaaae6036f4c &lt;unknown&gt;&#10;#3 0xaaaae6072d3c &lt;unknown&gt;&#10;#4 0xaaaae602b998 &lt;unknown&gt;&#10;#5 0xaaaae658f79c &lt;unknown&gt;&#10;#6 0xaaaae659282c &lt;unknown&gt;&#10;#7 0xaaaae6592408 &lt;unknown&gt;&#10;#8 0xaaaae657a620 &lt;unknown&gt;&#10;#9 0xaaaae6592eac &lt;unknown&gt;&#10;#10 0xaaaae656493c &lt;unknown&gt;&#10;#11 0xaaaae65b1abc &lt;unknown&gt;&#10;#12 0xaaaae65b1cc8 &lt;unknown&gt;&#10;#13 0xaaaae65c397c &lt;unknown&gt;&#10;#14 0xffff92a8202c &lt;unknown&gt;&#10;#15 0xffff92aebf18 &lt;unknown&gt;">tests/test_history.py:43: in test_ht_001
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaae65c4c18 &lt;unknown&gt;
+E   #1 0xaaaae5fee0d0 &lt;unknown&gt;
+E   #2 0xaaaae6036f4c &lt;unknown&gt;
+E   #3 0xaaaae6072d3c &lt;unknown&gt;
+E   #4 0xaaaae602b998 &lt;unknown&gt;
+E   #5 0xaaaae658f79c &lt;unknown&gt;
+E   #6 0xaaaae659282c &lt;unknown&gt;
+E   #7 0xaaaae6592408 &lt;unknown&gt;
+E   #8 0xaaaae657a620 &lt;unknown&gt;
+E   #9 0xaaaae6592eac &lt;unknown&gt;
+E   #10 0xaaaae656493c &lt;unknown&gt;
+E   #11 0xaaaae65b1abc &lt;unknown&gt;
+E   #12 0xaaaae65b1cc8 &lt;unknown&gt;
+E   #13 0xaaaae65c397c &lt;unknown&gt;
+E   #14 0xffff92a8202c &lt;unknown&gt;
+E   #15 0xffff92aebf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_002" time="13.600"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaae65c4c18 &lt;unknown&gt;&#10;#1 0xaaaae5fee0d0 &lt;unknown&gt;&#10;#2 0xaaaae6036f4c &lt;unknown&gt;&#10;#3 0xaaaae6072d3c &lt;unknown&gt;&#10;#4 0xaaaae602b998 &lt;unknown&gt;&#10;#5 0xaaaae658f79c &lt;unknown&gt;&#10;#6 0xaaaae659282c &lt;unknown&gt;&#10;#7 0xaaaae6592408 &lt;unknown&gt;&#10;#8 0xaaaae657a620 &lt;unknown&gt;&#10;#9 0xaaaae6592eac &lt;unknown&gt;&#10;#10 0xaaaae656493c &lt;unknown&gt;&#10;#11 0xaaaae65b1abc &lt;unknown&gt;&#10;#12 0xaaaae65b1cc8 &lt;unknown&gt;&#10;#13 0xaaaae65c397c &lt;unknown&gt;&#10;#14 0xffff92a8202c &lt;unknown&gt;&#10;#15 0xffff92aebf18 &lt;unknown&gt;">tests/test_history.py:76: in test_ht_002
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaae65c4c18 &lt;unknown&gt;
+E   #1 0xaaaae5fee0d0 &lt;unknown&gt;
+E   #2 0xaaaae6036f4c &lt;unknown&gt;
+E   #3 0xaaaae6072d3c &lt;unknown&gt;
+E   #4 0xaaaae602b998 &lt;unknown&gt;
+E   #5 0xaaaae658f79c &lt;unknown&gt;
+E   #6 0xaaaae659282c &lt;unknown&gt;
+E   #7 0xaaaae6592408 &lt;unknown&gt;
+E   #8 0xaaaae657a620 &lt;unknown&gt;
+E   #9 0xaaaae6592eac &lt;unknown&gt;
+E   #10 0xaaaae656493c &lt;unknown&gt;
+E   #11 0xaaaae65b1abc &lt;unknown&gt;
+E   #12 0xaaaae65b1cc8 &lt;unknown&gt;
+E   #13 0xaaaae65c397c &lt;unknown&gt;
+E   #14 0xffff92a8202c &lt;unknown&gt;
+E   #15 0xffff92aebf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_003" time="8.399" /><testcase classname="tests.test_history" name="test_ht_004" time="13.395"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaae65c4c18 &lt;unknown&gt;&#10;#1 0xaaaae5fee0d0 &lt;unknown&gt;&#10;#2 0xaaaae6036f4c &lt;unknown&gt;&#10;#3 0xaaaae6072d3c &lt;unknown&gt;&#10;#4 0xaaaae602b998 &lt;unknown&gt;&#10;#5 0xaaaae658f79c &lt;unknown&gt;&#10;#6 0xaaaae659282c &lt;unknown&gt;&#10;#7 0xaaaae6592408 &lt;unknown&gt;&#10;#8 0xaaaae657a620 &lt;unknown&gt;&#10;#9 0xaaaae6592eac &lt;unknown&gt;&#10;#10 0xaaaae656493c &lt;unknown&gt;&#10;#11 0xaaaae65b1abc &lt;unknown&gt;&#10;#12 0xaaaae65b1cc8 &lt;unknown&gt;&#10;#13 0xaaaae65c397c &lt;unknown&gt;&#10;#14 0xffff92a8202c &lt;unknown&gt;&#10;#15 0xffff92aebf18 &lt;unknown&gt;">tests/test_history.py:125: in test_ht_004
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaae65c4c18 &lt;unknown&gt;
+E   #1 0xaaaae5fee0d0 &lt;unknown&gt;
+E   #2 0xaaaae6036f4c &lt;unknown&gt;
+E   #3 0xaaaae6072d3c &lt;unknown&gt;
+E   #4 0xaaaae602b998 &lt;unknown&gt;
+E   #5 0xaaaae658f79c &lt;unknown&gt;
+E   #6 0xaaaae659282c &lt;unknown&gt;
+E   #7 0xaaaae6592408 &lt;unknown&gt;
+E   #8 0xaaaae657a620 &lt;unknown&gt;
+E   #9 0xaaaae6592eac &lt;unknown&gt;
+E   #10 0xaaaae656493c &lt;unknown&gt;
+E   #11 0xaaaae65b1abc &lt;unknown&gt;
+E   #12 0xaaaae65b1cc8 &lt;unknown&gt;
+E   #13 0xaaaae65c397c &lt;unknown&gt;
+E   #14 0xffff92a8202c &lt;unknown&gt;
+E   #15 0xffff92aebf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_005" time="14.015"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaae65c4c18 &lt;unknown&gt;&#10;#1 0xaaaae5fee0d0 &lt;unknown&gt;&#10;#2 0xaaaae6036f4c &lt;unknown&gt;&#10;#3 0xaaaae6072d3c &lt;unknown&gt;&#10;#4 0xaaaae602b998 &lt;unknown&gt;&#10;#5 0xaaaae658f79c &lt;unknown&gt;&#10;#6 0xaaaae659282c &lt;unknown&gt;&#10;#7 0xaaaae6592408 &lt;unknown&gt;&#10;#8 0xaaaae657a620 &lt;unknown&gt;&#10;#9 0xaaaae6592eac &lt;unknown&gt;&#10;#10 0xaaaae656493c &lt;unknown&gt;&#10;#11 0xaaaae65b1abc &lt;unknown&gt;&#10;#12 0xaaaae65b1cc8 &lt;unknown&gt;&#10;#13 0xaaaae65c397c &lt;unknown&gt;&#10;#14 0xffff92a8202c &lt;unknown&gt;&#10;#15 0xffff92aebf18 &lt;unknown&gt;">tests/test_history.py:200: in test_ht_005
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaae65c4c18 &lt;unknown&gt;
+E   #1 0xaaaae5fee0d0 &lt;unknown&gt;
+E   #2 0xaaaae6036f4c &lt;unknown&gt;
+E   #3 0xaaaae6072d3c &lt;unknown&gt;
+E   #4 0xaaaae602b998 &lt;unknown&gt;
+E   #5 0xaaaae658f79c &lt;unknown&gt;
+E   #6 0xaaaae659282c &lt;unknown&gt;
+E   #7 0xaaaae6592408 &lt;unknown&gt;
+E   #8 0xaaaae657a620 &lt;unknown&gt;
+E   #9 0xaaaae6592eac &lt;unknown&gt;
+E   #10 0xaaaae656493c &lt;unknown&gt;
+E   #11 0xaaaae65b1abc &lt;unknown&gt;
+E   #12 0xaaaae65b1cc8 &lt;unknown&gt;
+E   #13 0xaaaae65c397c &lt;unknown&gt;
+E   #14 0xffff92a8202c &lt;unknown&gt;
+E   #15 0xffff92aebf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_006" time="12.750"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaae65c4c18 &lt;unknown&gt;&#10;#1 0xaaaae5fee0d0 &lt;unknown&gt;&#10;#2 0xaaaae6036f4c &lt;unknown&gt;&#10;#3 0xaaaae6072d3c &lt;unknown&gt;&#10;#4 0xaaaae602b998 &lt;unknown&gt;&#10;#5 0xaaaae658f79c &lt;unknown&gt;&#10;#6 0xaaaae659282c &lt;unknown&gt;&#10;#7 0xaaaae6592408 &lt;unknown&gt;&#10;#8 0xaaaae657a620 &lt;unknown&gt;&#10;#9 0xaaaae6592eac &lt;unknown&gt;&#10;#10 0xaaaae656493c &lt;unknown&gt;&#10;#11 0xaaaae65b1abc &lt;unknown&gt;&#10;#12 0xaaaae65b1cc8 &lt;unknown&gt;&#10;#13 0xaaaae65c397c &lt;unknown&gt;&#10;#14 0xffff92a8202c &lt;unknown&gt;&#10;#15 0xffff92aebf18 &lt;unknown&gt;">tests/test_history.py:250: in test_ht_006
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaae65c4c18 &lt;unknown&gt;
+E   #1 0xaaaae5fee0d0 &lt;unknown&gt;
+E   #2 0xaaaae6036f4c &lt;unknown&gt;
+E   #3 0xaaaae6072d3c &lt;unknown&gt;
+E   #4 0xaaaae602b998 &lt;unknown&gt;
+E   #5 0xaaaae658f79c &lt;unknown&gt;
+E   #6 0xaaaae659282c &lt;unknown&gt;
+E   #7 0xaaaae6592408 &lt;unknown&gt;
+E   #8 0xaaaae657a620 &lt;unknown&gt;
+E   #9 0xaaaae6592eac &lt;unknown&gt;
+E   #10 0xaaaae656493c &lt;unknown&gt;
+E   #11 0xaaaae65b1abc &lt;unknown&gt;
+E   #12 0xaaaae65b1cc8 &lt;unknown&gt;
+E   #13 0xaaaae65c397c &lt;unknown&gt;
+E   #14 0xffff92a8202c &lt;unknown&gt;
+E   #15 0xffff92aebf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_007" time="13.141"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaae65c4c18 &lt;unknown&gt;&#10;#1 0xaaaae5fee0d0 &lt;unknown&gt;&#10;#2 0xaaaae6036f4c &lt;unknown&gt;&#10;#3 0xaaaae6072d3c &lt;unknown&gt;&#10;#4 0xaaaae602b998 &lt;unknown&gt;&#10;#5 0xaaaae658f79c &lt;unknown&gt;&#10;#6 0xaaaae659282c &lt;unknown&gt;&#10;#7 0xaaaae6592408 &lt;unknown&gt;&#10;#8 0xaaaae657a620 &lt;unknown&gt;&#10;#9 0xaaaae6592eac &lt;unknown&gt;&#10;#10 0xaaaae656493c &lt;unknown&gt;&#10;#11 0xaaaae65b1abc &lt;unknown&gt;&#10;#12 0xaaaae65b1cc8 &lt;unknown&gt;&#10;#13 0xaaaae65c397c &lt;unknown&gt;&#10;#14 0xffff92a8202c &lt;unknown&gt;&#10;#15 0xffff92aebf18 &lt;unknown&gt;">tests/test_history.py:306: in test_ht_007
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaae65c4c18 &lt;unknown&gt;
+E   #1 0xaaaae5fee0d0 &lt;unknown&gt;
+E   #2 0xaaaae6036f4c &lt;unknown&gt;
+E   #3 0xaaaae6072d3c &lt;unknown&gt;
+E   #4 0xaaaae602b998 &lt;unknown&gt;
+E   #5 0xaaaae658f79c &lt;unknown&gt;
+E   #6 0xaaaae659282c &lt;unknown&gt;
+E   #7 0xaaaae6592408 &lt;unknown&gt;
+E   #8 0xaaaae657a620 &lt;unknown&gt;
+E   #9 0xaaaae6592eac &lt;unknown&gt;
+E   #10 0xaaaae656493c &lt;unknown&gt;
+E   #11 0xaaaae65b1abc &lt;unknown&gt;
+E   #12 0xaaaae65b1cc8 &lt;unknown&gt;
+E   #13 0xaaaae65c397c &lt;unknown&gt;
+E   #14 0xffff92a8202c &lt;unknown&gt;
+E   #15 0xffff92aebf18 &lt;unknown&gt;</failure></testcase></testsuite></testsuites>

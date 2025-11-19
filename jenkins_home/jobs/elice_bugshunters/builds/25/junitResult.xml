@@ -1,0 +1,433 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<result plugin="junit@1369.v15da_00283f06">
+  <suites>
+    <suite>
+      <file>/var/jenkins_home/workspace/elice_bugshunters/reports/test-results.xml</file>
+      <name>pytest</name>
+      <duration>198.473</duration>
+      <startTime>1763310223580</startTime>
+      <properties/>
+      <timestamp>2025-11-16T16:23:43.580953+00:00</timestamp>
+      <time>198.473</time>
+      <nodeId>43</nodeId>
+      <enclosingBlocks>
+        <string>39</string>
+      </enclosingBlocks>
+      <enclosingBlockNames>
+        <string>Declarative: Post Actions</string>
+      </enclosingBlockNames>
+      <cases>
+        <case>
+          <duration>8.897</duration>
+          <startTime>1763310223580</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_001_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>4.745</duration>
+          <startTime>1763310232477</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_002_duplicate_email</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>19.672</duration>
+          <startTime>1763310237222</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_003_negative_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>31.309</duration>
+          <startTime>1763310256894</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_004_positive_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>7.977</duration>
+          <startTime>1763310288203</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_005_login_with_non_email_format</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>6.663</duration>
+          <startTime>1763310296180</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_006_login_with_spaces</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>10.58</duration>
+          <startTime>1763310302843</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_007_logout</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>31.223</duration>
+          <startTime>1763310313423</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_001</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:43: in test_ht_001
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaab1eb4c18 &lt;unknown&gt;
+E   #1 0xaaaab18de0d0 &lt;unknown&gt;
+E   #2 0xaaaab1926f4c &lt;unknown&gt;
+E   #3 0xaaaab1962d3c &lt;unknown&gt;
+E   #4 0xaaaab191b998 &lt;unknown&gt;
+E   #5 0xaaaab1e7f79c &lt;unknown&gt;
+E   #6 0xaaaab1e8282c &lt;unknown&gt;
+E   #7 0xaaaab1e82408 &lt;unknown&gt;
+E   #8 0xaaaab1e6a620 &lt;unknown&gt;
+E   #9 0xaaaab1e82eac &lt;unknown&gt;
+E   #10 0xaaaab1e5493c &lt;unknown&gt;
+E   #11 0xaaaab1ea1abc &lt;unknown&gt;
+E   #12 0xaaaab1ea1cc8 &lt;unknown&gt;
+E   #13 0xaaaab1eb397c &lt;unknown&gt;
+E   #14 0xffff9006202c &lt;unknown&gt;
+E   #15 0xffff900cbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaab1eb4c18 &lt;unknown&gt;
+#1 0xaaaab18de0d0 &lt;unknown&gt;
+#2 0xaaaab1926f4c &lt;unknown&gt;
+#3 0xaaaab1962d3c &lt;unknown&gt;
+#4 0xaaaab191b998 &lt;unknown&gt;
+#5 0xaaaab1e7f79c &lt;unknown&gt;
+#6 0xaaaab1e8282c &lt;unknown&gt;
+#7 0xaaaab1e82408 &lt;unknown&gt;
+#8 0xaaaab1e6a620 &lt;unknown&gt;
+#9 0xaaaab1e82eac &lt;unknown&gt;
+#10 0xaaaab1e5493c &lt;unknown&gt;
+#11 0xaaaab1ea1abc &lt;unknown&gt;
+#12 0xaaaab1ea1cc8 &lt;unknown&gt;
+#13 0xaaaab1eb397c &lt;unknown&gt;
+#14 0xffff9006202c &lt;unknown&gt;
+#15 0xffff900cbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>12.879</duration>
+          <startTime>1763310344646</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_002</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:76: in test_ht_002
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaab1eb4c18 &lt;unknown&gt;
+E   #1 0xaaaab18de0d0 &lt;unknown&gt;
+E   #2 0xaaaab1926f4c &lt;unknown&gt;
+E   #3 0xaaaab1962d3c &lt;unknown&gt;
+E   #4 0xaaaab191b998 &lt;unknown&gt;
+E   #5 0xaaaab1e7f79c &lt;unknown&gt;
+E   #6 0xaaaab1e8282c &lt;unknown&gt;
+E   #7 0xaaaab1e82408 &lt;unknown&gt;
+E   #8 0xaaaab1e6a620 &lt;unknown&gt;
+E   #9 0xaaaab1e82eac &lt;unknown&gt;
+E   #10 0xaaaab1e5493c &lt;unknown&gt;
+E   #11 0xaaaab1ea1abc &lt;unknown&gt;
+E   #12 0xaaaab1ea1cc8 &lt;unknown&gt;
+E   #13 0xaaaab1eb397c &lt;unknown&gt;
+E   #14 0xffff9006202c &lt;unknown&gt;
+E   #15 0xffff900cbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaab1eb4c18 &lt;unknown&gt;
+#1 0xaaaab18de0d0 &lt;unknown&gt;
+#2 0xaaaab1926f4c &lt;unknown&gt;
+#3 0xaaaab1962d3c &lt;unknown&gt;
+#4 0xaaaab191b998 &lt;unknown&gt;
+#5 0xaaaab1e7f79c &lt;unknown&gt;
+#6 0xaaaab1e8282c &lt;unknown&gt;
+#7 0xaaaab1e82408 &lt;unknown&gt;
+#8 0xaaaab1e6a620 &lt;unknown&gt;
+#9 0xaaaab1e82eac &lt;unknown&gt;
+#10 0xaaaab1e5493c &lt;unknown&gt;
+#11 0xaaaab1ea1abc &lt;unknown&gt;
+#12 0xaaaab1ea1cc8 &lt;unknown&gt;
+#13 0xaaaab1eb397c &lt;unknown&gt;
+#14 0xffff9006202c &lt;unknown&gt;
+#15 0xffff900cbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>8.312</duration>
+          <startTime>1763310357525</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_003</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>14.471</duration>
+          <startTime>1763310365837</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_004</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:125: in test_ht_004
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaab1eb4c18 &lt;unknown&gt;
+E   #1 0xaaaab18de0d0 &lt;unknown&gt;
+E   #2 0xaaaab1926f4c &lt;unknown&gt;
+E   #3 0xaaaab1962d3c &lt;unknown&gt;
+E   #4 0xaaaab191b998 &lt;unknown&gt;
+E   #5 0xaaaab1e7f79c &lt;unknown&gt;
+E   #6 0xaaaab1e8282c &lt;unknown&gt;
+E   #7 0xaaaab1e82408 &lt;unknown&gt;
+E   #8 0xaaaab1e6a620 &lt;unknown&gt;
+E   #9 0xaaaab1e82eac &lt;unknown&gt;
+E   #10 0xaaaab1e5493c &lt;unknown&gt;
+E   #11 0xaaaab1ea1abc &lt;unknown&gt;
+E   #12 0xaaaab1ea1cc8 &lt;unknown&gt;
+E   #13 0xaaaab1eb397c &lt;unknown&gt;
+E   #14 0xffff9006202c &lt;unknown&gt;
+E   #15 0xffff900cbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaab1eb4c18 &lt;unknown&gt;
+#1 0xaaaab18de0d0 &lt;unknown&gt;
+#2 0xaaaab1926f4c &lt;unknown&gt;
+#3 0xaaaab1962d3c &lt;unknown&gt;
+#4 0xaaaab191b998 &lt;unknown&gt;
+#5 0xaaaab1e7f79c &lt;unknown&gt;
+#6 0xaaaab1e8282c &lt;unknown&gt;
+#7 0xaaaab1e82408 &lt;unknown&gt;
+#8 0xaaaab1e6a620 &lt;unknown&gt;
+#9 0xaaaab1e82eac &lt;unknown&gt;
+#10 0xaaaab1e5493c &lt;unknown&gt;
+#11 0xaaaab1ea1abc &lt;unknown&gt;
+#12 0xaaaab1ea1cc8 &lt;unknown&gt;
+#13 0xaaaab1eb397c &lt;unknown&gt;
+#14 0xffff9006202c &lt;unknown&gt;
+#15 0xffff900cbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>13.418</duration>
+          <startTime>1763310380308</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_005</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:200: in test_ht_005
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaab1eb4c18 &lt;unknown&gt;
+E   #1 0xaaaab18de0d0 &lt;unknown&gt;
+E   #2 0xaaaab1926f4c &lt;unknown&gt;
+E   #3 0xaaaab1962d3c &lt;unknown&gt;
+E   #4 0xaaaab191b998 &lt;unknown&gt;
+E   #5 0xaaaab1e7f79c &lt;unknown&gt;
+E   #6 0xaaaab1e8282c &lt;unknown&gt;
+E   #7 0xaaaab1e82408 &lt;unknown&gt;
+E   #8 0xaaaab1e6a620 &lt;unknown&gt;
+E   #9 0xaaaab1e82eac &lt;unknown&gt;
+E   #10 0xaaaab1e5493c &lt;unknown&gt;
+E   #11 0xaaaab1ea1abc &lt;unknown&gt;
+E   #12 0xaaaab1ea1cc8 &lt;unknown&gt;
+E   #13 0xaaaab1eb397c &lt;unknown&gt;
+E   #14 0xffff9006202c &lt;unknown&gt;
+E   #15 0xffff900cbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaab1eb4c18 &lt;unknown&gt;
+#1 0xaaaab18de0d0 &lt;unknown&gt;
+#2 0xaaaab1926f4c &lt;unknown&gt;
+#3 0xaaaab1962d3c &lt;unknown&gt;
+#4 0xaaaab191b998 &lt;unknown&gt;
+#5 0xaaaab1e7f79c &lt;unknown&gt;
+#6 0xaaaab1e8282c &lt;unknown&gt;
+#7 0xaaaab1e82408 &lt;unknown&gt;
+#8 0xaaaab1e6a620 &lt;unknown&gt;
+#9 0xaaaab1e82eac &lt;unknown&gt;
+#10 0xaaaab1e5493c &lt;unknown&gt;
+#11 0xaaaab1ea1abc &lt;unknown&gt;
+#12 0xaaaab1ea1cc8 &lt;unknown&gt;
+#13 0xaaaab1eb397c &lt;unknown&gt;
+#14 0xffff9006202c &lt;unknown&gt;
+#15 0xffff900cbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>13.427</duration>
+          <startTime>1763310393726</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_006</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:250: in test_ht_006
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaab1eb4c18 &lt;unknown&gt;
+E   #1 0xaaaab18de0d0 &lt;unknown&gt;
+E   #2 0xaaaab1926f4c &lt;unknown&gt;
+E   #3 0xaaaab1962d3c &lt;unknown&gt;
+E   #4 0xaaaab191b998 &lt;unknown&gt;
+E   #5 0xaaaab1e7f79c &lt;unknown&gt;
+E   #6 0xaaaab1e8282c &lt;unknown&gt;
+E   #7 0xaaaab1e82408 &lt;unknown&gt;
+E   #8 0xaaaab1e6a620 &lt;unknown&gt;
+E   #9 0xaaaab1e82eac &lt;unknown&gt;
+E   #10 0xaaaab1e5493c &lt;unknown&gt;
+E   #11 0xaaaab1ea1abc &lt;unknown&gt;
+E   #12 0xaaaab1ea1cc8 &lt;unknown&gt;
+E   #13 0xaaaab1eb397c &lt;unknown&gt;
+E   #14 0xffff9006202c &lt;unknown&gt;
+E   #15 0xffff900cbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaab1eb4c18 &lt;unknown&gt;
+#1 0xaaaab18de0d0 &lt;unknown&gt;
+#2 0xaaaab1926f4c &lt;unknown&gt;
+#3 0xaaaab1962d3c &lt;unknown&gt;
+#4 0xaaaab191b998 &lt;unknown&gt;
+#5 0xaaaab1e7f79c &lt;unknown&gt;
+#6 0xaaaab1e8282c &lt;unknown&gt;
+#7 0xaaaab1e82408 &lt;unknown&gt;
+#8 0xaaaab1e6a620 &lt;unknown&gt;
+#9 0xaaaab1e82eac &lt;unknown&gt;
+#10 0xaaaab1e5493c &lt;unknown&gt;
+#11 0xaaaab1ea1abc &lt;unknown&gt;
+#12 0xaaaab1ea1cc8 &lt;unknown&gt;
+#13 0xaaaab1eb397c &lt;unknown&gt;
+#14 0xffff9006202c &lt;unknown&gt;
+#15 0xffff900cbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>14.252</duration>
+          <startTime>1763310407153</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_007</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:306: in test_ht_007
+    sidebar.click_new_chat()
+src/pages/ht_chat_sidebar.py:27: in click_new_chat
+    self.clickable(SEL_NEW_CHAT_BTN).click()
+src/pages/ht_base_page.py:21: in clickable
+    return self.wait(sec).until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaab1eb4c18 &lt;unknown&gt;
+E   #1 0xaaaab18de0d0 &lt;unknown&gt;
+E   #2 0xaaaab1926f4c &lt;unknown&gt;
+E   #3 0xaaaab1962d3c &lt;unknown&gt;
+E   #4 0xaaaab191b998 &lt;unknown&gt;
+E   #5 0xaaaab1e7f79c &lt;unknown&gt;
+E   #6 0xaaaab1e8282c &lt;unknown&gt;
+E   #7 0xaaaab1e82408 &lt;unknown&gt;
+E   #8 0xaaaab1e6a620 &lt;unknown&gt;
+E   #9 0xaaaab1e82eac &lt;unknown&gt;
+E   #10 0xaaaab1e5493c &lt;unknown&gt;
+E   #11 0xaaaab1ea1abc &lt;unknown&gt;
+E   #12 0xaaaab1ea1cc8 &lt;unknown&gt;
+E   #13 0xaaaab1eb397c &lt;unknown&gt;
+E   #14 0xffff9006202c &lt;unknown&gt;
+E   #15 0xffff900cbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaab1eb4c18 &lt;unknown&gt;
+#1 0xaaaab18de0d0 &lt;unknown&gt;
+#2 0xaaaab1926f4c &lt;unknown&gt;
+#3 0xaaaab1962d3c &lt;unknown&gt;
+#4 0xaaaab191b998 &lt;unknown&gt;
+#5 0xaaaab1e7f79c &lt;unknown&gt;
+#6 0xaaaab1e8282c &lt;unknown&gt;
+#7 0xaaaab1e82408 &lt;unknown&gt;
+#8 0xaaaab1e6a620 &lt;unknown&gt;
+#9 0xaaaab1e82eac &lt;unknown&gt;
+#10 0xaaaab1e5493c &lt;unknown&gt;
+#11 0xaaaab1ea1abc &lt;unknown&gt;
+#12 0xaaaab1ea1cc8 &lt;unknown&gt;
+#13 0xaaaab1eb397c &lt;unknown&gt;
+#14 0xffff9006202c &lt;unknown&gt;
+#15 0xffff900cbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+      </cases>
+    </suite>
+  </suites>
+  <duration>198.473</duration>
+  <skipOldReports>false</skipOldReports>
+  <startTime>1763310223580</startTime>
+  <stdioRetention>NONE</stdioRetention>
+  <keepTestNames>false</keepTestNames>
+  <keepProperties>false</keepProperties>
+</result>

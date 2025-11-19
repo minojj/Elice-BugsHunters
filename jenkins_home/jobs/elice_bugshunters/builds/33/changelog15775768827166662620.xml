@@ -1,0 +1,20 @@
+commit c15e6495682fdaf4df1fc8d06d1fdd6a22f6b3f6
+tree 194481d4142d024c41faea521d3971a657737321
+parent 923d5759c61bf9b97292d78aff18aaaf2d545acf
+author junseoseki <dhfkapap@naver.com> 2025-11-18 22:46:53 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-18 22:46:53 +0900
+
+    Update Jenkinsfile
+
+
+:100644 100644 2769dc630cb9a0cd448ddf504ef149c4bf146e84 f337da3fa912b53ded9616d5d853d5ba413cade9 M	Jenkinsfile
+commit 923d5759c61bf9b97292d78aff18aaaf2d545acf
+tree 83ca1da115fe8b5192359bdd62487ac06b0a69b6
+parent f62cc07d5df6ad4688f0683ad7d702140f7bce59
+author junseoseki <dhfkapap@naver.com> 2025-11-18 22:27:39 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-18 22:27:39 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 e9bfaad5e3ed6dde3f4ab17bca617dd664dcff9e 661b190b8732ece1bf1421668a6743a143868797 M	tools/report_failed_tests_to_jira.py

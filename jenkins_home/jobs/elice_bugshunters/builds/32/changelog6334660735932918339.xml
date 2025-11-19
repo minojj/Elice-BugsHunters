@@ -1,0 +1,645 @@
+commit 7adb049264d03bfa51e242fa729bafb760a21101
+tree 3605feafafea14a0f3db385a0f13d13ca7e3c08c
+parent 705f6d624c713405a62fa82abd5074770e8252e6
+author flytecc <147461911+dlxorud1256@users.noreply.github.com> 2025-11-18 17:34:51 +0900
+committer GitHub <noreply@github.com> 2025-11-18 17:34:51 +0900
+
+    Rename history_pages.py to history_page.py
+
+:100644 100644 6fe0dd3066a5606c9c25feb35d3b8a71e308057d 6fe0dd3066a5606c9c25feb35d3b8a71e308057d R100	src/pages/history_pages.py	src/pages/history_page.py
+commit 705f6d624c713405a62fa82abd5074770e8252e6
+tree 1f32501d7e7463ef97823cdbd04cb809a3afab74
+parent 3a7c6366cbf7121ab6cb6cc3e17a9423af9d5ed1
+author flytecc <147461911+dlxorud1256@users.noreply.github.com> 2025-11-18 17:30:28 +0900
+committer GitHub <noreply@github.com> 2025-11-18 17:30:28 +0900
+
+    Refactor import statement in test_history.py
+
+:100644 100644 2dc965596e577c8b1172003d174b7c009f06d741 e46ad6158424dcd145965b4dc7742b5b41932291 M	tests/test_history.py
+commit 3a7c6366cbf7121ab6cb6cc3e17a9423af9d5ed1
+tree 9c5e34c094d7e825ade0fd2a29bb87d486685f45
+parent a97faaefe3607a548a83dfa72f4a2e096c146079
+author flytecc <147461911+dlxorud1256@users.noreply.github.com> 2025-11-18 17:28:42 +0900
+committer GitHub <noreply@github.com> 2025-11-18 17:28:42 +0900
+
+    Refactor history_pages.py for improved structure
+    
+    Refactor history_pages.py to improve code structure and readability. Updated imports, modified methods for better functionality, and removed redundant code.
+
+:100644 100644 2d471a903dafb89f93e50c6e1b6a17c45915074a 6fe0dd3066a5606c9c25feb35d3b8a71e308057d R080	src/pages/history_pages_all_in_one.py	src/pages/history_pages.py
+commit 1094c6dd782b969b8c28e05644e339b58ddc0a36
+tree e86c77fb92f1029638cd1bf9a227be80c377e433
+parent fb8ad8abef8e562290d8b9b3645defe718052255
+author nwweiit <nwweiit@gmail.com> 2025-11-18 17:23:44 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-18 17:23:44 +0900
+
+    billing_system
+
+
+:100644 100644 79c06bbd204f3bd2cba30cb50bed413359f7d95a 6af4224cff42e81c6ee816a0e63f3613bf6bf94d M	reports/test-results.xml
+:100644 100644 eb89f1e6374681b3b55d7bd6bb447c3338417ca1 53254bddd1196ed2a56902bf8cef0719a5f243ad M	src/pages/billing_page.py
+:100644 100644 fc1cb734746adaa37b428d451f1f13b86f7db887 e59668f132451f47be1133aad07ca1b5a38e57a9 M	tests/test_billing_system.py
+commit b7a9688fbfc9a1ba092f18b7b8abad2b7bff9db3
+tree 5211c8fe3cb4cf4c4676e44001581aa53fcdbf7e
+parent 3edf7800f0dc33f53298da8d6e562888590b846c
+author nwweiit <nwweiit@gmail.com> 2025-11-18 14:49:07 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-18 14:49:07 +0900
+
+    create for billing system
+
+
+:000000 100644 0000000000000000000000000000000000000000 79c06bbd204f3bd2cba30cb50bed413359f7d95a A	reports/test-results.xml
+:000000 100644 0000000000000000000000000000000000000000 eb89f1e6374681b3b55d7bd6bb447c3338417ca1 A	src/pages/billing_page.py
+:000000 100644 0000000000000000000000000000000000000000 fc1cb734746adaa37b428d451f1f13b86f7db887 A	tests/test_billing_system.py
+commit 680cc5f9c5092f36a3aea3a201aad51afd700534
+tree 8d0137256198c13557231aa93de66fc0186a9984
+parent 44ce05295f34de2509da208e511b94ac185e5626
+author junseoseki <dhfkapap@naver.com> 2025-11-18 14:09:24 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-18 14:09:24 +0900
+
+    Create test_chat_expanse.py
+
+
+:000000 100644 0000000000000000000000000000000000000000 4560f67d42b97d808cf8e5b018c81c4ba23dcadd A	tests/test_chat_expanse.py
+commit 3edf7800f0dc33f53298da8d6e562888590b846c
+tree 2b39dd0ba46c6438215f7881be094b515bc8ecdf
+parent c2e8432109d0eaa23e7fb44fed1280a2228b8f48
+author nwweiit <nwweiit@gmail.com> 2025-11-18 01:19:09 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-18 01:19:09 +0900
+
+    error fix
+
+
+:100644 100644 ff423bc2623dba75a01d58a3b31c5a254b2574a6 8849c56d6069b4af798a2a5c83428c8f7773f7ba M	pytest.ini
+:100644 100644 8c72a1d13739a87a022e108a9e1127a67636baa0 4768939186d3985e185ca5383516812981047427 R091	src/pages/base.py	src/pages/base_page.py
+:100644 100644 19453b16dac7c6f012197101bae90c241930f675 deeba50d2ca4b8afd0d2f7e31e71d7ec635821ad M	src/pages/chat_base_page.py
+:100644 100644 cc2173319a77adb4bd5535bbeb29af5a17d1e0db a4af9a4a83ad81aca26df03ff58353e87d6626c1 M	src/pages/chat_expanse_page.py
+:100644 100644 c719b1c0a9e4dba79373c233b447c562b7008d26 13e0dc3e4cdbb5c3acf1833fa777f13b86bd1e83 M	src/pages/custom_agent_page.py
+:100644 100644 81a3d8d74a99f9ed7985c313e506a9a080c861a0 2d471a903dafb89f93e50c6e1b6a17c45915074a M	src/pages/history_pages_all_in_one.py
+:100644 100644 b29b4aaf8f360c5d468d67a7b6fd9e3ca7087bc5 7280f2a3380620d4dfc111dc7cbd2063c434ca5d M	src/pages/login_page.py
+commit c1fa2543b233c9f7f75489e7972a17769b854351
+tree 6a04d641cb7eec3093067ab168fbecaf78ba7b3d
+parent d8b55b20be4f45a1162c6f90dcde5cd922b358c5
+author junseoseki <dhfkapap@naver.com> 2025-11-18 00:30:47 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-18 00:30:47 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 353084c43ccacb3773c9542e0b13a66ab92cfd0d e9bfaad5e3ed6dde3f4ab17bca617dd664dcff9e M	tools/report_failed_tests_to_jira.py
+commit d8b55b20be4f45a1162c6f90dcde5cd922b358c5
+tree 437bdc943bb201dc2dcb62b2fff4a521092cb8a0
+parent 262730376398c35d9a5ed6e424f29d683283080b
+author junseoseki <dhfkapap@naver.com> 2025-11-18 00:18:24 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-18 00:18:24 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 f5917729450ce61bf6d703c91cdc81476cf9930e 353084c43ccacb3773c9542e0b13a66ab92cfd0d M	tools/report_failed_tests_to_jira.py
+commit 262730376398c35d9a5ed6e424f29d683283080b
+tree 2edf2874346df67c488188931bd8187285e150bc
+parent 74455ac8b5d53e91c47f3574a2ec94b946e99121
+author junseoseki <dhfkapap@naver.com> 2025-11-18 00:06:44 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-18 00:06:44 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 5a865c9fa0a2beda29f6242fd81f7fd2f3a1d978 f5917729450ce61bf6d703c91cdc81476cf9930e M	tools/report_failed_tests_to_jira.py
+commit 74455ac8b5d53e91c47f3574a2ec94b946e99121
+tree 2b6fed76020f54451bc7355da7d26007e86a36f4
+parent a33eaf7889de5ae8b91ceab3167dc4d45910071b
+author junseoseki <dhfkapap@naver.com> 2025-11-17 23:53:32 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 23:53:32 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 76a6194b52c250d276b32330b6acf27203d5a9ae 5a865c9fa0a2beda29f6242fd81f7fd2f3a1d978 M	tools/report_failed_tests_to_jira.py
+commit c2e8432109d0eaa23e7fb44fed1280a2228b8f48
+tree 45d1e4b20f028fa6fd54b7d9e1b1d2425580ee0c
+parent e60600dbf12711877d3a3ddebc9a6a3c10ea0224
+author nwweiit <nwweiit@gmail.com> 2025-11-17 23:34:16 +0900
+committer GitHub <noreply@github.com> 2025-11-17 23:34:16 +0900
+
+    fixed base.py error
+    
+    Refactor locators attribute to be uppercase and update references.
+
+:100644 100644 bf285d26d2cd09fb05f02c4bdfd1b607cadfd7b3 8c72a1d13739a87a022e108a9e1127a67636baa0 M	src/pages/base.py
+commit a33eaf7889de5ae8b91ceab3167dc4d45910071b
+tree 0d7b5e2d885b49f992dc8563cc3bdf8a1af50a01
+parent ec58ed5e62f1148dffac7100e3cb5ee2e6881a79
+author junseoseki <dhfkapap@naver.com> 2025-11-17 23:29:43 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 23:29:43 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 a603145b41d43d3ae3c91b1d8a2a26114d0401ad 76a6194b52c250d276b32330b6acf27203d5a9ae M	tools/report_failed_tests_to_jira.py
+commit ec58ed5e62f1148dffac7100e3cb5ee2e6881a79
+tree 619aaf8e47d1bbbb0f6424828870cfee956b90fe
+parent d90df1a6e15241da6359e3d7e5b335bafd75c7c9
+author junseoseki <dhfkapap@naver.com> 2025-11-17 23:12:50 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 23:12:50 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 46f0defbf6fe24bf89bd2e5959dd452ca6954c71 a603145b41d43d3ae3c91b1d8a2a26114d0401ad M	tools/report_failed_tests_to_jira.py
+commit 6342eb134b14786f90b34c40767572796d7bd86a
+tree 7ebc22fc5ffb3bd3f82272e10e6b26450395142b
+parent 735e0eb5c0f47a0db31dd2848b1c8697aec42455
+author nwweiit <nwweiit@gmail.com> 2025-11-17 22:58:45 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-17 22:58:45 +0900
+
+    apply base.py
+    
+    chat_base_page, login_page, chat_expanse_page, custom_agent_page
+
+
+:100644 100644 e940e380435a769bf0cb2d76a98c11a8aa748dd2 103b7d0c93115d450de64170af8ebebac1fdc87e M	src/pages/base.py
+:100644 100644 1ab62b4f36c84194fd4e69d92535083cb685afec 19453b16dac7c6f012197101bae90c241930f675 M	src/pages/chat_base_page.py
+:100644 100644 24353012bc1d3d499a5dc98ab4e066c8b9d3f3b4 cc2173319a77adb4bd5535bbeb29af5a17d1e0db M	src/pages/chat_expanse_page.py
+:100644 100644 c6e541cbd2f72870c0826b393f86a5909103fd45 c719b1c0a9e4dba79373c233b447c562b7008d26 M	src/pages/custom_agent_page.py
+:100644 100644 1215094952ce59312c4a1e7d595dac23ba866949 b29b4aaf8f360c5d468d67a7b6fd9e3ca7087bc5 M	src/pages/login_page.py
+:100644 100644 a9dd899b9aa996585699c4fe3cf562f4754bbe71 bf3fe434b7b99f686a65e48c1191e6e838f054ce M	tests/test_custom_agent.py
+commit d90df1a6e15241da6359e3d7e5b335bafd75c7c9
+tree 66a3d726be596a4532aee4ab428093708cf7f4d9
+parent 12101d49fc324c071510d5a3f60839e711dab7b3
+author junseoseki <dhfkapap@naver.com> 2025-11-17 22:57:32 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 22:57:32 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 96e33f9dd75fd9a3d7e0a454b82ef3ffe22a2dc1 46f0defbf6fe24bf89bd2e5959dd452ca6954c71 M	tools/report_failed_tests_to_jira.py
+commit 944c1d3e1c90fdcc2682905a6fdd03e370d4dcf5
+tree 8aad24cb38cfe5f849f0bec691965c67fbcb471d
+parent 763f0b7153fc07db6e2aa3ec57268740576cd442
+author flytecc <dlxorud12567@gmail.com> 2025-11-17 22:52:08 +0900
+committer flytecc <dlxorud12567@gmail.com> 2025-11-17 22:52:08 +0900
+
+    11/17 수정_1
+
+
+:100644 100644 25ac4aac41d26419a536f42303b8aebd0fe499c1 d34d54d10c0d1fdd5f1307be009550eec0dd6014 M	tests/conftest.py
+commit 763f0b7153fc07db6e2aa3ec57268740576cd442
+tree 4d09885834e64e47ffa84da8b5481e0e4cb7668a
+parent fe29a1e22550a8dfa26d7a828c1e2d33293b455c
+author flytecc <dlxorud12567@gmail.com> 2025-11-17 22:50:47 +0900
+committer flytecc <dlxorud12567@gmail.com> 2025-11-17 22:50:47 +0900
+
+    11/17 수정
+
+
+:100644 100644 591a390efb928f84af4e03506ac3191557958196 22d01fe0035c5568ada3d1b8b976e646bfe67565 M	src/pages/base.py
+:100644 100644 49fee33163168fb9c21b26e799f6905c0106196a 81a3d8d74a99f9ed7985c313e506a9a080c861a0 M	src/pages/history_pages_all_in_one.py
+:100644 100644 60cc8f036e49fdd9fc9f791bdd6db1bd9a4f2521 25ac4aac41d26419a536f42303b8aebd0fe499c1 M	tests/conftest.py
+commit 12101d49fc324c071510d5a3f60839e711dab7b3
+tree 1682921fc7b2220bc5967ae91f1452bc030ce91e
+parent 820d4dba18aa70f2d0f657c404aeb7f320c709b8
+author junseoseki <dhfkapap@naver.com> 2025-11-17 22:50:33 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 22:50:33 +0900
+
+    Create test_history.py
+
+
+:000000 100644 0000000000000000000000000000000000000000 15dba50df14b0925d5853c232467c17f715352e1 A	tests/test_history.py
+commit 8c5b1956af71be698158b6dc09c015ac8008ce5e
+tree 402a84a35a2e65b281ad6f7d9d4191a3389d4e30
+parent b55518526b0a390fa785db49e0a50ede39b94660
+author junseoseki <dhfkapap@naver.com> 2025-11-17 22:41:21 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 22:41:21 +0900
+
+    jira fix
+
+
+:100644 000000 4560f67d42b97d808cf8e5b018c81c4ba23dcadd 0000000000000000000000000000000000000000 D	tests/test_chat_expanse.py
+:100644 000000 50fa53db31c7bcf301921584cc9dab1051279e85 0000000000000000000000000000000000000000 D	tests/test_custom_agent.py
+:100644 000000 15dba50df14b0925d5853c232467c17f715352e1 0000000000000000000000000000000000000000 D	tests/test_history.py
+:100644 100644 4a2996e53c5a8883a9f2930778d33d57e92a19aa 96e33f9dd75fd9a3d7e0a454b82ef3ffe22a2dc1 M	tools/report_failed_tests_to_jira.py
+commit fe29a1e22550a8dfa26d7a828c1e2d33293b455c
+tree 640d2041b49416809de40a830327a113fd6ca40c
+parent f880276e302af7db3ab93cf38e3bfea9adb23332
+author flytecc <dlxorud12567@gmail.com> 2025-11-17 15:12:53 +0900
+committer flytecc <dlxorud12567@gmail.com> 2025-11-17 15:12:53 +0900
+
+    11/17
+
+
+:000000 100644 0000000000000000000000000000000000000000 49fee33163168fb9c21b26e799f6905c0106196a A	src/pages/history_pages_all_in_one.py
+:100644 000000 fbe58456b0046279713cb64cd7c02ddc0e5d3c88 0000000000000000000000000000000000000000 D	src/pages/ht_agent_explorer_page.py
+:100644 000000 33205efe6f598a2b26b6d5386f68868f56179aaf 0000000000000000000000000000000000000000 D	src/pages/ht_base_page.py
+:100644 000000 e492ae85cafec46b8c603ff6922c3ba79b089706 0000000000000000000000000000000000000000 D	src/pages/ht_chat_sidebar.py
+:100644 000000 18bfd81337e1dec77d3427d7a3cb3b9689f9eb1e 0000000000000000000000000000000000000000 D	src/pages/ht_composer.py
+:100644 000000 286b33233c7d924ca679e023c19c3c68ccb3eb69 0000000000000000000000000000000000000000 D	src/pages/ht_dialogs.py
+:100644 000000 1dd099023fd170ac797090d097aceb23c7bf91b2 0000000000000000000000000000000000000000 D	src/pages/ht_main_page.py
+:100644 000000 72860d5d767dcf38cf6c23c833751f929f0d3cfb 0000000000000000000000000000000000000000 D	src/pages/ht_search_overlay.py
+:100644 100644 15dba50df14b0925d5853c232467c17f715352e1 2dc965596e577c8b1172003d174b7c009f06d741 M	tests/test_history.py
+commit 15cb594ea567c9adf0c00e76432ae549053d9c91
+tree 78d9e12b3073ad054328ce932329f17f1a6be674
+parent 94e3a84b06d16f52b5a3a0fdbf0d3aa6e53b9828
+author minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-17 14:17:42 +0900
+committer minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-17 14:17:42 +0900
+
+    edit
+    
+    function name chage
+
+
+:100644 100644 69076978f90e43e90e0cd25b2a93a3769ccb9eb8 a6ea459601605e2a450e459d6278045cd407b29f M	tests/test_chat_base.py
+commit 047c77fa0abccd75fb98e521592196b2f54f6f71
+tree c46147659a1202d0dd5495128aa6ede110554865
+parent 37412a76163f85eda2548963a0e68aaec6639254
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 14:16:33 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 14:16:33 +0900
+
+    Update chat_expanse_page.py
+
+
+:100644 100644 107941774d4a55e1883536e723d6119c412ddf7a 24353012bc1d3d499a5dc98ab4e066c8b9d3f3b4 M	src/pages/chat_expanse_page.py
+commit 37412a76163f85eda2548963a0e68aaec6639254
+tree ad91ecff308c75c2c5c189785f049e54a0eaa48e
+parent b0c5dbac68820de4813c282887c5e3ce478454ed
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 14:15:32 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 14:15:32 +0900
+
+    Update test_chat_expanse.py
+
+
+:100644 100644 4560f67d42b97d808cf8e5b018c81c4ba23dcadd 6b85dcfbcf1ee7f1ca5c45a03e2fb7c26189eeb5 M	tests/test_chat_expanse.py
+commit 4d53d850f2a407c9bafe2c6e90961eb72f70f748
+tree cf930b2b8fa6c5bbc91d2fee07313ba7dc6a2974
+parent f880276e302af7db3ab93cf38e3bfea9adb23332
+author nwweiit <nwweiit@gmail.com> 2025-11-17 14:15:28 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-17 14:15:28 +0900
+
+    fixed change
+
+
+:100644 100644 591a390efb928f84af4e03506ac3191557958196 e940e380435a769bf0cb2d76a98c11a8aa748dd2 M	src/pages/base.py
+:100644 100644 5ef99439d17b802a730e7f9a51db8d0a6d475e87 c6e541cbd2f72870c0826b393f86a5909103fd45 M	src/pages/custom_agent_page.py
+:100644 100644 50fa53db31c7bcf301921584cc9dab1051279e85 a9dd899b9aa996585699c4fe3cf562f4754bbe71 M	tests/test_custom_agent.py
+commit b0c5dbac68820de4813c282887c5e3ce478454ed
+tree 04f9d67f857709dbff38318e80084bf5339f614b
+parent ccf7f8bafac9e03a6ad91da164dcc21abe1dc326
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 14:00:39 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 14:00:39 +0900
+
+    Update base.py
+
+
+:100644 100644 591a390efb928f84af4e03506ac3191557958196 e940e380435a769bf0cb2d76a98c11a8aa748dd2 M	src/pages/base.py
+commit 09ee1cd3942973ef9724fdea48a539d6b98121ca
+tree abeffcf738bfd67ace762837280467ef60650016
+parent 1c5df1d17619d18a7b2996460d859175c68c2992
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 13:23:50 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 13:23:50 +0900
+
+    Update custom_agent_page.py
+
+
+:100644 100644 5ef99439d17b802a730e7f9a51db8d0a6d475e87 c6e541cbd2f72870c0826b393f86a5909103fd45 M	src/pages/custom_agent_page.py
+commit 6e2149dfb3423ef50d3ef072782943a3bdbf4a49
+tree ad4e74889eed77f2f4f5e28757ea8c1ffe6dfa49
+parent 8eabb1b90552a0e082b39eb51b867b2bb6c6440e
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 13:14:52 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 13:14:52 +0900
+
+    Create chat_expanse_page.py
+
+
+:000000 100644 0000000000000000000000000000000000000000 107941774d4a55e1883536e723d6119c412ddf7a A	src/pages/chat_expanse_page.py
+commit 8eabb1b90552a0e082b39eb51b867b2bb6c6440e
+tree 3bd4db32ac82974383cfcb8e7424a63495cddacc
+parent c5a5b6ea3a06c5c161cfebdcf701915e7c988422
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 13:14:50 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 13:14:50 +0900
+
+    Delete chat_expance_page.py
+
+
+:100644 000000 107941774d4a55e1883536e723d6119c412ddf7a 0000000000000000000000000000000000000000 D	src/pages/chat_expance_page.py
+commit 80cd991af1893705ca1f5626201d4b4bcedefc65
+tree b97705a560b5de776619c70f63ed40ba60d54098
+parent 41bf8c5d8b878600ac785bd5a15ee3cc5f00600c
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 13:10:50 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 13:10:50 +0900
+
+    Update test_custom_agent.py
+
+
+:100644 100644 5d21d19c8835c58f5cffc36b31eef5f4e9bc2fdb 50fa53db31c7bcf301921584cc9dab1051279e85 M	tests/test_custom_agent.py
+commit eafd6c22093a9ff62882e745d493e8955f5368a2
+tree c4fb9d307799c97c7e213426d03bcc217417eac2
+parent 95891877fafe271fefd0ecdd8a52fa82e60b73cb
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 13:07:26 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 13:07:26 +0900
+
+    Update conftest.py
+
+
+:100644 100644 8980bcfa73662a6cad68d34b065b7c7e902f0d2b a43bbe62f54baca48901a509e010cb8475b99a5e M	tests/conftest.py
+commit 0c2c6e0b1f47e3350b25a36e9f62c97fdd63d715
+tree dfcb67a8f2d50b0c740e2febef4de50643f5c5c1
+parent 384a7d15fffaa4f1eba31cdd80a0de3bbc80ec65
+author nwweiit <nwweiit@gmail.com> 2025-11-17 13:05:19 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-17 13:05:19 +0900
+
+    base fix
+
+
+:100644 100644 ba158cf5b17c486c302988a9c8640d6070f7f231 e940e380435a769bf0cb2d76a98c11a8aa748dd2 M	src/pages/base.py
+:100644 100644 0278e90fcb283df7e7f4faacb66b3bd5216b4a50 c6e541cbd2f72870c0826b393f86a5909103fd45 M	src/pages/custom_agent_page.py
+commit 3825f0003f0193d6378b6e4eeee7d10da1724b38
+tree 2f8125cefee6137e60a5c2a1ee8db38a18d7b827
+parent cf1f8428270f820704d5ca2542bbb49c688a0375
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 11:43:10 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 11:43:10 +0900
+
+    Update chat_expanse_page.py
+
+
+:100644 100644 d4b0488818688d436c5f59ebf7ff1f7bf8596dc0 107941774d4a55e1883536e723d6119c412ddf7a M	src/pages/chat_expanse_page.py
+commit cf1f8428270f820704d5ca2542bbb49c688a0375
+tree af3d20b7f8d58d11941bb4833a924c06389e1dba
+parent e03bf259f0bb689554fa33a44a132a333086a405
+author yejin1024 <yejin1024@gmail.com> 2025-11-17 11:43:03 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-17 11:43:03 +0900
+
+    Update test_chat_expanse.py
+
+
+:100644 100644 402b34270334d559a8ad0f041c010e4c0fcc417f 4560f67d42b97d808cf8e5b018c81c4ba23dcadd M	tests/test_chat_expanse.py
+commit 384a7d15fffaa4f1eba31cdd80a0de3bbc80ec65
+tree 529e15fb7f945b836267cd2f4d0f7a8cc80124e2
+parent 938ae8ea1f791fb8c95e87d95370c477e0b3f336
+author nwweiit <nwweiit@gmail.com> 2025-11-16 19:23:02 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-16 19:23:02 +0900
+
+    Update custom_agent_page.py
+
+
+:100644 100644 43f4fa92e5d6517130190c93b82df4aebf816258 0278e90fcb283df7e7f4faacb66b3bd5216b4a50 M	src/pages/custom_agent_page.py
+commit 938ae8ea1f791fb8c95e87d95370c477e0b3f336
+tree bf9918c6e0d24169a4831e67cef418d87eb71624
+parent 58075793a946f049df16fa1e78d9c6b0630c1b40
+author nwweiit <nwweiit@gmail.com> 2025-11-16 04:36:05 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-16 04:36:05 +0900
+
+    delete print
+
+
+:100644 100644 c9f9fa9d2d885baeeb6fb63d473e77d09fb5052e 43f4fa92e5d6517130190c93b82df4aebf816258 M	src/pages/custom_agent_page.py
+:100644 100644 fa8faf0ad2cb14dcd3edc47e7b66a0a41e9a89c7 50fa53db31c7bcf301921584cc9dab1051279e85 M	tests/test_custom_agent.py
+commit 58075793a946f049df16fa1e78d9c6b0630c1b40
+tree 21886c368e331b89ba5631654de8980900267b36
+parent 0231f46bb304d971b0146eac7bf52f6bef23aacd
+author nwweiit <nwweiit@gmail.com> 2025-11-15 22:32:52 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-15 22:32:52 +0900
+
+    fix base.py
+
+
+:100644 100644 726608d221904562425342aeffbaedc5f27520aa ba158cf5b17c486c302988a9c8640d6070f7f231 M	src/pages/base.py
+:100644 100644 70b624929891727038196db89fd4351dd3632620 c9f9fa9d2d885baeeb6fb63d473e77d09fb5052e M	src/pages/custom_agent_page.py
+:100644 100644 efeedee64aa6d5f462788ba6bef33739e1ca189c fa8faf0ad2cb14dcd3edc47e7b66a0a41e9a89c7 M	tests/test_custom_agent.py
+commit 0231f46bb304d971b0146eac7bf52f6bef23aacd
+tree c282eb3d7c0281d73d77f79fb6f85273fb4c593c
+parent 6dec8d14ecc5d5ebb46b1144d0f43597fb422af6
+author nwweiit <nwweiit@gmail.com> 2025-11-15 18:05:47 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-15 18:05:47 +0900
+
+    Update test_custom_agent.py
+
+
+:100644 100644 0fb56bb7b0bc5e01a6e9465b2d7db49c61adec7c efeedee64aa6d5f462788ba6bef33739e1ca189c M	tests/test_custom_agent.py
+commit 6dec8d14ecc5d5ebb46b1144d0f43597fb422af6
+tree f11aa27419af79d45a7d8117df1c0d3d813141a8
+parent d97a81c0029dab7aa8453a6e8f7f278ddabd6b33
+author nwweiit <nwweiit@gmail.com> 2025-11-15 16:19:30 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-15 16:19:30 +0900
+
+    006 fixed
+
+
+:100644 100644 b14b4154ef9192e60b94898a1b9d167eea2340c1 70b624929891727038196db89fd4351dd3632620 M	src/pages/custom_agent_page.py
+:100644 100644 f73b60efb1059488d40316482bfc1ff948344c09 0fb56bb7b0bc5e01a6e9465b2d7db49c61adec7c M	tests/test_custom_agent.py
+commit e9c1bf629055c61ea5c8d53914e9eb4071e06a54
+tree 2acc2d8391cfcdf74f8d7a1295e77abe149157a5
+parent d45c0e1d1665b1160f5d98a5b9b2f7a6573f6ef9
+author flytecc <dlxorud12567@gmail.com> 2025-11-15 15:03:16 +0900
+committer flytecc <dlxorud12567@gmail.com> 2025-11-15 15:03:16 +0900
+
+    11/15
+
+
+:100644 100644 3c12c863050725ce62fe8887b3524a83840de32e 15dba50df14b0925d5853c232467c17f715352e1 M	tests/test_history.py
+commit d97a81c0029dab7aa8453a6e8f7f278ddabd6b33
+tree 80c7c1c880f1c4b0468657d4ba332cf0909638b5
+parent d9e3f36841f73debfb5f5a5634a32bb53f510ea1
+author nwweiit <nwweiit@gmail.com> 2025-11-15 03:22:27 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-15 03:22:27 +0900
+
+    base update
+
+
+:100644 100644 591a390efb928f84af4e03506ac3191557958196 726608d221904562425342aeffbaedc5f27520aa M	src/pages/base.py
+:100644 100644 1a36ad24c54ef726472c58b55e7bb358d2cdceb8 b14b4154ef9192e60b94898a1b9d167eea2340c1 M	src/pages/custom_agent_page.py
+:100644 100644 289f349455af00ed3c38c19776a48d0ff13dbb99 f73b60efb1059488d40316482bfc1ff948344c09 M	tests/test_custom_agent.py
+commit 1fca994b99587d66e5420b67d4e989304da81061
+tree 272ea5f42a4b6a7c6f84eed87db3086c055a2ce8
+parent 6cbe9d64f9f4404ee2e30aeab4d5f24877809fd7
+author nwweiit <nwweiit@gmail.com> 2025-11-15 01:41:29 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-15 01:41:29 +0900
+
+    Update test_custom_agent.py
+
+
+:100644 100644 6d82eb59dd4e0053492510ca8fe89f23dd8e2657 289f349455af00ed3c38c19776a48d0ff13dbb99 M	tests/test_custom_agent.py
+commit 6cbe9d64f9f4404ee2e30aeab4d5f24877809fd7
+tree 763dcfa66d0f1f6b3be356ff4ebb9d9821a883db
+parent 85043c59a864e4c20073245a1f2a7c31d202b5dc
+author nwweiit <nwweiit@gmail.com> 2025-11-15 01:27:12 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-15 01:27:12 +0900
+
+    fix conftest
+
+
+:100644 000000 f61cd8c0ee801ccecc4abbdfdb749f3d1b3f7fa6 0000000000000000000000000000000000000000 D	after_google_search_send.png
+:100644 000000 a42ff555e1785892380b2a23383014f350863078 0000000000000000000000000000000000000000 D	after_image_send.png
+:100644 000000 851a67bebaeded142e709d40a93555d1907036a9 0000000000000000000000000000000000000000 D	after_quiz_send.png
+:100644 000000 aa6d44e23feb1d4a23949ed2f9c3bcc2bdbc0ff4 0000000000000000000000000000000000000000 D	after_quiz_send_empty.png
+:100644 000000 73be82ecfbf5a4d05c3f39aa89a7ddfa03a01138 0000000000000000000000000000000000000000 D	after_quiz_send_no_type.png
+:100644 000000 efac9691d1aa030661d098c1d50bccc5d194a004 0000000000000000000000000000000000000000 D	after_quiz_send_special_chars.png
+:100644 000000 b0f999af72eedc7ee30db8fffc0ae134f747379e 0000000000000000000000000000000000000000 D	before_quiz_menu.png
+:100644 000000 ff881c93b1e6077db78584149085b7544ef7f7d0 0000000000000000000000000000000000000000 D	test_error.png
+:100644 100644 5fb36a61ca4426b267e2314f940815aea7ec23a5 a43bbe62f54baca48901a509e010cb8475b99a5e M	tests/conftest.py
+:100644 100644 24c41917d5ffc21689e9d0c6bc91e566293fb737 6d82eb59dd4e0053492510ca8fe89f23dd8e2657 M	tests/test_custom_agent.py
+:100644 000000 1cee869085198dddc4f5cfb5d34b6ff858a3f996 0000000000000000000000000000000000000000 D	timeout_error.png
+commit d45c0e1d1665b1160f5d98a5b9b2f7a6573f6ef9
+tree 0d6362986fbdcfb45aca793162da52b885057178
+parent 26225efac380602921e31336d5071706f0e00087
+author flytecc <dlxorud12567@gmail.com> 2025-11-15 00:42:05 +0900
+committer flytecc <dlxorud12567@gmail.com> 2025-11-15 00:42:05 +0900
+
+    11/15
+
+
+:100644 100644 0c9a904b26a4c3d1c40aa69a5181ef8ff77b78ec e492ae85cafec46b8c603ff6922c3ba79b089706 M	src/pages/ht_chat_sidebar.py
+:100644 100644 98a902bb8ad832275f827af0abc5f641a679b57c 18bfd81337e1dec77d3427d7a3cb3b9689f9eb1e M	src/pages/ht_composer.py
+:000000 100644 0000000000000000000000000000000000000000 1dd099023fd170ac797090d097aceb23c7bf91b2 A	src/pages/ht_main_page.py
+:100644 100644 8980bcfa73662a6cad68d34b065b7c7e902f0d2b 51e7585bfc0ea6dff8aa85d7f80f62855dd71d22 M	tests/conftest.py
+:100644 100644 98a5eda5722aec8aefc71f191c69acb94b57d41f 3c12c863050725ce62fe8887b3524a83840de32e M	tests/test_history.py
+commit 85043c59a864e4c20073245a1f2a7c31d202b5dc
+tree b81f627aa0c3931a4f66fb58e8e065dcf9029a18
+parent 3d68ab895cd80417502779b68065a4f8efc828ad
+author nwweiit <nwweiit@gmail.com> 2025-11-14 23:37:39 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-14 23:37:39 +0900
+
+    fix conftest
+
+
+:000000 100644 0000000000000000000000000000000000000000 f61cd8c0ee801ccecc4abbdfdb749f3d1b3f7fa6 A	after_google_search_send.png
+:000000 100644 0000000000000000000000000000000000000000 a42ff555e1785892380b2a23383014f350863078 A	after_image_send.png
+:000000 100644 0000000000000000000000000000000000000000 851a67bebaeded142e709d40a93555d1907036a9 A	after_quiz_send.png
+:000000 100644 0000000000000000000000000000000000000000 aa6d44e23feb1d4a23949ed2f9c3bcc2bdbc0ff4 A	after_quiz_send_empty.png
+:000000 100644 0000000000000000000000000000000000000000 73be82ecfbf5a4d05c3f39aa89a7ddfa03a01138 A	after_quiz_send_no_type.png
+:000000 100644 0000000000000000000000000000000000000000 efac9691d1aa030661d098c1d50bccc5d194a004 A	after_quiz_send_special_chars.png
+:000000 100644 0000000000000000000000000000000000000000 b0f999af72eedc7ee30db8fffc0ae134f747379e A	before_quiz_menu.png
+:100644 100644 888e876159a58050e1ed4a8d4fd16550a814b596 1a36ad24c54ef726472c58b55e7bb358d2cdceb8 M	src/pages/custom_agent_page.py
+:000000 100644 0000000000000000000000000000000000000000 ff881c93b1e6077db78584149085b7544ef7f7d0 A	test_error.png
+:100644 100644 1370f6d0e4d7c4f60dabeea919b2561a56f199fd 5fb36a61ca4426b267e2314f940815aea7ec23a5 M	tests/conftest.py
+:100644 100644 995e02d6bef4a9e4e52164ab5b8b96290875ca8f 24c41917d5ffc21689e9d0c6bc91e566293fb737 M	tests/test_custom_agent.py
+:000000 100644 0000000000000000000000000000000000000000 1cee869085198dddc4f5cfb5d34b6ff858a3f996 A	timeout_error.png
+commit 3d68ab895cd80417502779b68065a4f8efc828ad
+tree 8913e6c47dc24fae40fec0ca395b31b8964f0e8e
+parent 6dd8be4ab8c67bd6e50cfeddfb8d87c4103b78ce
+author nwweiit <nwweiit@gmail.com> 2025-11-14 22:45:33 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-14 22:45:33 +0900
+
+    conftest fix
+
+
+:100644 100644 5ef99439d17b802a730e7f9a51db8d0a6d475e87 888e876159a58050e1ed4a8d4fd16550a814b596 M	src/pages/custom_agent_page.py
+:100644 100644 8980bcfa73662a6cad68d34b065b7c7e902f0d2b 1370f6d0e4d7c4f60dabeea919b2561a56f199fd M	tests/conftest.py
+:100644 100644 e24431b09c4ea85ee5a50679e977772a56d6ea7e 995e02d6bef4a9e4e52164ab5b8b96290875ca8f M	tests/test_custom_agent.py
+commit 9a42a3b7a352fcc8a9677058c6c326189acadaed
+tree 5fb0a3d8ec4824cb10412f914d3d6ae18a2bd170
+parent 2d9bd78dcce28b61c2b26dcdeebe9573861cda56
+author minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-14 20:33:12 +0900
+committer minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-14 20:33:12 +0900
+
+    edit
+    
+    sleep -> 명시적대기
+
+
+:100644 100644 7c8fd10dd354d06432a42d2f5b7da7a34d3dc5fb 69076978f90e43e90e0cd25b2a93a3769ccb9eb8 M	tests/test_cb.py
+commit 2d9bd78dcce28b61c2b26dcdeebe9573861cda56
+tree 64170f2806507436a1f769998164530b2e8f2547
+parent 7f179001f7cd07a25f3acc0a1a8f1f09a7cb5a49
+author minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-14 20:14:59 +0900
+committer minojj <wrnx8vzkyz@privaterelay.appleid.com> 2025-11-14 20:14:59 +0900
+
+    edit
+    
+    file upload edit
+
+
+:000000 100644 0000000000000000000000000000000000000000 618c4908f26df3f6310fcbf782ab266a0a323cd5 A	resources/testdata/dog.png
+:100644 100644 b8e814b4e1de5036bdcaafe8727897cca5f45fc7 7c8fd10dd354d06432a42d2f5b7da7a34d3dc5fb M	tests/test_cb.py
+commit 6dd8be4ab8c67bd6e50cfeddfb8d87c4103b78ce
+tree 7b6e6676c1c878f42905080dc86674a9cd06b761
+parent 07428d1fd2c11666e67a6d2e1f1844ad305edd96
+author nwweiit <nwweiit@gmail.com> 2025-11-14 19:16:10 +0900
+committer nwweiit <nwweiit@gmail.com> 2025-11-14 19:16:10 +0900
+
+    correction
+
+
+:100644 100644 151e3da519c48d029766d6b0cb9f82440bfde510 f695a7410fe13702b0ae1bfd13c760a68ea7927e M	tests/test_chat_expanse.py
+:100644 100644 5d21d19c8835c58f5cffc36b31eef5f4e9bc2fdb e24431b09c4ea85ee5a50679e977772a56d6ea7e M	tests/test_custom_agent.py
+commit e03bf259f0bb689554fa33a44a132a333086a405
+tree 42cfbbc7cfb9395202bc7eddc4703f9ad280df3c
+parent 55a2dfe1622ce47844e63e6f8c1bd4a9e0f91f70
+author yejin1024 <yejin1024@gmail.com> 2025-11-14 19:08:28 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-14 19:08:28 +0900
+
+    Update test_chat_expanse.py
+
+
+:100644 100644 bea2cb2bb2fc0a3ac44185005ffc2a6038f8ef66 402b34270334d559a8ad0f041c010e4c0fcc417f M	tests/test_chat_expanse.py
+commit 55a2dfe1622ce47844e63e6f8c1bd4a9e0f91f70
+tree 20b0b243e53aff910c01e4e86f24e00bc3c06df8
+parent 8957483e84db077c27e7123d1245150fe5ac93f2
+author yejin1024 <yejin1024@gmail.com> 2025-11-14 19:08:21 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-14 19:08:21 +0900
+
+    Update chat_expanse_page.py
+
+
+:100644 100644 63c920846fe57dc22048f99378e02a8bf45847b5 d4b0488818688d436c5f59ebf7ff1f7bf8596dc0 M	src/pages/chat_expanse_page.py
+commit 26225efac380602921e31336d5071706f0e00087
+tree cd5ddf05661deb3849438ae49bcd619877bed0d3
+parent 07428d1fd2c11666e67a6d2e1f1844ad305edd96
+author flytecc <dlxorud12567@gmail.com> 2025-11-14 17:49:40 +0900
+committer flytecc <dlxorud12567@gmail.com> 2025-11-14 17:49:40 +0900
+
+    11/14 수정_1
+
+
+:100644 100644 63c920846fe57dc22048f99378e02a8bf45847b5 63c920846fe57dc22048f99378e02a8bf45847b5 R100	src/pages/chat_expanse_page.py	src/pages/chat_expance_page.py
+:100644 100644 104594aae633796df2e6b967fb5a27c476646df5 98a5eda5722aec8aefc71f191c69acb94b57d41f M	tests/test_history.py
+commit 3ddd3f50d44263563fc491450d67af128e985140
+tree 8270a2ba0c7bb9d5adb116dbfec068fd3c124b76
+parent 4ff459d4bed959d576ae1a9a163a39112ef36e83
+author yejin1024 <yejin1024@gmail.com> 2025-11-14 16:58:44 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-14 16:58:44 +0900
+
+    Create chat_expanse_page.py
+
+
+:000000 100644 0000000000000000000000000000000000000000 85049773db9d2b93b506c31d0103954a8e9c26f2 A	src/pages/chat_expanse_page.py
+commit 4ff459d4bed959d576ae1a9a163a39112ef36e83
+tree 5b6c9d43aec7b8e1d4cd02be7b08046965dc5127
+parent fdfec819f71c2b9634491e6771897f977efdcf2b
+author yejin1024 <yejin1024@gmail.com> 2025-11-14 16:58:42 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-14 16:58:42 +0900
+
+    Delete chat_expance_page.py
+
+
+:100644 000000 85049773db9d2b93b506c31d0103954a8e9c26f2 0000000000000000000000000000000000000000 D	src/pages/chat_expance_page.py
+commit fdfec819f71c2b9634491e6771897f977efdcf2b
+tree b25ed8df1dedf07edb3112976c06eda6a9785ecc
+parent 16b993726a2162318700c438305d4803ee0faa03
+author yejin1024 <yejin1024@gmail.com> 2025-11-14 16:52:23 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-14 16:52:23 +0900
+
+    Update conftest.py
+
+
+:100644 100644 a43d38a16a63eee1cfad4000424ab07dba866275 23655de157ce6fbd9510a92596ee44bf6355fe1c M	tests/conftest.py
+commit 16b993726a2162318700c438305d4803ee0faa03
+tree 3998219ccb1edf605d0fc57a77a1efff4f1fca4b
+parent 4499ca9d75e3b8aef76f8e4644d653ec092336d2
+author yejin1024 <yejin1024@gmail.com> 2025-11-14 16:52:07 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-14 16:52:07 +0900
+
+    Update test_ce.py
+
+
+:100644 100644 44ee54de661b8a982161ce3c61b11930c1c8925d 4801a59bd894a1a0dd14a65e2c8b5615c1648ced M	tests/test_ce.py
+commit 4499ca9d75e3b8aef76f8e4644d653ec092336d2
+tree 4c7da9ef0c83f088011ca6b3882fa98b00435b62
+parent cbe0443abb6443cb6c014c2d75e1f959b3f7d23d
+author yejin1024 <yejin1024@gmail.com> 2025-11-14 16:52:03 +0900
+committer yejin1024 <yejin1024@gmail.com> 2025-11-14 16:52:03 +0900
+
+    Update chat_expance_page.py
+
+
+:100644 100644 792adb5535809bbb3ca0bb0030da2fa5aad9ca8c 85049773db9d2b93b506c31d0103954a8e9c26f2 M	src/pages/chat_expance_page.py

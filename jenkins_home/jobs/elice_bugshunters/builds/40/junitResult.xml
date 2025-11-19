@@ -1,0 +1,927 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<result plugin="junit@1369.v15da_00283f06">
+  <suites>
+    <suite>
+      <file>/var/jenkins_home/workspace/elice_bugshunters/reports/test-results.xml</file>
+      <name>pytest</name>
+      <duration>846.748</duration>
+      <startTime>1763529203897</startTime>
+      <properties/>
+      <timestamp>2025-11-19T05:13:23.897744+00:00</timestamp>
+      <time>846.748</time>
+      <nodeId>43</nodeId>
+      <enclosingBlocks>
+        <string>39</string>
+      </enclosingBlocks>
+      <enclosingBlockNames>
+        <string>Declarative: Post Actions</string>
+      </enclosingBlockNames>
+      <cases>
+        <case>
+          <duration>6.24</duration>
+          <startTime>1763529203897</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_001_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>3.107</duration>
+          <startTime>1763529210137</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_002_duplicate_email</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>9.831</duration>
+          <startTime>1763529213244</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_003_negative_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>15.04</duration>
+          <startTime>1763529223075</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_004_positive_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>7.016</duration>
+          <startTime>1763529238115</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_005_login_with_non_email_format</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>6.992</duration>
+          <startTime>1763529245131</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_006_login_with_spaces</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>10.07</duration>
+          <startTime>1763529252123</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_007_logout</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>21.69</duration>
+          <startTime>1763529262193</startTime>
+          <className>tests.test_billing_system</className>
+          <testName>test_bu_001_credit_usage_section_exists</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>13.504</duration>
+          <startTime>1763529283883</startTime>
+          <className>tests.test_billing_system</className>
+          <testName>test_bu_002_danal_card_payment_iframe_appears</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_billing_system.py:34: in test_bu_002_danal_card_payment_iframe_appears
+    methods.click_register_method()
+src/pages/billing_page.py:48: in click_register_method
+    self.click_safely(&quot;register_method_btn&quot;)
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaadfe64c18 &lt;unknown&gt;
+#1 0xaaaadf88e0d0 &lt;unknown&gt;
+#2 0xaaaadf8d6f4c &lt;unknown&gt;
+#3 0xaaaadf912d3c &lt;unknown&gt;
+#4 0xaaaadf8cb998 &lt;unknown&gt;
+#5 0xaaaadfe2f79c &lt;unknown&gt;
+#6 0xaaaadfe3282c &lt;unknown&gt;
+#7 0xaaaadfe32408 &lt;unknown&gt;
+#8 0xaaaadfe1a620 &lt;unknown&gt;
+#9 0xaaaadfe32eac &lt;unknown&gt;
+#10 0xaaaadfe0493c &lt;unknown&gt;
+#11 0xaaaadfe51abc &lt;unknown&gt;
+#12 0xaaaadfe51cc8 &lt;unknown&gt;
+#13 0xaaaadfe6397c &lt;unknown&gt;
+#14 0xffff9267202c &lt;unknown&gt;
+#15 0xffff926dbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>14.321</duration>
+          <startTime>1763529297387</startTime>
+          <className>tests.test_billing_system</className>
+          <testName>test_bu_003_click_usage_history</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_billing_system.py:56: in test_bu_003_click_usage_history
+    assert usage_page.is_usage_history_page(), &quot;❌ Usage History 페이지로 이동 실패&quot;
+E   AssertionError: ❌ Usage History 페이지로 이동 실패
+E   assert False
+E    +  where False = is_usage_history_page()
+E    +    where is_usage_history_page = &lt;src.pages.billing_page.UsagePage object at 0xffff887c2900&gt;.is_usage_history_page</errorStackTrace>
+          <errorDetails>AssertionError: ❌ Usage History 페이지로 이동 실패
+assert False
+ +  where False = is_usage_history_page()
+ +    where is_usage_history_page = &lt;src.pages.billing_page.UsagePage object at 0xffff887c2900&gt;.is_usage_history_page</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>1.819</duration>
+          <startTime>1763529311708</startTime>
+          <className>tests.test_billing_system</className>
+          <testName>test_bu_004_click_ml_api</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>3.392</duration>
+          <startTime>1763529313527</startTime>
+          <className>tests.test_billing_system</className>
+          <testName>test_bu_005_click_severless_status</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>4.11</duration>
+          <startTime>1763529316919</startTime>
+          <className>tests.test_billing_system</className>
+          <testName>test_bu_006_click_api_key_manage</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_billing_system.py:73: in test_bu_006_click_api_key_manage
+    assert page.is_api_key_manage_page()
+E   assert False
+E    +  where False = is_api_key_manage_page()
+E    +    where is_api_key_manage_page = &lt;src.pages.billing_page.UsagePage object at 0xffff8873b820&gt;.is_api_key_manage_page</errorStackTrace>
+          <errorDetails>assert False
+ +  where False = is_api_key_manage_page()
+ +    where is_api_key_manage_page = &lt;src.pages.billing_page.UsagePage object at 0xffff8873b820&gt;.is_api_key_manage_page</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>20.979</duration>
+          <startTime>1763529321029</startTime>
+          <className>tests.test_chat_base</className>
+          <testName>test_cb_001_ai_chat</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>1.72</duration>
+          <startTime>1763529342008</startTime>
+          <className>tests.test_chat_base</className>
+          <testName>test_cb_002_copy</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>16.151</duration>
+          <startTime>1763529343728</startTime>
+          <className>tests.test_chat_base</className>
+          <testName>test_cb_003_edit_message</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>10.334</duration>
+          <startTime>1763529359878</startTime>
+          <className>tests.test_chat_base</className>
+          <testName>test_cb_004_scroll_and_click</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>15.619</duration>
+          <startTime>1763529370212</startTime>
+          <className>tests.test_chat_base</className>
+          <testName>test_cb_005_make_image</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>1.635</duration>
+          <startTime>1763529385831</startTime>
+          <className>tests.test_chat_base</className>
+          <testName>test_cb_006_upload_file</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>7.312</duration>
+          <startTime>1763529387466</startTime>
+          <className>tests.test_chat_base</className>
+          <testName>test_cb_007_make_image</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>16.712</duration>
+          <startTime>1763529394778</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_001_quiz</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>10.597</duration>
+          <startTime>1763529411490</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_002_quiz_empty</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>10.637</duration>
+          <startTime>1763529422087</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_003_quiz_special_chars</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>9.136</duration>
+          <startTime>1763529432724</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_004_quiz_no_type</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>31.925</duration>
+          <startTime>1763529441860</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_005_ppt</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>1.41</duration>
+          <startTime>1763529473785</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_006_image_text</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>84.268</duration>
+          <startTime>1763529475195</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_007_image_file</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>0.932</duration>
+          <startTime>1763529559463</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_008_google_search</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>81.642</duration>
+          <startTime>1763529560395</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_009_deep_dive</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>24.011</duration>
+          <startTime>1763529642037</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_010_file_upload</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>9.65</duration>
+          <startTime>1763529666048</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_011_file_upload_expect_failure</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>10.119</duration>
+          <startTime>1763529675698</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_012_file_upload_new_chat</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_chat_expanse.py:69: in test_ce_012_file_upload_new_chat
+    assert result, &quot;❌ 파일 업로드 및 전송 프로세스 실패&quot;
+E   AssertionError: ❌ 파일 업로드 및 전송 프로세스 실패
+E   assert False</errorStackTrace>
+          <errorDetails>AssertionError: ❌ 파일 업로드 및 전송 프로세스 실패
+assert False</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>10.487</duration>
+          <startTime>1763529685817</startTime>
+          <className>tests.test_chat_expanse</className>
+          <testName>test_ce_013_quiz_empty_new_chat</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_chat_expanse.py:74: in test_ce_013_quiz_empty_new_chat
+    assert result is True, &quot;✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!&quot;
+E   AssertionError: ✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!
+E   assert False is True</errorStackTrace>
+          <errorDetails>AssertionError: ✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!
+assert False is True</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>16.573</duration>
+          <startTime>1763529696304</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_001_navigate_to_agent_create_form</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>7.443</duration>
+          <startTime>1763529712877</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_002_validate_required_fields_behavior</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>19.312</duration>
+          <startTime>1763529720320</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_003_1_create_private_agent_successfully</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>20.631</duration>
+          <startTime>1763529739632</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_003_2_create_organization_agent_successfully</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>11.801</duration>
+          <startTime>1763529760263</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_004_test_create_with_chat_generates_ai_response</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>8.889</duration>
+          <startTime>1763529772064</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_005_prevent_duplicate_agent_creation</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>3.42</duration>
+          <startTime>1763529780953</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_006_display_created_agents_in_explorer</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>14.065</duration>
+          <startTime>1763529784373</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_007_display_agent_cards_in_my_agents</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>17.21</duration>
+          <startTime>1763529798438</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_008_update_existing_agent_successfully</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>19.323</duration>
+          <startTime>1763529815648</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_009__publish_draft_agent_successfully</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>25.391</duration>
+          <startTime>1763529834971</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_010_autosave_draft_agent_persists_changes</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>15.701</duration>
+          <startTime>1763529860362</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_011_cancel_agent_deletion_modal</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>15.632</duration>
+          <startTime>1763529876063</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_012_delete_agent_permanently</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>14.116</duration>
+          <startTime>1763529891695</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_013_prevent_deletion_of_default_agents</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>6.247</duration>
+          <startTime>1763529905811</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_014_validate_file_upload_and_size_limit</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>34.335</duration>
+          <startTime>1763529912058</startTime>
+          <className>tests.test_custom_agent</className>
+          <testName>test_ca_015_private_agent_hidden_from_sub_account</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>28.465</duration>
+          <startTime>1763529946393</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_001_start_new_chat</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:32: in test_ht_001_start_new_chat
+    sidebar.click_new_chat()  # 내부에서 clickable 사용
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely(&quot;new_chat_btn&quot;)
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaadfe64c18 &lt;unknown&gt;
+#1 0xaaaadf88e0d0 &lt;unknown&gt;
+#2 0xaaaadf8d6f4c &lt;unknown&gt;
+#3 0xaaaadf912d3c &lt;unknown&gt;
+#4 0xaaaadf8cb998 &lt;unknown&gt;
+#5 0xaaaadfe2f79c &lt;unknown&gt;
+#6 0xaaaadfe3282c &lt;unknown&gt;
+#7 0xaaaadfe32408 &lt;unknown&gt;
+#8 0xaaaadfe1a620 &lt;unknown&gt;
+#9 0xaaaadfe32eac &lt;unknown&gt;
+#10 0xaaaadfe0493c &lt;unknown&gt;
+#11 0xaaaadfe51abc &lt;unknown&gt;
+#12 0xaaaadfe51cc8 &lt;unknown&gt;
+#13 0xaaaadfe6397c &lt;unknown&gt;
+#14 0xffff9267202c &lt;unknown&gt;
+#15 0xffff926dbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>12.938</duration>
+          <startTime>1763529974858</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_002_search_history</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:72: in test_ht_002_search_history
+    sidebar.click_new_chat()      # 내부에서 clickable 대기
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely(&quot;new_chat_btn&quot;)
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaadfe64c18 &lt;unknown&gt;
+#1 0xaaaadf88e0d0 &lt;unknown&gt;
+#2 0xaaaadf8d6f4c &lt;unknown&gt;
+#3 0xaaaadf912d3c &lt;unknown&gt;
+#4 0xaaaadf8cb998 &lt;unknown&gt;
+#5 0xaaaadfe2f79c &lt;unknown&gt;
+#6 0xaaaadfe3282c &lt;unknown&gt;
+#7 0xaaaadfe32408 &lt;unknown&gt;
+#8 0xaaaadfe1a620 &lt;unknown&gt;
+#9 0xaaaadfe32eac &lt;unknown&gt;
+#10 0xaaaadfe0493c &lt;unknown&gt;
+#11 0xaaaadfe51abc &lt;unknown&gt;
+#12 0xaaaadfe51cc8 &lt;unknown&gt;
+#13 0xaaaadfe6397c &lt;unknown&gt;
+#14 0xffff9267202c &lt;unknown&gt;
+#15 0xffff926dbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>4.015</duration>
+          <startTime>1763529987796</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_003_agent_search</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>12.779</duration>
+          <startTime>1763529991810</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_004_chat_title_fix</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:123: in test_ht_004_chat_title_fix
+    sidebar.click_new_chat()  # clickable() 대기 포함
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely(&quot;new_chat_btn&quot;)
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaadfe64c18 &lt;unknown&gt;
+#1 0xaaaadf88e0d0 &lt;unknown&gt;
+#2 0xaaaadf8d6f4c &lt;unknown&gt;
+#3 0xaaaadf912d3c &lt;unknown&gt;
+#4 0xaaaadf8cb998 &lt;unknown&gt;
+#5 0xaaaadfe2f79c &lt;unknown&gt;
+#6 0xaaaadfe3282c &lt;unknown&gt;
+#7 0xaaaadfe32408 &lt;unknown&gt;
+#8 0xaaaadfe1a620 &lt;unknown&gt;
+#9 0xaaaadfe32eac &lt;unknown&gt;
+#10 0xaaaadfe0493c &lt;unknown&gt;
+#11 0xaaaadfe51abc &lt;unknown&gt;
+#12 0xaaaadfe51cc8 &lt;unknown&gt;
+#13 0xaaaadfe6397c &lt;unknown&gt;
+#14 0xffff9267202c &lt;unknown&gt;
+#15 0xffff926dbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>12.964</duration>
+          <startTime>1763530004589</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_005_view_chat_history</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:203: in test_ht_005_view_chat_history
+    sidebar.click_new_chat()
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely(&quot;new_chat_btn&quot;)
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaadfe64c18 &lt;unknown&gt;
+#1 0xaaaadf88e0d0 &lt;unknown&gt;
+#2 0xaaaadf8d6f4c &lt;unknown&gt;
+#3 0xaaaadf912d3c &lt;unknown&gt;
+#4 0xaaaadf8cb998 &lt;unknown&gt;
+#5 0xaaaadfe2f79c &lt;unknown&gt;
+#6 0xaaaadfe3282c &lt;unknown&gt;
+#7 0xaaaadfe32408 &lt;unknown&gt;
+#8 0xaaaadfe1a620 &lt;unknown&gt;
+#9 0xaaaadfe32eac &lt;unknown&gt;
+#10 0xaaaadfe0493c &lt;unknown&gt;
+#11 0xaaaadfe51abc &lt;unknown&gt;
+#12 0xaaaadfe51cc8 &lt;unknown&gt;
+#13 0xaaaadfe6397c &lt;unknown&gt;
+#14 0xffff9267202c &lt;unknown&gt;
+#15 0xffff926dbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>15.676</duration>
+          <startTime>1763530017553</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_006_delete_chat</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:259: in test_ht_006_delete_chat
+    sidebar.click_new_chat()
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely(&quot;new_chat_btn&quot;)
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaadfe64c18 &lt;unknown&gt;
+#1 0xaaaadf88e0d0 &lt;unknown&gt;
+#2 0xaaaadf8d6f4c &lt;unknown&gt;
+#3 0xaaaadf912d3c &lt;unknown&gt;
+#4 0xaaaadf8cb998 &lt;unknown&gt;
+#5 0xaaaadfe2f79c &lt;unknown&gt;
+#6 0xaaaadfe3282c &lt;unknown&gt;
+#7 0xaaaadfe32408 &lt;unknown&gt;
+#8 0xaaaadfe1a620 &lt;unknown&gt;
+#9 0xaaaadfe32eac &lt;unknown&gt;
+#10 0xaaaadfe0493c &lt;unknown&gt;
+#11 0xaaaadfe51abc &lt;unknown&gt;
+#12 0xaaaadfe51cc8 &lt;unknown&gt;
+#13 0xaaaadfe6397c &lt;unknown&gt;
+#14 0xffff9267202c &lt;unknown&gt;
+#15 0xffff926dbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+        <case>
+          <duration>13.348</duration>
+          <startTime>1763530033229</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_007_chat_history_ordered_by_time</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/test_history.py:356: in test_ht_007_chat_history_ordered_by_time
+    sidebar.click_new_chat()            # 클릭 시 clickable()로 명시적 대기
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely(&quot;new_chat_btn&quot;)
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+#0 0xaaaadfe64c18 &lt;unknown&gt;
+#1 0xaaaadf88e0d0 &lt;unknown&gt;
+#2 0xaaaadf8d6f4c &lt;unknown&gt;
+#3 0xaaaadf912d3c &lt;unknown&gt;
+#4 0xaaaadf8cb998 &lt;unknown&gt;
+#5 0xaaaadfe2f79c &lt;unknown&gt;
+#6 0xaaaadfe3282c &lt;unknown&gt;
+#7 0xaaaadfe32408 &lt;unknown&gt;
+#8 0xaaaadfe1a620 &lt;unknown&gt;
+#9 0xaaaadfe32eac &lt;unknown&gt;
+#10 0xaaaadfe0493c &lt;unknown&gt;
+#11 0xaaaadfe51abc &lt;unknown&gt;
+#12 0xaaaadfe51cc8 &lt;unknown&gt;
+#13 0xaaaadfe6397c &lt;unknown&gt;
+#14 0xffff9267202c &lt;unknown&gt;
+#15 0xffff926dbf18 &lt;unknown&gt;</errorDetails>
+          <properties/>
+          <failedSince>32</failedSince>
+        </case>
+      </cases>
+    </suite>
+  </suites>
+  <duration>846.748</duration>
+  <skipOldReports>false</skipOldReports>
+  <startTime>1763529203897</startTime>
+  <stdioRetention>NONE</stdioRetention>
+  <keepTestNames>false</keepTestNames>
+  <keepProperties>false</keepProperties>
+</result>

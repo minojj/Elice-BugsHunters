@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="56" time="846.748" timestamp="2025-11-19T05:13:23.897744+00:00" hostname="45743a2c7a2a"><testcase classname="tests.test_account" name="test_ac_001_login" time="6.240" /><testcase classname="tests.test_account" name="test_ac_002_duplicate_email" time="3.107" /><testcase classname="tests.test_account" name="test_ac_003_negative_login" time="9.831" /><testcase classname="tests.test_account" name="test_ac_004_positive_login" time="15.040" /><testcase classname="tests.test_account" name="test_ac_005_login_with_non_email_format" time="7.016" /><testcase classname="tests.test_account" name="test_ac_006_login_with_spaces" time="6.992" /><testcase classname="tests.test_account" name="test_ac_007_logout" time="10.070" /><testcase classname="tests.test_billing_system" name="test_bu_001_credit_usage_section_exists" time="21.690" /><testcase classname="tests.test_billing_system" name="test_bu_002_danal_card_payment_iframe_appears" time="13.504"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaadfe64c18 &lt;unknown&gt;&#10;#1 0xaaaadf88e0d0 &lt;unknown&gt;&#10;#2 0xaaaadf8d6f4c &lt;unknown&gt;&#10;#3 0xaaaadf912d3c &lt;unknown&gt;&#10;#4 0xaaaadf8cb998 &lt;unknown&gt;&#10;#5 0xaaaadfe2f79c &lt;unknown&gt;&#10;#6 0xaaaadfe3282c &lt;unknown&gt;&#10;#7 0xaaaadfe32408 &lt;unknown&gt;&#10;#8 0xaaaadfe1a620 &lt;unknown&gt;&#10;#9 0xaaaadfe32eac &lt;unknown&gt;&#10;#10 0xaaaadfe0493c &lt;unknown&gt;&#10;#11 0xaaaadfe51abc &lt;unknown&gt;&#10;#12 0xaaaadfe51cc8 &lt;unknown&gt;&#10;#13 0xaaaadfe6397c &lt;unknown&gt;&#10;#14 0xffff9267202c &lt;unknown&gt;&#10;#15 0xffff926dbf18 &lt;unknown&gt;">tests/test_billing_system.py:34: in test_bu_002_danal_card_payment_iframe_appears
+    methods.click_register_method()
+src/pages/billing_page.py:48: in click_register_method
+    self.click_safely("register_method_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_billing_system" name="test_bu_003_click_usage_history" time="14.321"><failure message="AssertionError: ❌ Usage History 페이지로 이동 실패&#10;assert False&#10; +  where False = is_usage_history_page()&#10; +    where is_usage_history_page = &lt;src.pages.billing_page.UsagePage object at 0xffff887c2900&gt;.is_usage_history_page">tests/test_billing_system.py:56: in test_bu_003_click_usage_history
+    assert usage_page.is_usage_history_page(), "❌ Usage History 페이지로 이동 실패"
+E   AssertionError: ❌ Usage History 페이지로 이동 실패
+E   assert False
+E    +  where False = is_usage_history_page()
+E    +    where is_usage_history_page = &lt;src.pages.billing_page.UsagePage object at 0xffff887c2900&gt;.is_usage_history_page</failure></testcase><testcase classname="tests.test_billing_system" name="test_bu_004_click_ml_api" time="1.819" /><testcase classname="tests.test_billing_system" name="test_bu_005_click_severless_status" time="3.392" /><testcase classname="tests.test_billing_system" name="test_bu_006_click_api_key_manage" time="4.110"><failure message="assert False&#10; +  where False = is_api_key_manage_page()&#10; +    where is_api_key_manage_page = &lt;src.pages.billing_page.UsagePage object at 0xffff8873b820&gt;.is_api_key_manage_page">tests/test_billing_system.py:73: in test_bu_006_click_api_key_manage
+    assert page.is_api_key_manage_page()
+E   assert False
+E    +  where False = is_api_key_manage_page()
+E    +    where is_api_key_manage_page = &lt;src.pages.billing_page.UsagePage object at 0xffff8873b820&gt;.is_api_key_manage_page</failure></testcase><testcase classname="tests.test_chat_base" name="test_cb_001_ai_chat" time="20.979" /><testcase classname="tests.test_chat_base" name="test_cb_002_copy" time="1.720" /><testcase classname="tests.test_chat_base" name="test_cb_003_edit_message" time="16.151" /><testcase classname="tests.test_chat_base" name="test_cb_004_scroll_and_click" time="10.334" /><testcase classname="tests.test_chat_base" name="test_cb_005_make_image" time="15.619" /><testcase classname="tests.test_chat_base" name="test_cb_006_upload_file" time="1.635" /><testcase classname="tests.test_chat_base" name="test_cb_007_make_image" time="7.312" /><testcase classname="tests.test_chat_expanse" name="test_ce_001_quiz" time="16.712" /><testcase classname="tests.test_chat_expanse" name="test_ce_002_quiz_empty" time="10.597" /><testcase classname="tests.test_chat_expanse" name="test_ce_003_quiz_special_chars" time="10.637" /><testcase classname="tests.test_chat_expanse" name="test_ce_004_quiz_no_type" time="9.136" /><testcase classname="tests.test_chat_expanse" name="test_ce_005_ppt" time="31.925" /><testcase classname="tests.test_chat_expanse" name="test_ce_006_image_text" time="1.410" /><testcase classname="tests.test_chat_expanse" name="test_ce_007_image_file" time="84.268" /><testcase classname="tests.test_chat_expanse" name="test_ce_008_google_search" time="0.932" /><testcase classname="tests.test_chat_expanse" name="test_ce_009_deep_dive" time="81.642" /><testcase classname="tests.test_chat_expanse" name="test_ce_010_file_upload" time="24.011" /><testcase classname="tests.test_chat_expanse" name="test_ce_011_file_upload_expect_failure" time="9.650" /><testcase classname="tests.test_chat_expanse" name="test_ce_012_file_upload_new_chat" time="10.119"><failure message="AssertionError: ❌ 파일 업로드 및 전송 프로세스 실패&#10;assert False">tests/test_chat_expanse.py:69: in test_ce_012_file_upload_new_chat
+    assert result, "❌ 파일 업로드 및 전송 프로세스 실패"
+E   AssertionError: ❌ 파일 업로드 및 전송 프로세스 실패
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_013_quiz_empty_new_chat" time="10.487"><failure message="AssertionError: ✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!&#10;assert False is True">tests/test_chat_expanse.py:74: in test_ce_013_quiz_empty_new_chat
+    assert result is True, "✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!"
+E   AssertionError: ✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!
+E   assert False is True</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_001_navigate_to_agent_create_form" time="16.573" /><testcase classname="tests.test_custom_agent" name="test_ca_002_validate_required_fields_behavior" time="7.443" /><testcase classname="tests.test_custom_agent" name="test_ca_003_1_create_private_agent_successfully" time="19.312" /><testcase classname="tests.test_custom_agent" name="test_ca_003_2_create_organization_agent_successfully" time="20.631" /><testcase classname="tests.test_custom_agent" name="test_ca_004_test_create_with_chat_generates_ai_response" time="11.801" /><testcase classname="tests.test_custom_agent" name="test_ca_005_prevent_duplicate_agent_creation" time="8.889" /><testcase classname="tests.test_custom_agent" name="test_ca_006_display_created_agents_in_explorer" time="3.420" /><testcase classname="tests.test_custom_agent" name="test_ca_007_display_agent_cards_in_my_agents" time="14.065" /><testcase classname="tests.test_custom_agent" name="test_ca_008_update_existing_agent_successfully" time="17.210" /><testcase classname="tests.test_custom_agent" name="test_ca_009__publish_draft_agent_successfully" time="19.323" /><testcase classname="tests.test_custom_agent" name="test_ca_010_autosave_draft_agent_persists_changes" time="25.391" /><testcase classname="tests.test_custom_agent" name="test_ca_011_cancel_agent_deletion_modal" time="15.701" /><testcase classname="tests.test_custom_agent" name="test_ca_012_delete_agent_permanently" time="15.632" /><testcase classname="tests.test_custom_agent" name="test_ca_013_prevent_deletion_of_default_agents" time="14.116" /><testcase classname="tests.test_custom_agent" name="test_ca_014_validate_file_upload_and_size_limit" time="6.247" /><testcase classname="tests.test_custom_agent" name="test_ca_015_private_agent_hidden_from_sub_account" time="34.335" /><testcase classname="tests.test_history" name="test_ht_001_start_new_chat" time="28.465"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaadfe64c18 &lt;unknown&gt;&#10;#1 0xaaaadf88e0d0 &lt;unknown&gt;&#10;#2 0xaaaadf8d6f4c &lt;unknown&gt;&#10;#3 0xaaaadf912d3c &lt;unknown&gt;&#10;#4 0xaaaadf8cb998 &lt;unknown&gt;&#10;#5 0xaaaadfe2f79c &lt;unknown&gt;&#10;#6 0xaaaadfe3282c &lt;unknown&gt;&#10;#7 0xaaaadfe32408 &lt;unknown&gt;&#10;#8 0xaaaadfe1a620 &lt;unknown&gt;&#10;#9 0xaaaadfe32eac &lt;unknown&gt;&#10;#10 0xaaaadfe0493c &lt;unknown&gt;&#10;#11 0xaaaadfe51abc &lt;unknown&gt;&#10;#12 0xaaaadfe51cc8 &lt;unknown&gt;&#10;#13 0xaaaadfe6397c &lt;unknown&gt;&#10;#14 0xffff9267202c &lt;unknown&gt;&#10;#15 0xffff926dbf18 &lt;unknown&gt;">tests/test_history.py:32: in test_ht_001_start_new_chat
+    sidebar.click_new_chat()  # 내부에서 clickable 사용
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_002_search_history" time="12.938"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaadfe64c18 &lt;unknown&gt;&#10;#1 0xaaaadf88e0d0 &lt;unknown&gt;&#10;#2 0xaaaadf8d6f4c &lt;unknown&gt;&#10;#3 0xaaaadf912d3c &lt;unknown&gt;&#10;#4 0xaaaadf8cb998 &lt;unknown&gt;&#10;#5 0xaaaadfe2f79c &lt;unknown&gt;&#10;#6 0xaaaadfe3282c &lt;unknown&gt;&#10;#7 0xaaaadfe32408 &lt;unknown&gt;&#10;#8 0xaaaadfe1a620 &lt;unknown&gt;&#10;#9 0xaaaadfe32eac &lt;unknown&gt;&#10;#10 0xaaaadfe0493c &lt;unknown&gt;&#10;#11 0xaaaadfe51abc &lt;unknown&gt;&#10;#12 0xaaaadfe51cc8 &lt;unknown&gt;&#10;#13 0xaaaadfe6397c &lt;unknown&gt;&#10;#14 0xffff9267202c &lt;unknown&gt;&#10;#15 0xffff926dbf18 &lt;unknown&gt;">tests/test_history.py:72: in test_ht_002_search_history
+    sidebar.click_new_chat()      # 내부에서 clickable 대기
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_003_agent_search" time="4.015" /><testcase classname="tests.test_history" name="test_ht_004_chat_title_fix" time="12.779"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaadfe64c18 &lt;unknown&gt;&#10;#1 0xaaaadf88e0d0 &lt;unknown&gt;&#10;#2 0xaaaadf8d6f4c &lt;unknown&gt;&#10;#3 0xaaaadf912d3c &lt;unknown&gt;&#10;#4 0xaaaadf8cb998 &lt;unknown&gt;&#10;#5 0xaaaadfe2f79c &lt;unknown&gt;&#10;#6 0xaaaadfe3282c &lt;unknown&gt;&#10;#7 0xaaaadfe32408 &lt;unknown&gt;&#10;#8 0xaaaadfe1a620 &lt;unknown&gt;&#10;#9 0xaaaadfe32eac &lt;unknown&gt;&#10;#10 0xaaaadfe0493c &lt;unknown&gt;&#10;#11 0xaaaadfe51abc &lt;unknown&gt;&#10;#12 0xaaaadfe51cc8 &lt;unknown&gt;&#10;#13 0xaaaadfe6397c &lt;unknown&gt;&#10;#14 0xffff9267202c &lt;unknown&gt;&#10;#15 0xffff926dbf18 &lt;unknown&gt;">tests/test_history.py:123: in test_ht_004_chat_title_fix
+    sidebar.click_new_chat()  # clickable() 대기 포함
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_005_view_chat_history" time="12.964"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaadfe64c18 &lt;unknown&gt;&#10;#1 0xaaaadf88e0d0 &lt;unknown&gt;&#10;#2 0xaaaadf8d6f4c &lt;unknown&gt;&#10;#3 0xaaaadf912d3c &lt;unknown&gt;&#10;#4 0xaaaadf8cb998 &lt;unknown&gt;&#10;#5 0xaaaadfe2f79c &lt;unknown&gt;&#10;#6 0xaaaadfe3282c &lt;unknown&gt;&#10;#7 0xaaaadfe32408 &lt;unknown&gt;&#10;#8 0xaaaadfe1a620 &lt;unknown&gt;&#10;#9 0xaaaadfe32eac &lt;unknown&gt;&#10;#10 0xaaaadfe0493c &lt;unknown&gt;&#10;#11 0xaaaadfe51abc &lt;unknown&gt;&#10;#12 0xaaaadfe51cc8 &lt;unknown&gt;&#10;#13 0xaaaadfe6397c &lt;unknown&gt;&#10;#14 0xffff9267202c &lt;unknown&gt;&#10;#15 0xffff926dbf18 &lt;unknown&gt;">tests/test_history.py:203: in test_ht_005_view_chat_history
+    sidebar.click_new_chat()
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_006_delete_chat" time="15.676"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaadfe64c18 &lt;unknown&gt;&#10;#1 0xaaaadf88e0d0 &lt;unknown&gt;&#10;#2 0xaaaadf8d6f4c &lt;unknown&gt;&#10;#3 0xaaaadf912d3c &lt;unknown&gt;&#10;#4 0xaaaadf8cb998 &lt;unknown&gt;&#10;#5 0xaaaadfe2f79c &lt;unknown&gt;&#10;#6 0xaaaadfe3282c &lt;unknown&gt;&#10;#7 0xaaaadfe32408 &lt;unknown&gt;&#10;#8 0xaaaadfe1a620 &lt;unknown&gt;&#10;#9 0xaaaadfe32eac &lt;unknown&gt;&#10;#10 0xaaaadfe0493c &lt;unknown&gt;&#10;#11 0xaaaadfe51abc &lt;unknown&gt;&#10;#12 0xaaaadfe51cc8 &lt;unknown&gt;&#10;#13 0xaaaadfe6397c &lt;unknown&gt;&#10;#14 0xffff9267202c &lt;unknown&gt;&#10;#15 0xffff926dbf18 &lt;unknown&gt;">tests/test_history.py:259: in test_ht_006_delete_chat
+    sidebar.click_new_chat()
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_007_chat_history_ordered_by_time" time="13.348"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaadfe64c18 &lt;unknown&gt;&#10;#1 0xaaaadf88e0d0 &lt;unknown&gt;&#10;#2 0xaaaadf8d6f4c &lt;unknown&gt;&#10;#3 0xaaaadf912d3c &lt;unknown&gt;&#10;#4 0xaaaadf8cb998 &lt;unknown&gt;&#10;#5 0xaaaadfe2f79c &lt;unknown&gt;&#10;#6 0xaaaadfe3282c &lt;unknown&gt;&#10;#7 0xaaaadfe32408 &lt;unknown&gt;&#10;#8 0xaaaadfe1a620 &lt;unknown&gt;&#10;#9 0xaaaadfe32eac &lt;unknown&gt;&#10;#10 0xaaaadfe0493c &lt;unknown&gt;&#10;#11 0xaaaadfe51abc &lt;unknown&gt;&#10;#12 0xaaaadfe51cc8 &lt;unknown&gt;&#10;#13 0xaaaadfe6397c &lt;unknown&gt;&#10;#14 0xffff9267202c &lt;unknown&gt;&#10;#15 0xffff926dbf18 &lt;unknown&gt;">tests/test_history.py:356: in test_ht_007_chat_history_ordered_by_time
+    sidebar.click_new_chat()            # 클릭 시 clickable()로 명시적 대기
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaadfe64c18 &lt;unknown&gt;
+E   #1 0xaaaadf88e0d0 &lt;unknown&gt;
+E   #2 0xaaaadf8d6f4c &lt;unknown&gt;
+E   #3 0xaaaadf912d3c &lt;unknown&gt;
+E   #4 0xaaaadf8cb998 &lt;unknown&gt;
+E   #5 0xaaaadfe2f79c &lt;unknown&gt;
+E   #6 0xaaaadfe3282c &lt;unknown&gt;
+E   #7 0xaaaadfe32408 &lt;unknown&gt;
+E   #8 0xaaaadfe1a620 &lt;unknown&gt;
+E   #9 0xaaaadfe32eac &lt;unknown&gt;
+E   #10 0xaaaadfe0493c &lt;unknown&gt;
+E   #11 0xaaaadfe51abc &lt;unknown&gt;
+E   #12 0xaaaadfe51cc8 &lt;unknown&gt;
+E   #13 0xaaaadfe6397c &lt;unknown&gt;
+E   #14 0xffff9267202c &lt;unknown&gt;
+E   #15 0xffff926dbf18 &lt;unknown&gt;</failure></testcase></testsuite></testsuites>

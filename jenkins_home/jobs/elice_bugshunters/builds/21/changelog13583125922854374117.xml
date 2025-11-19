@@ -1,0 +1,11 @@
+commit 55b286633f9fb386fc1e9b8d8d28cfa57e169f91
+tree 567943bed2c6168106214899fd23070078694c08
+parent 0954926a3993ccc78a5a502b546e535f90ecdcb9
+author junseoseki <dhfkapap@naver.com> 2025-11-16 23:29:51 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-16 23:29:51 +0900
+
+    jira
+
+
+:100644 100644 1ad2dc15fc2402fd9b58a46afae6b48f607bd310 d3d881fe167e56f06ee4cce501e78de7e279ee53 M	Dockerfile.jenkins
+:100644 100644 4df502fe4bec3d3809c94c0c1a95e5dedb4992a4 2769dc630cb9a0cd448ddf504ef149c4bf146e84 M	Jenkinsfile

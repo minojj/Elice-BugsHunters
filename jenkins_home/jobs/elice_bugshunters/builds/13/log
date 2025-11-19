@@ -1,0 +1,710 @@
+Started by user [8mha:////4DMmmTtLGhUK59wiuKBMvgtYfae2i1qnBe9IBygOhKHfAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/dLi1CL9xJTczDwAj6GcLcAAAAA=[0madmin
+Obtained Jenkinsfile from git https://github.com/minojj/Elice-BugsHunters
+[8mha:////4JiUONDpX6mnxzbh2ckWD0vow1ujYToaZTz/XpbFBZ0BAAAAoh+LCAAAAAAAAP9tjTEOwjAQBM8BClpKHuFItIiK1krDC0x8GCfWnbEdkooX8TX+gCESFVvtrLSa5wtWKcKBo5UdUu8otU4GP9jS5Mixv3geZcdn2TIl9igbHBs2eJyx4YwwR1SwULBGaj0nRzbDRnX6rmuvydanHMu2V1A5c4MHCFXMWcf8hSnC9jqYxPTz/BXAFEIGsfuclm8zQVqFvQAAAA==[0m[Pipeline] Start of Pipeline
+[8mha:////4JAWBaWN5A+IaghUk2ErGCVn4smBn77WoQMSeMj+qu2RAAAApR+LCAAAAAAAAP9tjTEOwjAUQ3+KOrAycohUghExsUZZOEFIQkgb/d8mKe3EibgadyBQiQlLlmxL1nu+oE4RjhQdby12HpP2vA+jK4lPFLtroIm3dOGaMFGwXNpJkrGnpUrKFhaxClYC1hZ1oOTRZdiIVt1VExS65pxj2Q4CKm8GeAAThZxVzN8yR9jeRpMIf5y/AJj7DGxXvP/86jduZBmjwAAAAA==[0m[Pipeline] node
+Running on [8mha:////4H+Mk+uxEe8JNk+ag44oNW1lR9xS2NjxbIH/7BglI+0RAAAAoR+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAz2EgZR/eT83ILSktQifY2k0sycEt3MPE19AHHxbH3KAAAA[0mJenkins in /var/jenkins_home/workspace/elice_bugshunters
+[8mha:////4Lx794VVAi1HkyQ8bhqR7eiMykfW/eIlU3ctbz7K67DZAAAApR+LCAAAAAAAAP9tjTEOwjAUQ3+KOrAycoh0gA0xsUZZOEFIQkgb/d8mKe3EibgadyBQiQlLlmxL1nu+oE4RjhQdby12HpP2vA+jK4lPFLtroIm3dOGaMFGwXNpJkrGnpUrKFhaxClYC1hZ1oOTRZdiIVt1VExS65pxj2Q4CKm8GeAAThZxVzN8yR9jeRpMIf5y/AJj7DGxXvP/86jfoP95RwAAAAA==[0m[Pipeline] {
+[8mha:////4Miim9rcdN0xXTBNHRVr/t0KEAIoJAOMwB+QjxC4NOJCAAAApR+LCAAAAAAAAP9tjTEOwjAUQ3+KOrAycoh0gQkxsUZZOEFIQkgb/d8mKe3EibgadyBQiQlLlmxL1nu+oE4RjhQdby12HpP2vA+jK4lPFLtroIm3dOGaMFGwXNpJkrGnpUrKFhaxClYC1hZ1oOTRZdiIVt1VExS65pxj2Q4CKm8GeAAThZxVzN8yR9jeRpMIf5y/AJj7DGxXvP/86jc09154wAAAAA==[0m[Pipeline] stage
+[8mha:////4Hmr3vNEFHhWSKucSKAFhc/F7pA0ofCRv1VPbdY6Pr3aAAAApR+LCAAAAAAAAP9tjTEOwjAUQ3+KOrAycoh0ggUxsUZZOEFIQkgb/d8mKe3EibgadyBQiQlLlmxL1nu+oE4RjhQdby12HpP2vA+jK4lPFLtroIm3dOGaMFGwXNpJkrGnpUrKFhaxClYC1hZ1oOTRZdiIVt1VExS65pxj2Q4CKm8GeAAThZxVzN8yR9jeRpMIf5y/AJj7DGxXvP/86jek7ggRwAAAAA==[0m[Pipeline] { (Declarative: Checkout SCM)
+[8mha:////4MHTgvkg+fueZsc6zDH4loe4BXlAIc54pymeEmHnGB0wAAAAoh+LCAAAAAAAAP9tjTEOAiEURD9rLGwtPQTbaWGsbAmNJ0AWEZb8zwLrbuWJvJp3kLiJlZNMMm+a93rDOic4UbLcG+wdZu14DKOti0+U+lugiXu6ck2YKRguzSSpM+cFJRUDS1gDKwEbgzpQdmgLbIVXD9UGhba9lFS/o4DGdQM8gYlqLiqVL8wJdvexy4Q/z18BzLEA29ce4gfg7KmOvAAAAA==[0m[Pipeline] checkout
+The recommended git tool is: git
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/elice_bugshunters/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/minojj/Elice-BugsHunters # timeout=10
+Fetching upstream changes from https://github.com/minojj/Elice-BugsHunters
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/minojj/Elice-BugsHunters +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/feature_AC^{commit} # timeout=10
+Checking out Revision 2cf430de6b94453699ee3c275a097def134c2f86 (refs/remotes/origin/feature_AC)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 2cf430de6b94453699ee3c275a097def134c2f86 # timeout=10
+Commit message: "Update Jenkinsfile"
+ > git rev-list --no-walk 0a3461c4014a1525a978b332bf54fbd3d307596e # timeout=10
+[8mha:////4PZJj928vnC8o/ql3k/nca4iwp7fW77aWu4eqWoOCYN/AAAAoh+LCAAAAAAAAP9tjTEOAiEURD9rLGwtPQTbGRNjZUtoPAGyiLDkfxZYdytP5NW8g8RNrJxkknnTvNcb1jnBiZLl3mDvMGvHYxhtXXyi1N8CTdzTlWvCTMFwaSZJnTkvKKkYWMIaWAnYGNSBskNbYCu8eqg2KLTtpaT6HQU0rhvgCUxUc1GpfGFOsLuPXSb8ef4KYI6xADvU7j9Dg2gqvAAAAA==[0m[Pipeline] }
+[8mha:////4ENqqrBlExrAMkobxJSCpIPBr615OpPIRsVZIKMfDkRyAAAAoh+LCAAAAAAAAP9tjTEOAiEURD9rLGwtPQRbWRhjZUtoPAGyiLDkfxZYdytP5NW8g8RNrJxkknnTvNcb1jnBiZLl3mDvMGvHYxhtXXyi1N8CTdzTlWvCTMFwaSZJnTkvKKkYWMIaWAnYGNSBskNbYCu8eqg2KLTtpaT6HQU0rhvgCUxUc1GpfGFOsLuPXSb8ef4KYI6xADvU7j9J+wGOvAAAAA==[0m[Pipeline] // stage
+[8mha:////4Pef7RKJzSXKnCmDrYBKpAS4REVx270wFEQqpIRQLzu+AAAAph+LCAAAAAAAAP9tjTEOwjAQBM9BKWgpeYQDEh2iorXc8AITG+PEugv2haTiRXyNPxCIRMVWOyut5vmCMic4UPKycdgGzHWQXez91ORAqb1EGmRDZ1kTZopOajdosu44oyZ2MEcUsFCwdFhHygE9w0o15m6qaNBXJ07TtldQBHuDBwg1mdkk/sKYYH3tbSb8ef4KYOwYxI6h2G4+x/INtuQqUcEAAAA=[0m[Pipeline] withEnv
+[8mha:////4Fk4rLYmaG3vh01oLn8qwt92amHWoRkh5q69CZav7lwTAAAApR+LCAAAAAAAAP9tjTEOwjAUQ3+DOrAycoiUzoiJNerCCUITQtLo/zZJSSdOxNW4Ay2VmPBg2Zas93pDGQOcKBjuNHYWY2t570czJ54pdDdPmTu68pYwkte80bkhpc9rbShpWFUw2AjYamw9RYsmwU44+ZCVl2iqSwrzdhTArBrgCYWYyUmG9C1TgP19VJHwx/kLgKlPwOrDYvXyLD8BobDcwgAAAA==[0m[Pipeline] {
+[8mha:////4C/fnrrmZ7PRUSfy1wkA2y/eSqofJ0hIJbTfxu4uxIMcAAAAph+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUZUVMrFEWThCaEJJG/7dJSjpxIq7GHWipxIQHy7ZkvdcbqhjgRMEwp7GzGFvLej+aObFMobt5yszRlbWEkbxmQmdBSp/XKihpWFWUsOGw1dh6ihZNgh138iFrL9HUlxTm7cihtGqAJxR8JicZ0rdMAfb3UUXCH+cvAKY+Qdk0ix2WZ/UBbwyqm8IAAAA=[0m[Pipeline] withEnv
+[8mha:////4IYpdTi0vcFbTPhsRNT6VN2SDVRKtaAZuQOUVnZFiZxxAAAAph+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUwIiYukZZOEFoQkgb/V9+UtqJE3E17kBLJSY8WLYl673eUESGE7ETjcXWY6y96ELvpiQG4vYaaBANXURNGClYoeygyNhqqYqShUVZDisJa4t1oOjRJdjIRj90GTS68px42o4Scm/u8IRMTuSkOX3LyLC99SYS/jh/ATB2CfLdfrbD/Cw+y7kUycIAAAA=[0m[Pipeline] {
+[8mha:////4M0iamKMO0fDuMfcq6FeuTIYTg5djYJorl2fXP1ST5OHAAAApx+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUCDbE1DXKwglCE0La6P/yk9JOnIircQdaKjHhwbItWe/1hiIynIidaCy2HmPtRRd6NyUxELfXQINo6CJqwkjBCmUHRcZWS1WULCzKclhJWFusA0WPLsFGNvqhy6DRlefE03aUkHtzhydkciInzelbRobtrTeR8Mf5C4CxS5Dv9rMd5mfxAbNWnxXCAAAA[0m[Pipeline] stage
+[8mha:////4IrTBy6XfDpNFJeCMq1JALEZmXOT0Ca2RcM5H4SF+HDtAAAApx+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUSDAhpq5RFk4QmhDSRv+Xn5R24kRcjTvQUokJD5ZtyXqvNxSR4UTsRGOx9RhrL7rQuymJgbi9BhpEQxdRE0YKVig7KDK2WqqiZGFRlsNKwtpiHSh6dAk2stEPXQaNrjwnnrajhNybOzwhkxM5aU7fMjJsb72JhD/OXwCMXYJ8t5/tMD+LD5WQ+PfCAAAA[0m[Pipeline] { (Checkout)
+[8mha:////4PP4VDyOf8z4bogktarOMuRyGOogTOI/p5jKI2IIoIg7AAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiCmgQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGPIUG53n9qHN7LjSKW+AAAA[0m[Pipeline] deleteDir
+[8mha:////4EKKoJBmeEJxr9TD4vsd7WRxtgj/2E9hMrOt4m4+xHVyAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiCkSBqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDhnK7+9Q+vAHz0lO8vgAAAA==[0m[Pipeline] checkout
+The recommended git tool is: git
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/minojj/Elice-BugsHunters
+ > git init /var/jenkins_home/workspace/elice_bugshunters # timeout=10
+Fetching upstream changes from https://github.com/minojj/Elice-BugsHunters
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/minojj/Elice-BugsHunters +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/minojj/Elice-BugsHunters # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/feature_AC^{commit} # timeout=10
+Checking out Revision 2cf430de6b94453699ee3c275a097def134c2f86 (refs/remotes/origin/feature_AC)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 2cf430de6b94453699ee3c275a097def134c2f86 # timeout=10
+Commit message: "Update Jenkinsfile"
+[8mha:////4HWIVPtaervbUpBS/Nvj0y43nkK2oZmIL9prZXlWM6tvAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiCiQkRJXWcsMLTGyME+vO2A5JxYv4Gn8gEImKLVY728zzBcsU4cjRYmuoc5Qah8H3dlo4cOwungds+YwNU2JvUJpBsjb1jJKzgTlFCQsBK0ON5+TIZliLVt1V5RXZ6pTj9B0ElE7f4AGFmMxZxfyFMcLm2uvE9PP8FcAYQoZyu//U7g1b0dOKvgAAAA==[0m[Pipeline] }
+[8mha:////4CFjI+NDjll/Vyaae+43vOw2UXHb/pAQie+a1wjNBHouAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiJBqEqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDyFBu95/avQFoMog2vgAAAA==[0m[Pipeline] // stage
+[8mha:////4N9KjZeMfWUImm1lZJqweE5zHb5Qwif2DfblZrp9xUufAAAApx+LCAAAAAAAAP9tjT0OwjAUg1+LOrAycoiUnxF1Yo26cILQhJA0eq8kKenEibgadyBQiQkPlm3J+p4vqIKHhrxmVmFvMHSGDW7UObFEvr84SszSmXWEgZxirUotSXWca0tRwayihAWHpcLOUTCoI6y4FXdRO4G6PkWftwOH0sgbPKDgmRyFj98yeVhfRxkIf5y/AJiGCOV2n223+TyrNzgO5r/CAAAA[0m[Pipeline] stage
+[8mha:////4GPzXeG7lMkpmGh+arwFPsENwnj95tCsamk/DmL97hmjAAAAph+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycogUWBFT1ygLJwhNCGmj/8tPSjtxIq7GHWipxIQHy7ZkvdcbishwInaisdh6jLUXXejdlMRA3F4DDaKhi6gJIwUrlB0UGVstVVGysCjLYSVhbbEOFD26BBvZ6Icug0ZXnhNP21FC7s0dnpDJiZw0p28ZGba33kTCH+cvAMYuQX7Yzbafn8UHbGnGmsIAAAA=[0m[Pipeline] { (Build Docker Image)
+[8mha:////4IOLh1TOKc0QFGdGZ01bjT9PylbnA022haOKQ6SjlZZjAAAAph+LCAAAAAAAAP9tjTEOwjAUQ3+DOrAycohUdEVMrFEXThCaEJJG/7dJSjpxIq7GHWipxIQHy7ZkvdcbyhjgRMFwp7GzGFvLez+aOfFMobt5ytzRlbeEkbzmjc4NKX1ea0NJw6qCwUbAVmPrKVo0CXbCyYesvERTXVKYt6MAZtUATyjETE4ypG+ZAuzvo4qEP85fAEx9AlYfFquXZ/kBAsTc3cIAAAA=[0m[Pipeline] script
+[8mha:////4ImnYqxHhdzsSXv5wdjBaFZm5scNAVqYX0B6Z/3WM0tDAAAAph+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUKiNiYo2ycILQhJA0+r9NUtKJE3E17kBLJSY8WLYl673eUMUAJwqGOY2dxdha1vvRzIllCt3NU2aOrqwljOQ1EzoLUvq8VkFJw6qihA2HrcbWU7RoEuy4kw9Ze4mmvqQwb0cOpVUDPKHgMznJkL5lCrC/jyoS/jh/ATD1CcqmWeywPKsPpnFij8IAAAA=[0m[Pipeline] {
+[8mha:////4FguT/cW2qcR4n61AEbjZcmANykXF95E2z8t3bRARswRAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiAR2iSmu54QUmNsaJdWdsh6TiRXyNPxCIRMUWq51t5vmCZYpw5GixNdQ5So3D4Hs7LRw4dhfPA7Z8xoYpsTcozSBZm3pGydnAnKKEhYCVocZzcmQzrEWr7qryimx1ynH6DgJKp2/wgEJM5qxi/sIYYXPtdWL6ef4KYAwZyu3uU/vwBrANZ3i+AAAA[0m[Pipeline] sh
++ set -eux
++ echo 🐳 Docker 이미지 빌드 시작
+🐳 Docker 이미지 빌드 시작
++ docker builder prune -f
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Total reclaimed space: 0B
++ docker build -t elice-bugshunters:13 -f Dockerfile .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  17.58MB
+Step 1/11 : FROM python:3.14-slim-bookworm
+ ---> e8ea0e4fc6f1
+Step 2/11 : ENV PYTHONDONTWRITEBYTECODE=1     PYTHONUNBUFFERED=1
+ ---> Using cache
+ ---> 255ff2219466
+Step 3/11 : RUN set -eux;     apt-get update;     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends       chromium chromium-driver fonts-liberation tzdata ca-certificates curl git;     rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> 8288b8e813f8
+Step 4/11 : ENV CHROME_BIN=/usr/bin/chromium
+ ---> Using cache
+ ---> 823fda86a4fa
+Step 5/11 : ENV CHROMEDRIVER=/usr/bin/chromedriver
+ ---> Using cache
+ ---> f26d38d947e2
+Step 6/11 : WORKDIR /app
+ ---> Using cache
+ ---> 51b0405898e4
+Step 7/11 : COPY requirements.txt .
+ ---> Using cache
+ ---> 9ec0ec9a0d32
+Step 8/11 : RUN python -m pip install --upgrade pip && pip install -r requirements.txt
+ ---> Using cache
+ ---> 7fead7590eaa
+Step 9/11 : COPY . .
+ ---> 9fc030b2c551
+Step 10/11 : ENTRYPOINT ["pytest"]
+ ---> Running in ff90059e54c3
+ ---> Removed intermediate container ff90059e54c3
+ ---> f135b946724b
+Step 11/11 : CMD ["tests","-v","--maxfail=1","--tb=short"]
+ ---> Running in 1226da034faa
+ ---> Removed intermediate container 1226da034faa
+ ---> 3b7316402836
+Successfully built 3b7316402836
+Successfully tagged elice-bugshunters:13
++ docker tag elice-bugshunters:13 elice-bugshunters:latest
++ + docker imageshead
+
+REPOSITORY                                 TAG                  IMAGE ID       CREATED                  SIZE
+elice-bugshunters                          13                   3b7316402836   Less than a second ago   1.6GB
+elice-bugshunters                          latest               3b7316402836   Less than a second ago   1.6GB
+elice-bugshunters                          12                   d51067de4d36   20 minutes ago           1.6GB
+elice-bugshunters                          11                   7cb2c4dbf32a   33 minutes ago           1.6GB
+elice-bugshunters                          10                   20c5b2e5fda5   2 hours ago              1.6GB
+elice-bugshunters                          9                    9d3aeaa231bc   2 hours ago              1.6GB
+elice-bugshunters                          7                    afe1af084f94   3 hours ago              1.55GB
+elice-bugshunters-jenkins                  latest               73b15c63c714   43 hours ago             901MB
+bugtest                                    latest               740b78251487   44 hours ago             1.55GB
+[8mha:////4B1t/tjlCz8RgrQHb2qyzpsrb0Us2nhdl4AT+yfeRiBKAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIigagQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGMIGcrt/lO7N+4u68W+AAAA[0m[Pipeline] }
+[8mha:////4K6Mc387cvucuuTOZgvy9WqNTebCPei++m7jjGFYPRdVAAAApB+LCAAAAAAAAP9tjTESwiAURH/iWNhaeggyk8LGsbJlaDwBJogQ5n8CRFJ5Iq/mHUQzY+UWO/u2ec8XrGOAIwXNrMLBYOwM827SZbFMYbg6yszShXWEkZxiQmVBvTotKCgpWFLVsOKwUdg5igZ1gi238i4bJ1E35xTKd+BQm36EB1S8mJMM6QtzgN1t6iPhz/NXALP3Cep2/6n2DdZseDS+AAAA[0m[Pipeline] // script
+[8mha:////4NyDMylDD+c7myCFUQU0R+G/F5w+CJSZYeX2l+6WJD5pAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiaCgQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGMIGcrd/lPbN8nuLWa+AAAA[0m[Pipeline] }
+[8mha:////4HPKZxR3i+inTVIPpOhH+v/MEzqUgDfOXfj1pl3nB6JSAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKCqJAQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGMIGcrd/lPbN4psfOC+AAAA[0m[Pipeline] // stage
+[8mha:////4EeF2eK8uVsh6xh0Q6Iwmc4Gp29mgXzbn4qB90IVi4ddAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUwIRQJ9aoCycITQhJo/9LkpJOnIircQcClZjwYNmWrPd8QRU8NOQ1swp7g6EzbHCjzokl8v3FUWKWzqwjDOQUa1VqSarjXFuKCmYVJSw4LBV2joJBHWHFrbiL2gnU9Sn6vB04lEbe4AEFz+QofPyWycP6OspA+OP8BcA0RCg3u2zb/edZvQHwX+mYwgAAAA==[0m[Pipeline] stage
+[8mha:////4DI07NaKdQs4IFpb9b/Q+pFaGlmY3M1PqUT8upXQfJeSAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycogUwYRQJ9aoCycITQhJo/9LkpJOnIircQcClZjwYNmWrPd8QRU8NOQ1swp7g6EzbHCjzokl8v3FUWKWzqwjDOQUa1VqSarjXFuKCmYVJSw4LBV2joJBHWHFrbiL2gnU9Sn6vB04lEbe4AEFz+QofPyWycP6OspA+OP8BcA0RCi3+2y7zedZvQH4j6CMwgAAAA==[0m[Pipeline] { (Run Tests in Container)
+[8mha:////4I1CSmndluE2G2VlC804l/bjFlleMHm+DOUFdkpch3ZwAAAAph+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycogUxIiYukZZOEFoQkgb/V9+UtqJE3E17kBLJSY8WLYl673eUESGE7ETjcXWY6y96ELvpiQG4vYaaBANXURNGClYoeygyNhqqYqShUVZDisJa4t1oOjRJdjIRj90GTS68px42o4Scm/u8IRMTuSkOX3LyLC99SYS/jh/ATB2CfLDbrb9/Cw+ty4Up8IAAAA=[0m[Pipeline] withCredentials
+Masking supported pattern matches of $MAIN_PASSWORD or $SUB_PASSWORD
+[8mha:////4Lx6HEUYd1PWLQtU3WyAqBhKi1BZEV/mv7+P61PfWPN7AAAAph+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUwIiYukZZOEFoQkgb/V9+UtqJE3E17kBLJSY8WLYl673eUESGE7ETjcXWY6y96ELvpiQG4vYaaBANXURNGClYoeygyNhqqYqShUVZDisJa4t1oOjRJdjIRj90GTS68px42o4Scm/u8IRMTuSkOX3LyLC99SYS/jh/ATB2CfLDbrb9/Cw+2YMO4MIAAAA=[0m[Pipeline] {
+[8mha:////4KNf/JsjGHrvIQrrRgMRJBLzXmtwNYvm8uOC1+33hionAAAAox+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIikRJR0VppeIFJjLFj3Tm2g1PxIr7GHwhEomKL1c4283zBOgY4ctBoFfWGYmvQu1HPCzOH/uo4o+ULtkyRncJG5YY7dVqw4aRgSVHCSsBGUes4GtIJtsLKu6ycJF2dU5i/g4DSdAM8oBCzOcmQvjAF2N3GLjL9PH8FMPkEZb3/VO3favo5XL4AAAA=[0m[Pipeline] sh
++ set -eux
++ echo ➡ PWD:
+➡ PWD:
++ pwd
+/var/jenkins_home/workspace/elice_bugshunters
++ echo ➡ WORKSPACE:
+➡ WORKSPACE:
++ echo /var/jenkins_home/workspace/elice_bugshunters
+/var/jenkins_home/workspace/elice_bugshunters
++ REPORT_DIR=reports
++ SCREENSHOT_DIR=screenshots
++ echo 🧹 기존 리포트/스크린샷 정리
+🧹 기존 리포트/스크린샷 정리
++ rm -rf reports screenshots
++ mkdir -p reports screenshots
++ echo 🐳 테스트 컨테이너 실행 (Jenkins 볼륨 공유)
+🐳 테스트 컨테이너 실행 (Jenkins 볼륨 공유)
++ docker run --rm --volumes-from elice-jenkins -w /var/jenkins_home/workspace/elice_bugshunters --shm-size=2g -e HEADLESS=true -e WDM_SKIP=1 -e CHROME_BIN=/usr/bin/chromium -e CHROMEDRIVER=/usr/bin/chromedriver -e MAIN_EMAIL=team3@elice.com -e MAIN_PASSWORD=**** -e SUB_EMAIL=team3a@elice.com -e SUB_PASSWORD=**** elice-bugshunters:latest tests -v --junitxml=reports/test-results.xml --html=reports/report.html --self-contained-html --tb=short
+============================= test session starts ==============================
+platform linux -- Python 3.14.0, pytest-8.3.3, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.14.0', 'Platform': 'Linux-6.10.14-linuxkit-aarch64-with-glibc2.36', 'Packages': {'pytest': '8.3.3', 'pluggy': '1.6.0'}, 'Plugins': {'xdist': '3.6.1', 'cov': '6.0.0', 'Faker': '30.8.2', 'html': '4.1.1', 'metadata': '3.1.1'}}
+rootdir: /var/jenkins_home/workspace/elice_bugshunters
+configfile: pytest.ini
+plugins: xdist-3.6.1, cov-6.0.0, Faker-30.8.2, html-4.1.1, metadata-3.1.1
+collecting ... collected 14 items
+
+tests/test_account.py::test_ac_001_login PASSED                          [  7%]
+tests/test_account.py::test_ac_002_duplicate_email PASSED                [ 14%]
+tests/test_account.py::test_ac_003_negative_login PASSED                 [ 21%]
+tests/test_account.py::test_ac_004_positive_login PASSED                 [ 28%]
+tests/test_account.py::test_ac_005_login_with_non_email_format PASSED    [ 35%]
+tests/test_account.py::test_ac_006_login_with_spaces PASSED              [ 42%]
+tests/test_account.py::test_ac_007_logout PASSED                         [ 50%]
+tests/test_history.py::test_ht_001 ERROR                                 [ 57%]
+tests/test_history.py::test_ht_002 ERROR                                 [ 64%]
+tests/test_history.py::test_ht_003 ERROR                                 [ 71%]
+tests/test_history.py::test_ht_004 ERROR                                 [ 78%]
+tests/test_history.py::test_ht_005 ERROR                                 [ 85%]
+tests/test_history.py::test_ht_006 ERROR                                 [ 92%]
+tests/test_history.py::test_ht_007 ERROR                                 [100%]
+
+==================================== ERRORS ====================================
+________________________ ERROR at setup of test_ht_001 _________________________
+tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators["email"]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 <unknown>
+E   #1 0xaaaabd13e0d0 <unknown>
+E   #2 0xaaaabd1448d8 <unknown>
+E   #3 0xaaaabd146bdc <unknown>
+E   #4 0xaaaabd1c39f0 <unknown>
+E   #5 0xaaaabd1c2d3c <unknown>
+E   #6 0xaaaabd17b998 <unknown>
+E   #7 0xaaaabd6df79c <unknown>
+E   #8 0xaaaabd6e282c <unknown>
+E   #9 0xaaaabd6e2408 <unknown>
+E   #10 0xaaaabd6ca620 <unknown>
+E   #11 0xaaaabd6e2eac <unknown>
+E   #12 0xaaaabd6b493c <unknown>
+E   #13 0xaaaabd701abc <unknown>
+E   #14 0xaaaabd701cc8 <unknown>
+E   #15 0xaaaabd71397c <unknown>
+E   #16 0xffff95e4202c <unknown>
+E   #17 0xffff95eabf18 <unknown>
+________________________ ERROR at setup of test_ht_002 _________________________
+tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators["email"]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 <unknown>
+E   #1 0xaaaabd13e0d0 <unknown>
+E   #2 0xaaaabd1448d8 <unknown>
+E   #3 0xaaaabd146bdc <unknown>
+E   #4 0xaaaabd1c39f0 <unknown>
+E   #5 0xaaaabd1c2d3c <unknown>
+E   #6 0xaaaabd17b998 <unknown>
+E   #7 0xaaaabd6df79c <unknown>
+E   #8 0xaaaabd6e282c <unknown>
+E   #9 0xaaaabd6e2408 <unknown>
+E   #10 0xaaaabd6ca620 <unknown>
+E   #11 0xaaaabd6e2eac <unknown>
+E   #12 0xaaaabd6b493c <unknown>
+E   #13 0xaaaabd701abc <unknown>
+E   #14 0xaaaabd701cc8 <unknown>
+E   #15 0xaaaabd71397c <unknown>
+E   #16 0xffff95e4202c <unknown>
+E   #17 0xffff95eabf18 <unknown>
+________________________ ERROR at setup of test_ht_003 _________________________
+tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators["email"]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 <unknown>
+E   #1 0xaaaabd13e0d0 <unknown>
+E   #2 0xaaaabd1448d8 <unknown>
+E   #3 0xaaaabd146bdc <unknown>
+E   #4 0xaaaabd1c39f0 <unknown>
+E   #5 0xaaaabd1c2d3c <unknown>
+E   #6 0xaaaabd17b998 <unknown>
+E   #7 0xaaaabd6df79c <unknown>
+E   #8 0xaaaabd6e282c <unknown>
+E   #9 0xaaaabd6e2408 <unknown>
+E   #10 0xaaaabd6ca620 <unknown>
+E   #11 0xaaaabd6e2eac <unknown>
+E   #12 0xaaaabd6b493c <unknown>
+E   #13 0xaaaabd701abc <unknown>
+E   #14 0xaaaabd701cc8 <unknown>
+E   #15 0xaaaabd71397c <unknown>
+E   #16 0xffff95e4202c <unknown>
+E   #17 0xffff95eabf18 <unknown>
+________________________ ERROR at setup of test_ht_004 _________________________
+tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators["email"]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 <unknown>
+E   #1 0xaaaabd13e0d0 <unknown>
+E   #2 0xaaaabd1448d8 <unknown>
+E   #3 0xaaaabd146bdc <unknown>
+E   #4 0xaaaabd1c39f0 <unknown>
+E   #5 0xaaaabd1c2d3c <unknown>
+E   #6 0xaaaabd17b998 <unknown>
+E   #7 0xaaaabd6df79c <unknown>
+E   #8 0xaaaabd6e282c <unknown>
+E   #9 0xaaaabd6e2408 <unknown>
+E   #10 0xaaaabd6ca620 <unknown>
+E   #11 0xaaaabd6e2eac <unknown>
+E   #12 0xaaaabd6b493c <unknown>
+E   #13 0xaaaabd701abc <unknown>
+E   #14 0xaaaabd701cc8 <unknown>
+E   #15 0xaaaabd71397c <unknown>
+E   #16 0xffff95e4202c <unknown>
+E   #17 0xffff95eabf18 <unknown>
+________________________ ERROR at setup of test_ht_005 _________________________
+tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators["email"]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 <unknown>
+E   #1 0xaaaabd13e0d0 <unknown>
+E   #2 0xaaaabd1448d8 <unknown>
+E   #3 0xaaaabd146bdc <unknown>
+E   #4 0xaaaabd1c39f0 <unknown>
+E   #5 0xaaaabd1c2d3c <unknown>
+E   #6 0xaaaabd17b998 <unknown>
+E   #7 0xaaaabd6df79c <unknown>
+E   #8 0xaaaabd6e282c <unknown>
+E   #9 0xaaaabd6e2408 <unknown>
+E   #10 0xaaaabd6ca620 <unknown>
+E   #11 0xaaaabd6e2eac <unknown>
+E   #12 0xaaaabd6b493c <unknown>
+E   #13 0xaaaabd701abc <unknown>
+E   #14 0xaaaabd701cc8 <unknown>
+E   #15 0xaaaabd71397c <unknown>
+E   #16 0xffff95e4202c <unknown>
+E   #17 0xffff95eabf18 <unknown>
+________________________ ERROR at setup of test_ht_006 _________________________
+tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators["email"]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 <unknown>
+E   #1 0xaaaabd13e0d0 <unknown>
+E   #2 0xaaaabd1448d8 <unknown>
+E   #3 0xaaaabd146bdc <unknown>
+E   #4 0xaaaabd1c39f0 <unknown>
+E   #5 0xaaaabd1c2d3c <unknown>
+E   #6 0xaaaabd17b998 <unknown>
+E   #7 0xaaaabd6df79c <unknown>
+E   #8 0xaaaabd6e282c <unknown>
+E   #9 0xaaaabd6e2408 <unknown>
+E   #10 0xaaaabd6ca620 <unknown>
+E   #11 0xaaaabd6e2eac <unknown>
+E   #12 0xaaaabd6b493c <unknown>
+E   #13 0xaaaabd701abc <unknown>
+E   #14 0xaaaabd701cc8 <unknown>
+E   #15 0xaaaabd71397c <unknown>
+E   #16 0xffff95e4202c <unknown>
+E   #17 0xffff95eabf18 <unknown>
+________________________ ERROR at setup of test_ht_007 _________________________
+tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators["email"]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f"/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);", self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {"script": script, "args": converted_args})["value"]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 <unknown>
+E   #1 0xaaaabd13e0d0 <unknown>
+E   #2 0xaaaabd1448d8 <unknown>
+E   #3 0xaaaabd146bdc <unknown>
+E   #4 0xaaaabd1c39f0 <unknown>
+E   #5 0xaaaabd1c2d3c <unknown>
+E   #6 0xaaaabd17b998 <unknown>
+E   #7 0xaaaabd6df79c <unknown>
+E   #8 0xaaaabd6e282c <unknown>
+E   #9 0xaaaabd6e2408 <unknown>
+E   #10 0xaaaabd6ca620 <unknown>
+E   #11 0xaaaabd6e2eac <unknown>
+E   #12 0xaaaabd6b493c <unknown>
+E   #13 0xaaaabd701abc <unknown>
+E   #14 0xaaaabd701cc8 <unknown>
+E   #15 0xaaaabd71397c <unknown>
+E   #16 0xffff95e4202c <unknown>
+E   #17 0xffff95eabf18 <unknown>
+- generated xml file: /var/jenkins_home/workspace/elice_bugshunters/reports/test-results.xml -
+- Generated html report: file:///var/jenkins_home/workspace/elice_bugshunters/reports/report.html -
+=========================== short test summary info ============================
+ERROR tests/test_history.py::test_ht_001 - selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 <unknown>
+#1 0xaaaabd13e0d0 <unknown>
+#2 0xaaaabd1448d8 <unknown>
+#3 0xaaaabd146bdc <unknown>
+#4 0xaaaabd1c39f0 <unknown>
+#5 0xaaaabd1c2d3c <unknown>
+#6 0xaaaabd17b998 <unknown>
+#7 0xaaaabd6df79c <unknown>
+#8 0xaaaabd6e282c <unknown>
+#9 0xaaaabd6e2408 <unknown>
+#10 0xaaaabd6ca620 <unknown>
+#11 0xaaaabd6e2eac <unknown>
+#12 0xaaaabd6b493c <unknown>
+#13 0xaaaabd701abc <unknown>
+#14 0xaaaabd701cc8 <unknown>
+#15 0xaaaabd71397c <unknown>
+#16 0xffff95e4202c <unknown>
+#17 0xffff95eabf18 <unknown>
+ERROR tests/test_history.py::test_ht_002 - selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 <unknown>
+#1 0xaaaabd13e0d0 <unknown>
+#2 0xaaaabd1448d8 <unknown>
+#3 0xaaaabd146bdc <unknown>
+#4 0xaaaabd1c39f0 <unknown>
+#5 0xaaaabd1c2d3c <unknown>
+#6 0xaaaabd17b998 <unknown>
+#7 0xaaaabd6df79c <unknown>
+#8 0xaaaabd6e282c <unknown>
+#9 0xaaaabd6e2408 <unknown>
+#10 0xaaaabd6ca620 <unknown>
+#11 0xaaaabd6e2eac <unknown>
+#12 0xaaaabd6b493c <unknown>
+#13 0xaaaabd701abc <unknown>
+#14 0xaaaabd701cc8 <unknown>
+#15 0xaaaabd71397c <unknown>
+#16 0xffff95e4202c <unknown>
+#17 0xffff95eabf18 <unknown>
+ERROR tests/test_history.py::test_ht_003 - selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 <unknown>
+#1 0xaaaabd13e0d0 <unknown>
+#2 0xaaaabd1448d8 <unknown>
+#3 0xaaaabd146bdc <unknown>
+#4 0xaaaabd1c39f0 <unknown>
+#5 0xaaaabd1c2d3c <unknown>
+#6 0xaaaabd17b998 <unknown>
+#7 0xaaaabd6df79c <unknown>
+#8 0xaaaabd6e282c <unknown>
+#9 0xaaaabd6e2408 <unknown>
+#10 0xaaaabd6ca620 <unknown>
+#11 0xaaaabd6e2eac <unknown>
+#12 0xaaaabd6b493c <unknown>
+#13 0xaaaabd701abc <unknown>
+#14 0xaaaabd701cc8 <unknown>
+#15 0xaaaabd71397c <unknown>
+#16 0xffff95e4202c <unknown>
+#17 0xffff95eabf18 <unknown>
+ERROR tests/test_history.py::test_ht_004 - selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 <unknown>
+#1 0xaaaabd13e0d0 <unknown>
+#2 0xaaaabd1448d8 <unknown>
+#3 0xaaaabd146bdc <unknown>
+#4 0xaaaabd1c39f0 <unknown>
+#5 0xaaaabd1c2d3c <unknown>
+#6 0xaaaabd17b998 <unknown>
+#7 0xaaaabd6df79c <unknown>
+#8 0xaaaabd6e282c <unknown>
+#9 0xaaaabd6e2408 <unknown>
+#10 0xaaaabd6ca620 <unknown>
+#11 0xaaaabd6e2eac <unknown>
+#12 0xaaaabd6b493c <unknown>
+#13 0xaaaabd701abc <unknown>
+#14 0xaaaabd701cc8 <unknown>
+#15 0xaaaabd71397c <unknown>
+#16 0xffff95e4202c <unknown>
+#17 0xffff95eabf18 <unknown>
+ERROR tests/test_history.py::test_ht_005 - selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 <unknown>
+#1 0xaaaabd13e0d0 <unknown>
+#2 0xaaaabd1448d8 <unknown>
+#3 0xaaaabd146bdc <unknown>
+#4 0xaaaabd1c39f0 <unknown>
+#5 0xaaaabd1c2d3c <unknown>
+#6 0xaaaabd17b998 <unknown>
+#7 0xaaaabd6df79c <unknown>
+#8 0xaaaabd6e282c <unknown>
+#9 0xaaaabd6e2408 <unknown>
+#10 0xaaaabd6ca620 <unknown>
+#11 0xaaaabd6e2eac <unknown>
+#12 0xaaaabd6b493c <unknown>
+#13 0xaaaabd701abc <unknown>
+#14 0xaaaabd701cc8 <unknown>
+#15 0xaaaabd71397c <unknown>
+#16 0xffff95e4202c <unknown>
+#17 0xffff95eabf18 <unknown>
+ERROR tests/test_history.py::test_ht_006 - selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 <unknown>
+#1 0xaaaabd13e0d0 <unknown>
+#2 0xaaaabd1448d8 <unknown>
+#3 0xaaaabd146bdc <unknown>
+#4 0xaaaabd1c39f0 <unknown>
+#5 0xaaaabd1c2d3c <unknown>
+#6 0xaaaabd17b998 <unknown>
+#7 0xaaaabd6df79c <unknown>
+#8 0xaaaabd6e282c <unknown>
+#9 0xaaaabd6e2408 <unknown>
+#10 0xaaaabd6ca620 <unknown>
+#11 0xaaaabd6e2eac <unknown>
+#12 0xaaaabd6b493c <unknown>
+#13 0xaaaabd701abc <unknown>
+#14 0xaaaabd701cc8 <unknown>
+#15 0xaaaabd71397c <unknown>
+#16 0xffff95e4202c <unknown>
+#17 0xffff95eabf18 <unknown>
+ERROR tests/test_history.py::test_ht_007 - selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 <unknown>
+#1 0xaaaabd13e0d0 <unknown>
+#2 0xaaaabd1448d8 <unknown>
+#3 0xaaaabd146bdc <unknown>
+#4 0xaaaabd1c39f0 <unknown>
+#5 0xaaaabd1c2d3c <unknown>
+#6 0xaaaabd17b998 <unknown>
+#7 0xaaaabd6df79c <unknown>
+#8 0xaaaabd6e282c <unknown>
+#9 0xaaaabd6e2408 <unknown>
+#10 0xaaaabd6ca620 <unknown>
+#11 0xaaaabd6e2eac <unknown>
+#12 0xaaaabd6b493c <unknown>
+#13 0xaaaabd701abc <unknown>
+#14 0xaaaabd701cc8 <unknown>
+#15 0xaaaabd71397c <unknown>
+#16 0xffff95e4202c <unknown>
+#17 0xffff95eabf18 <unknown>
+==================== 7 passed, 7 errors in 64.41s (0:01:04) ====================
+[8mha:////4EjTxzkpRTMELLH/pAikkMH3xXc7D28HWY4SmQWd/ZJxAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiAR2iSmu54QUmNsaJdWdsh6TiRXyNPxCIRMUWq51t5vmCZYpw5GixNdQ5So3D4Hs7LRw4dhfPA7Z8xoYpsTcozSBZm3pGydnAnKKEhYCVocZzcmQzrEWr7qryimx1ynH6DgJKp2/wgEJM5qxi/sIYYXPtdWL6ef4KYAwhQ7nbf2r7Bij33Ma+AAAA[0m[Pipeline] }
+[8mha:////4Aj1dBhWVGeiq63UqKwSa/wL+llNQ9zGqsgXRGdVYisiAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIihKgQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGMIGcrd/lPbNzd1iZS+AAAA[0m[Pipeline] // withCredentials
+[8mha:////4EopcgRYbhIWPVehUFYWCD1HfvTXKh+Cq2XRi1rCxi5TAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKChESDqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDyFDu9p/avgEPNxplvgAAAA==[0m[Pipeline] }
+[8mha:////4COKj5UZc+NAico2V667m68eNh9yIaQ7dkAIRd2opUp9AAAAph+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiQYEQSkVrueEFJjHGiXUXbAen4kV8jT9gEYmKLVY728zrDcvgoWZvsNPUWwqNxcGNJi9M7Pur44QdX7BhCuw0Sp0kt/o0o+SoYU5RwkLASlPjOFgyEdaiUw9VOUWmOkefv6OA0rZ3eEIhsjkqH78wedjcxjYw/Tx/BTANQ4Ryt8+1PXwAT22Bzr4AAAA=[0m[Pipeline] // stage
+[8mha:////4MgK9s7QQZVyTpwyb1hArQKU74a9KunqMuL4aI8cXgEOAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycohUqAsSYuoaZeEEIQkhbfR/SVLaiRNxNe5AoBITHizbkvWeL6higCMFyzqDvcOoHBv8aHNiE4X+4mliHZ2ZIozkDRNmEqRNu1RBycCiooQVh7VB5Sk6tAk2vJN3WXuJtj6lkLcDh9LpGzyg4JmcZEjfMgfYXkcdCX+cvwCYhwTlrsnW7D/P6g3hh8L1wgAAAA==[0m[Pipeline] stage
+[8mha:////4GUgXk884Y8JdorE+SbWQfkTdkmie6ZDXdTjMQPUwr47AAAApx+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycoh0YAEhpq5RFk4QmhDSRv+Xn5R24kRcjTvQUokJD5ZtyXqvNxSR4UTsRGOx9RhrL7rQuymJgbi9BhpEQxdRE0YKVig7KDK2WqqiZGFRlsNKwtpiHSh6dAk2stEPXQaNrjwnnrajhNybOzwhkxM5aU7fMjJsb72JhD/OXwCMXYJ8t5/tMD+LD59NhPHCAAAA[0m[Pipeline] { (Declarative: Post Actions)
+[8mha:////4KtBijFg1igLVyWxfIgtxSX4rwT0e32gp758pDKOR1fVAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycogUCRaEOrFGXThBaEJIGv1fkpR04kRcjTsQqMSEB8u2ZL3nC6rgoSGvmVXYGwydYYMbdU4ske8vjhKzdGYdYSCnWKtSS1Id59pSVDCrKGHBYamwcxQM6ggrbsVd1E6grk/R5+3AoTTyBg8oeCZH4eO3TB7W11EGwh/nLwCmIUK53WfbbT7P6g0Z/aLSwgAAAA==[0m[Pipeline] script
+[8mha:////4KpK5Tnv9S3Br+cHjCBnp75FVb8ofGsO7lrGw3J/CMwXAAAApx+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycogUJDbE1DXKwglCE0La6P/yk9JOnIircQdaKjHhwbItWe/1hiIynIidaCy2HmPtRRd6NyUxELfXQINo6CJqwkjBCmUHRcZWS1WULCzKclhJWFusA0WPLsFGNvqhy6DRlefE03aUkHtzhydkciInzelbRobtrTeR8Mf5C4CxS5AfdrPt52fxAbb5KxbCAAAA[0m[Pipeline] {
+[8mha:////4DDrQ1Uf44da5AfOAiKWMUTTgn6+wA2WXhjxpG2zKqzgAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiEB2iSmu54QUmNsaJdWdsh6TiRXyNPxCIRMUWq51t5vmCZYpw5GixNdQ5So3D4Hs7LRw4dhfPA7Z8xoYpsTcozSBZm3pGydnAnKKEhYCVocZzcmQzrEWr7qryimx1ynH6DgJKp2/wgEJM5qxi/sIYYXPtdWL6ef4KYAwZyv32U7vwBirOQHu+AAAA[0m[Pipeline] echo
+📦 JUnit 리포트 수집 시도
+[8mha:////4LA6SCLYSk08yr4FJG+srSxWTa64RCS3OKXs8Q9m0O4bAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiBB2iSmu54QUmNsaJdWdsh6TiRXyNPxCIRMUWq51t5vmCZYpw5GixNdQ5So3D4Hs7LRw4dhfPA7Z8xoYpsTcozSBZm3pGydnAnKKEhYCVocZzcmQzrEWr7qryimx1ynH6DgJKp2/wgEJM5qxi/sIYYXPtdWL6ef4KYAwZyv32U7vwBmv/W2K+AAAA[0m[Pipeline] junit
+Recording test results
+[Checks API] No suitable checks publisher found.
+[8mha:////4FonPUpOijs2926ZzivH3tb3+8rrzzHoFVJNDi71Md+8AAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIipHSIitZKwwtMYowd686xHZyKF/E1/kAgEhVbrHa2mecL1jHAkYNGq6g3FFuD3o16Xpg59FfHGS1fsGWK7BQ2KjfcqdOCDScFS4oSVgI2ilrH0ZBOsBVW3mXlJOnqnML8HQSUphvgAYWYzUmG9IUpwO42dpHp5/krgMknKOv9p2r/BqxpGi2+AAAA[0m[Pipeline] echo
+📊 HTML 리포트 게시 시도
+[8mha:////4EDf8ZhbRjSO7IOCf63pPN1gN4XiAjydVM2p3mqMGEYqAAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiJKgQVVrLDS8wsTFOrDtjOyQVL+Jr/IFAJCq2WO1sM88XLFOEI0eLraHOUWocBt/baeHAsbt4HrDlMzZMib1BaQbJ2tQzSs4G5hQlLASsDDWekyObYS1adVeVV2SrU47TdxBQOn2DBxRiMmcV8xfGCJtrrxPTz/NXAGPIUO62n9qHN+1YATS+AAAA[0m[Pipeline] publishHTML
+[htmlpublisher] Archiving HTML reports...
+[htmlpublisher] Archiving at BUILD level /var/jenkins_home/workspace/elice_bugshunters/reports to Pytest_20HTML_20Report
+[htmlpublisher] Copying recursive using current thread
+[8mha:////4KhBCCp+E+t6ItOp8PkokvL23wKW/ZmNML6FYm/2lQUBAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiJESDqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDhnK3/dQ+vAEuCywfvgAAAA==[0m[Pipeline] fileExists
+[8mha:////4J1ppHf5p8SMBJiaVf/6N6RVhNO4EMn7I90uggSdPkFnAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiJCQKRJXWcsMLTGyME+vO2A5JxYv4Gn8gEImKLVY728zzBcsU4cjRYmuoc5Qah8H3dlo4cOwungds+YwNU2JvUJpBsjb1jJKzgTlFCQsBK0ON5+TIZliLVt1V5RXZ6pTj9B0ElE7f4AGFmMxZxfyFMcLm2uvE9PP8FcAYMpS77af24Q1vOjcGvgAAAA==[0m[Pipeline] echo
+리포트 파일 존재: true
+[8mha:////4ICZR25VNZkUlr1dhFITFhqv6tSalETQsMDQT3rRzUlGAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiJAokRJXWcsMLTGyME+vO2A5JxYv4Gn8gEImKLVY728zzBcsU4cjRYmuoc5Qah8H3dlo4cOwungds+YwNU2JvUJpBsjb1jJKzgTlFCQsBK0ON5+TIZliLVt1V5RXZ6pTj9B0ElE7f4AGFmMxZxfyFMcLm2uvE9PP8FcAYMpS77af24Q2gJq+BvgAAAA==[0m[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[8mha:////4BEuulribuToRR5Ib++uea1D1pI0jjZlXNn8Fn3uSdD+AAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOIiJBqEqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDhnK3/dQ+vAHhF7SYvgAAAA==[0m[Pipeline] echo
+✅ 리포트/스크린샷 아카이브 완료
+[8mha:////4Ev0yMJAUDIz6HYn6Kc8/P0W7++jx7bK25q3jXX43NsKAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOICElQoFa3lhheYxBgn1l2wHZyKF/E1/oBFJCq2WO1sM683LIOHmr3BTlNvKTQWBzeavDCx76+OE3Z8wYYpsNModZLc6tOMkqOGOUUJCwErTY3jYMlEWItOPVTlFJnqHH3+jgJK297hCYXI5qh8/MLkYXMb28D08/wVwDREKPe7XIft8AGfxrRIvgAAAA==[0m[Pipeline] echo
+📊 HTML 리포트: http://localhost:8080/job/elice_bugshunters/13/artifact/reports/report.html
+[8mha:////4FlPBqDB+XRrVJRhqSTzKRlSNQ1xY9rv8xaz+ADZJ/SPAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKiSFAhqrRWGl5gYmOcWHfGdkgqXsTX+AMWkajYYrWzzbzesI4BThwM9poGS7Gz6N1o8sKJw3B1PGHPF+yYIjuNrZ5aVrpZsOWkYUlRwkrARlPnOFoyCbailw9ZOUmmOqeQv6OA0qo7PKEQ2ZxkSF+YA+xuo4pMP89fAczeJygPda59/QHclIkjvgAAAA==[0m[Pipeline] }
+[8mha:////4MOzByaiFdEkdaszqutTPDKeidHat8HvbTv7n11zOkqfAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKCEFQoFa3lhheYxBgn1l2wHZyKF/E1/oBFJCq2WO1sM683LIOHmr3BTlNvKTQWBzeavDCx76+OE3Z8wYYpsNModZLc6tOMkqOGOUUJCwErTY3jYMlEWItOPVTlFJnqHH3+jgJK297hCYXI5qh8/MLkYXMb28D08/wVwDQMEcrDLtd++wHk1hrSvgAAAA==[0m[Pipeline] // script
+[8mha:////4EPhPtIyNGpPsAXmnHM1FsW++sQQwU3iJFI0KVDuUP+TAAAAqB+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycoh0qBgQYuoadeEEoQkhafR/SVLSiRNxNe5AoBITHizbkvWeL6iChyN5zazCwWDoDRvdpHNiifxwcZSYpTPrCQM5xTqVOpKqXWpHUcGiooQVh7XC3lEwqCNsuBV3UTuBuj5Fn7cDh9LIGzyg4JkchY/fMnvYXicZCH+cvwCYxwhls8+2az7P6g0DhEHywgAAAA==[0m[Pipeline] withCredentials
+Masking supported pattern matches of $JIRA_API_TOKEN
+[8mha:////4D4IOM1Rvl09wlUiET7L6NqqzcLMB7IuZwBmgbUAlGt+AAAApx+LCAAAAAAAAP9tjTEOwjAUQ3+LOrAycoh0ACbE1DXKwglCE0La6P/yk9JOnIircQdaKjHhwbItWe/1hiIynIidaCy2HmPtRRd6NyUxELfXQINo6CJqwkjBCmUHRcZWS1WULCzKclhJWFusA0WPLsFGNvqhy6DRlefE03aUkHtzhydkciInzelbRobtrTeR8Mf5C4CxS5AfdrPt52fxAd9J1uLCAAAA[0m[Pipeline] {
+[8mha:////4NxHhbd+wsPWKnRQP4tEEbHgbgiuY5MvIZUvKwEk6e36AAAAox+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOLSkApR0VppeIFJjLFj3Tm2g1PxIr7GHwhEomKL1c4283zBOgY4ctBoFfWGYmvQu1HPCzOH/uo4o+ULtkyRncJG5YY7dVqw4aRgSVHCSsBGUes4GtIJtsLKu6ycJF2dU5i/g4DSdAM8oBCzOcmQvjAF2N3GLjL9PH8FMPkEZb3/VO3f4x1Rq74AAAA=[0m[Pipeline] sh
++ set -eux
++ echo 🐞 JIRA 이슈 자동 동기화 시작
+🐞 JIRA 이슈 자동 동기화 시작
++ export JIRA_URL=https://nwwe.atlassian.net
++ export JIRA_PROJECT=Q31
++ export JIRA_USER=aloe9426@gmail.com
++ export JIRA_API_TOKEN=****
++ export JUNIT_PATH=reports/test-results.xml
++ export JENKINS_JOB_NAME=elice_bugshunters
++ export JENKINS_BUILD_NUMBER=13
++ export JENKINS_BRANCH_NAME=unknown
++ export JENKINS_BUILD_URL=http://localhost:8080/job/elice_bugshunters/13/
++ docker run --rm --entrypoint python -e JIRA_URL=https://nwwe.atlassian.net -e JIRA_PROJECT=Q31 -e JIRA_USER=aloe9426@gmail.com -e JIRA_API_TOKEN=**** -e JUNIT_PATH=/app/reports/test-results.xml -e JENKINS_JOB_NAME=elice_bugshunters -e JENKINS_BUILD_NUMBER=13 -e JENKINS_BRANCH_NAME=unknown -e JENKINS_BUILD_URL=http://localhost:8080/job/elice_bugshunters/13/ -v /var/jenkins_home/workspace/elice_bugshunters/reports:/app/reports -v /var/jenkins_home/workspace/elice_bugshunters/tools:/app/tools -w /app elice-bugshunters:latest tools/report_failed_tests_to_jira.py
+python: can't open file '/app/tools/report_failed_tests_to_jira.py': [Errno 2] No such file or directory
++ echo JIRA 스크립트 실행 중 오류 발생 (무시)
+JIRA 스크립트 실행 중 오류 발생 (무시)
+[8mha:////4BitF1wFw/grrZ8S41K9Mkk6lP4oqmHhgEo0C+nNayY7AAAApB+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOLSAA2iSmu54QUmNsaJdWdsh6TiRXyNPxCIRMUWq51t5vmCZYpw5GixNdQ5So3D4Hs7LRw4dhfPA7Z8xoYpsTcozSBZm3pGydnAnKKEhYCVocZzcmQzrEWr7qryimx1ynH6DgJKp2/wgEJM5qxi/sIYYXPtdWL6ef4KYAwhQ7nbf2r7Bqph/Ve+AAAA[0m[Pipeline] }
+[8mha:////4II1XQIOZhuwi81fg5dwRPvr0aG4AhZLSqlj42bQfQClAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOJSIESBqNJabniBiY1xYt0Z2yGpeBFf4w8EIlGxxWpnm3m+YJkiHDlabA11jlLjMPjeTgsHjt3F84Atn7FhSuwNSjNI1qaeUXI2MKcoYSFgZajxnBzZDGvRqruqvCJbnXKcvoOA0ukbPKAQkzmrmL8wRthce52Yfp6/AhhDyFDu9p/avgGsJ8UCvgAAAA==[0m[Pipeline] // withCredentials
+[8mha:////4KvbvLVPip5HmAsgphxyxFZT3kGlQtft2zacygrooDLiAAAAph+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOJSICQQSkVrueEFJjHGiXUXbAen4kV8jT9gEYmKLVY728zrDcvgoWZvsNPUWwqNxcGNJi9M7Pur44QdX7BhCuw0Sp0kt/o0o+SoYU5RwkLASlPjOFgyEdaiUw9VOUWmOkefv6OA0rZ3eEIhsjkqH78wedjcxjYw/Tx/BTANEcrtIdduP3wA6QtHub4AAAA=[0m[Pipeline] sh
++ docker system prune -f
+Deleted Images:
+untagged: sha256:9ec0ec9a0d32a2ece15be4c16667b53cc12b7cd2197024d9e404b1cfd931b7d2
+deleted: sha256:9ec0ec9a0d32a2ece15be4c16667b53cc12b7cd2197024d9e404b1cfd931b7d2
+untagged: sha256:9fc030b2c551be037c0de53fcaac81a59843b382ffaee90cf583f2e5a20f494a
+deleted: sha256:9fc030b2c551be037c0de53fcaac81a59843b382ffaee90cf583f2e5a20f494a
+untagged: sha256:2996e410210188b243db7d18747cae47bfecbdf50fce63a1a460b575f3545a2b
+deleted: sha256:2996e410210188b243db7d18747cae47bfecbdf50fce63a1a460b575f3545a2b
+untagged: sha256:51b0405898e4439718250b2172d5c4bf8e8fbdb184b95a60452ded9c74039e1c
+deleted: sha256:51b0405898e4439718250b2172d5c4bf8e8fbdb184b95a60452ded9c74039e1c
+untagged: sha256:7fead7590eaaeedae20d51993973dcc09b71281f5da63aef3f2e42fdf9d9ea66
+deleted: sha256:7fead7590eaaeedae20d51993973dcc09b71281f5da63aef3f2e42fdf9d9ea66
+untagged: sha256:823fda86a4fa2ed39f3bd2bd962494986da3d81ab2ccab13d412a471b9572c7f
+deleted: sha256:823fda86a4fa2ed39f3bd2bd962494986da3d81ab2ccab13d412a471b9572c7f
+untagged: sha256:8288b8e813f88eafe9c3e908a9110b9d63c61f8bd302dbb12617c4f60d54535b
+deleted: sha256:8288b8e813f88eafe9c3e908a9110b9d63c61f8bd302dbb12617c4f60d54535b
+untagged: sha256:f135b946724bf4cac3ce0ba4de2c34b7d383cb0a6003e0ac299d6005029db465
+deleted: sha256:f135b946724bf4cac3ce0ba4de2c34b7d383cb0a6003e0ac299d6005029db465
+untagged: sha256:f26d38d947e229786de510a40a0a7bdf812642f3919a97b4cd22743f947d5fd8
+deleted: sha256:f26d38d947e229786de510a40a0a7bdf812642f3919a97b4cd22743f947d5fd8
+untagged: sha256:255ff2219466ab35c9305b80ea392f5976b2ee31795128b02aa21440d6d97404
+deleted: sha256:255ff2219466ab35c9305b80ea392f5976b2ee31795128b02aa21440d6d97404
+untagged: sha256:86f948f51483e5c7b8dda91d99113e54a9f39714851eba8e21b29e72481c7d34
+deleted: sha256:86f948f51483e5c7b8dda91d99113e54a9f39714851eba8e21b29e72481c7d34
+
+Total reclaimed space: 88.38kB
+[8mha:////4NwR5RCzrM74rebB9j8kCKe7vhFDQn2pQvtsomtfPFcMAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOJSIIoIUaW10vACExvjxLoztkNS8SK+xh+wiETFFqudbeb1hnUMcOJgsNc0WIqdRe9GkxdOHIar4wl7vmDHFNlpbPXUstLNgi0nDUuKElYCNpo6x9GSSbAVvXzIykky1TmF/B0FlFbd4QmFyOYkQ/rCHGB3G1Vk+nn+CmD2PkF5qHPt6w9ECECOvgAAAA==[0m[Pipeline] }
+[8mha:////4Dtdt+XAn8TMACFJEo7m2+u1skMx3O26iTPGYi/U1mu8AAAAph+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKChISQUCpayw0vMIkxTqy7YDs4FS/ia/wBi0hUbLHa2WZeb1gGDzV7g52m3lJoLA5uNHlhYt9fHSfs+IINU2CnUeokudWnGSVHDXOKEhYCVpoax8GSibAWnXqoyiky1Tn6/B0FlLa9wxMKkc1R+fiFycPmNraB6ef5K4BpGCKU+22u3eEDh3Og774AAAA=[0m[Pipeline] // stage
+[8mha:////4K48YyqsSQPWYtCurKPDLeVVyfC4NHdIXPp/0plrC06oAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKiCIkGUaW10vACExvjxLoztkNS8SK+xh+wiETFFqudbeb1hnUMcOJgsNc0WIqdRe9GkxdOHIar4wl7vmDHFNlpbPXUstLNgi0nDUuKElYCNpo6x9GSSbAVvXzIykky1TmF/B0FlFbd4QmFyOYkQ/rCHGB3G1Vk+nn+CmD2PkF5qHPV+w8oGxiBvgAAAA==[0m[Pipeline] }
+[8mha:////4MkIDpwFDezQHRW9lgo3gF8Vg9X8Uh8zBshksnSiH2rFAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPMIRKWgQVVorDS8w8WGcWHfGdkgqXsTX+AMWkajYYrWzzbzesI4BThyM6JEGS7GzwrvR5CUmDsPV8SR6voiOKbJD0eLUssZmwZYTwpKihJWEDVLnOFoyCbayVw9VOUWmOqeQv6OE0uo7PKGQ2ZxUSF+YA+xuo45MP89fAczeJygPda59/QEQWYtwvgAAAA==[0m[Pipeline] // withEnv
+[8mha:////4GXsFGfHmxmD2o51NqiYYmXr+P6TElwM265zkmnlMNCKAAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOKiCIkGUaW10vACExvjxLoztkNS8SK+xh+wiETFFqudbeb1hnUMcOJgsNc0WIqdRe9GkxdOHIar4wl7vmDHFNlpbPXUstLNgi0nDUuKElYCNpo6x9GSSbAVvXzIykky1TmF/B0FlFbd4QmFyOYkQ/rCHGB3G1Vk+nn+CmD2PkF52Oeq6w8P294ivgAAAA==[0m[Pipeline] }
+[8mha:////4BkvETk3fn0kWU8TjB7ZgJ3m3MQnrv9Ga/KIu9qawE56AAAApR+LCAAAAAAAAP9tjTEOwjAQBC9BFLSUPOICEqJBqWgtN7zAJMY4se6C7eBUvIiv8QcsIlGxxWpnm3m9YRk81OwNdpp6S6GxOLjR5IWJfX91nLDjCzZMgZ1GqZPkVp9mlBw1zClKWAhYaWocB0smwlp06qEqp8hU5+jzdxRQ2vYOTyhENkfl4xcmD5vb2Aamn+evAKZhiFAe9rl22w8h29xIvgAAAA==[0m[Pipeline] // withEnv
+[8mha:////4ErKDSOJsC6d21aVNuEsJwsFdGRlM3qPTisBxnwtdQNHAAAAox+LCAAAAAAAAP9tjTESgjAQRT84FraWHiI0auNY2WZoPEGEGAOZXUwWofJEXs07yMiMlb/67zXv9cYyRRw5OtVYaj2lyqsu9G56auDYXgMPquGLqpgSB6tKO5Rc29OMJYvFvCzHQmNlqQqcPDnBWjfmYYpgyBVniZM7aOS+vuOJTE9lMVG+MEZsbn2dmH6dvwGMXSfI9ztBtv0ATZSgB70AAAA=[0m[Pipeline] }
+[8mha:////4ElOT/iE6Oo1XfyxWCfrkYXAIvZAASHIND85dU+/KNmCAAAAox+LCAAAAAAAAP9tjbEOgjAURS8YB1dHP6IMJizGybVh8Qsq1Fpo3sP2IUx+kb/mP0gkcfJO95zlvN5Yp4gjR6daS52nVHvVh8HNT40cu2vgUbV8UTVT4mBVZceKG3tasGKxWJblWGlsLNWBkycn2OrWPEwRDLniLHF2B43cN3c8kem5LCbKF6aI3W1oEtOv8zeAqe8FeVkKsv0HPntk3r0AAAA=[0m[Pipeline] // node
+[8mha:////4HKbrPV8fkjk4mMxd71Mr1SuJDyxtGr1Jmrk38higna3AAAApB+LCAAAAAAAAP9tjTEOwjAQBDdBFLSUPMKRKKBAVLRWGl5gEmOcWHfBvpBUvIiv8QciIlGx1c4083pjmSKOHJ1qLLWeUuVVF3o3PTVwbK+BB9XwRVVMiYNVpR1Kru1pxpLFYl6WY6GxslQFTp6cYK0b8zBFMOSKs8TJHTRyX9/xRKanspgoXxgjNre+Tky/zt8Axq4T5Lu9INt+ABhiA5S9AAAA[0m[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+Finished: FAILURE

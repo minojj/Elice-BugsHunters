@@ -1,0 +1,13 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<fingerprint>
+  <timestamp>2025-11-14 16:58:43.93 UTC</timestamp>
+  <md5sum>005b834bbaa909ccc5ea115d727566f6</md5sum>
+  <fileName>Credential id=sub-id name=team3a@elice.com/******</fileName>
+  <usages>
+    <entry>
+      <string>elice_bugshunters</string>
+      <ranges>1-2,4-7,9-21,23-40</ranges>
+    </entry>
+  </usages>
+  <facets/>
+</fingerprint>

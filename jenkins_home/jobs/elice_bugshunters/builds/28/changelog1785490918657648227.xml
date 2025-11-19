@@ -1,0 +1,10 @@
+commit 8727028f348c92656c50c51a160bc991629a7bec
+tree 34458dd6fd8d838807ad940413626f4a4553db92
+parent 5db2708c7d4839b3c4f8ee97649855526b42e7f7
+author junseoseki <dhfkapap@naver.com> 2025-11-17 01:58:39 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 01:58:39 +0900
+
+    Update report_failed_tests_to_jira.py
+
+
+:100644 100644 349852074281643ebcf1c04bb95720b37dbe06d5 d0851143abd69c2965aee316c42c07729eaae42f M	tools/report_failed_tests_to_jira.py

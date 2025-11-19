@@ -1,0 +1,40 @@
+commit 470147c04fbaf6251cfac2f2c522bad1083edcae
+tree 641f413a9714fbcefee99e172694a5807e89644a
+parent ea0fc34cfa244cf653310f879b6568617dfd7b3d
+author junseoseki <dhfkapap@naver.com> 2025-11-17 00:34:27 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 00:34:27 +0900
+
+    Update Dockerfile.jenkins
+
+
+:100644 100644 1b99ca3cb389ddf9083ca7a5e4396687c9d44174 298251b8c33a392563205a464b7f26e9f34098e0 M	Dockerfile.jenkins
+commit ea0fc34cfa244cf653310f879b6568617dfd7b3d
+tree 0ff0870a422a1cca97b92b6204a9aa278a41a1fb
+parent 779463b1d7dd5ac019fad06d37a4f6d41cf2658f
+author junseoseki <dhfkapap@naver.com> 2025-11-17 00:31:27 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 00:31:27 +0900
+
+    Update Dockerfile.jenkins
+
+
+:100644 100644 45d6ec67a7fe11738eda76605d1c54efc7a0591f 1b99ca3cb389ddf9083ca7a5e4396687c9d44174 M	Dockerfile.jenkins
+commit 779463b1d7dd5ac019fad06d37a4f6d41cf2658f
+tree 04a7aaac97f1f3ed557f02c6506eed13b5e2a828
+parent a0179752c742938a8077840a3c031bf9d6a7338b
+author junseoseki <dhfkapap@naver.com> 2025-11-17 00:08:51 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 00:08:51 +0900
+
+    Update docker-compose.yml
+
+
+:100644 100644 3e67ea2069e33d47087cde520b8935d93a70a424 30141a07d61a544361d6a87295b39cbff981debb M	docker-compose.yml
+commit a0179752c742938a8077840a3c031bf9d6a7338b
+tree 3a4f1096db6c7fde2b12aa5aa3295bb83d0d7d88
+parent 55b286633f9fb386fc1e9b8d8d28cfa57e169f91
+author junseoseki <dhfkapap@naver.com> 2025-11-16 23:45:41 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-16 23:45:41 +0900
+
+    Update Dockerfile.jenkins
+
+
+:100644 100644 d3d881fe167e56f06ee4cce501e78de7e279ee53 45d6ec67a7fe11738eda76605d1c54efc7a0591f M	Dockerfile.jenkins

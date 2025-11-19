@@ -1,0 +1,554 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@1559.va_a_533730b_ea_d">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>admin</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <jenkins.metrics.impl.TimeInQueueAction plugin="metrics@4.2.37-489.vb_6db_69b_ce753">
+      <queuingDurationMillis>95</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>0</buildableDurationMillis>
+      <waitingDurationMillis>18</waitingDurationMillis>
+    </jenkins.metrics.impl.TimeInQueueAction>
+    <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="pipeline-groovy-lib@776.vfee5327b_b_a_5b_">
+      <libraries/>
+    </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction plugin="pipeline-model-definition@2.2277.v00573e73ddf1">
+      <stagesUUID>17ea0529-5d8a-4b79-9060-a422f83b9271</stagesUUID>
+      <pipelineDefs>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef plugin="pipeline-model-api@2.2277.v00573e73ddf1">
+          <stages>
+            <stages>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+                <name>Checkout</name>
+                <branches>
+                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                    <name>default</name>
+                    <steps>
+                      <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                        <name>checkout</name>
+                        <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                          <arguments class="linked-hash-map">
+                            <entry>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                                <key>scm</key>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-GStringValue>
+                                <value class="string">${scm}</value>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-GStringValue>
+                            </entry>
+                          </arguments>
+                        </args>
+                      </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                    </steps>
+                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                </branches>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+                <name>Build Docker Image</name>
+                <branches>
+                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                    <name>default</name>
+                    <steps>
+                      <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                        <name>script</name>
+                        <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                          <arguments class="linked-hash-map">
+                            <entry>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                                <key>scriptBlock</key>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                                <value class="string">sh &apos;&apos;&apos;
+                        docker builder prune -f || true
+                        docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} -f Dockerfile .
+                        docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest
+                    &apos;&apos;&apos;</value>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                            </entry>
+                          </arguments>
+                        </args>
+                      </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                    </steps>
+                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                </branches>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+                <name>Run Tests in Container</name>
+                <branches>
+                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                    <name>default</name>
+                    <steps>
+                      <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTTreeStep>
+                        <name>withCredentials</name>
+                        <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTSingleArgument">
+                          <value class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue$GStringValue">
+                            <value class="string">${[
+                    usernamePassword(credentialsId: &apos;login-id&apos;, usernameVariable: &apos;MAIN_EMAIL&apos;, passwordVariable: &apos;MAIN_PASSWORD&apos;),
+                    usernamePassword(credentialsId: &apos;sub-id&apos;,   usernameVariable: &apos;SUB_EMAIL&apos;,  passwordVariable: &apos;SUB_PASSWORD&apos;)
+                ]}</value>
+                          </value>
+                        </args>
+                        <children>
+                          <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                            <name>sh</name>
+                            <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                              <arguments class="linked-hash-map">
+                                <entry>
+                                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                                    <key>script</key>
+                                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                                    <value class="string">
+                        set -eux
+
+                        REPORT_DIR_HOST=&quot;${WORKSPACE}/${REPORT_DIR}&quot;
+                        REPORT_DIR_CONT=&quot;/app/${REPORT_DIR}&quot;
+                        SCREENSHOT_DIR_HOST=&quot;${WORKSPACE}/${SCREENSHOT_DIR}&quot;
+                        SCREENSHOT_DIR_CONT=&quot;/app/${SCREENSHOT_DIR}&quot;
+
+                        echo &quot;🧹 기존 리포트/스크린샷 정리&quot;
+                        rm -rf &quot;${REPORT_DIR_HOST}&quot; &quot;${SCREENSHOT_DIR_HOST}&quot;
+                        mkdir -p &quot;${REPORT_DIR_HOST}&quot; &quot;${SCREENSHOT_DIR_HOST}&quot;
+
+                        echo &quot;🐳 테스트 컨테이너 실행&quot;
+                        docker run --rm                           --shm-size=2g                           -e HEADLESS=true                           -e WDM_SKIP=1                           -e CHROME_BIN=/usr/bin/chromium                           -e CHROMEDRIVER=/usr/bin/chromedriver                           -e WDM_CACHE=/app/.wdm                           -e MAIN_EMAIL=&quot;${MAIN_EMAIL}&quot;                           -e MAIN_PASSWORD=&quot;${MAIN_PASSWORD}&quot;                           -e SUB_EMAIL=&quot;${SUB_EMAIL}&quot;                           -e SUB_PASSWORD=&quot;${SUB_PASSWORD}&quot;                           -v &quot;${WORKSPACE}/.wdm:/app/.wdm&quot;                           -v &quot;${REPORT_DIR_HOST}:${REPORT_DIR_CONT}&quot;                           -v &quot;${SCREENSHOT_DIR_HOST}:${SCREENSHOT_DIR_CONT}&quot;                           ${DOCKER_IMAGE}:latest                           tests -v                             --junitxml=${REPORT_DIR_CONT}/test-results.xml                             --html=${REPORT_DIR_CONT}/report.html                             --self-contained-html                             --tb=short
+
+                        echo &quot;📂 Jenkins 워크스페이스 리포트 디렉토리:&quot;
+                        ls -lah &quot;${REPORT_DIR_HOST}&quot; || true
+                    </value>
+                                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                                </entry>
+                              </arguments>
+                            </args>
+                          </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                        </children>
+                      </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTTreeStep>
+                    </steps>
+                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                </branches>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+            </stages>
+            <uuid>17ea0529-5d8a-4b79-9060-a422f83b9271</uuid>
+          </stages>
+          <postBuild>
+            <conditions>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBuildCondition>
+                <condition>always</condition>
+                <branch>
+                  <name>default</name>
+                  <steps>
+                    <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                      <name>script</name>
+                      <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                        <arguments class="linked-hash-map">
+                          <entry>
+                            <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <key>scriptBlock</key>
+                            </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                            <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                              <value class="string">echo &quot;📦 JUnit 리포트 수집 시도&quot;
+                try {
+                    junit &apos;reports/test-results.xml&apos;
+                } catch (err) {
+                    echo &quot;JUnit 리포트를 찾지 못했습니다: ${err}&quot;
+                }
+
+                echo &quot;📊 HTML 리포트 게시 시도&quot;
+                try {
+                    publishHTML(target: [
+                        allowMissing:          true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll:               true,
+                        reportDir:             &apos;reports&apos;,
+                        reportFiles:           &apos;report.html&apos;,
+                        reportName:            &apos;Pytest HTML Report&apos;
+                    ])
+                } catch (err) {
+                    echo &quot;HTML 리포트를 게시하지 못했습니다: ${err}&quot;
+                }
+
+                def reportExists = fileExists(&apos;reports/report.html&apos;)
+                echo &quot;리포트 파일 존재: ${reportExists}&quot;
+
+                if (reportExists) {
+                    archiveArtifacts(
+                        artifacts: &apos;reports/**/*,screenshots/**/*&apos;,
+                        allowEmptyArchive: true,
+                        fingerprint: true
+                    )
+                    echo &quot;✅ 리포트/스크린샷 아카이브 완료&quot;
+                    echo &quot;📊 HTML 리포트: ${BUILD_URL}artifact/reports/report.html&quot;
+                } else {
+                    echo &quot;❌ 리포트 파일이 생성되지 않았습니다&quot;
+                    echo &quot;테스트가 실패했거나 pytest-html 플러그인이 없을 수 있습니다&quot;
+                }</value>
+                            </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                          </entry>
+                        </arguments>
+                      </args>
+                    </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                    <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                      <name>sh</name>
+                      <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                        <arguments class="linked-hash-map">
+                          <entry>
+                            <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <key>script</key>
+                            </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                            <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                              <value class="string">docker system prune -f || true</value>
+                            </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                          </entry>
+                        </arguments>
+                      </args>
+                    </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                  </steps>
+                </branch>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBuildCondition>
+            </conditions>
+          </postBuild>
+          <environment>
+            <variables class="linked-hash-map">
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>REPORT_DIR</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                  <value class="string">reports</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+              </entry>
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>SCREENSHOT_DIR</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                  <value class="string">screenshots</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+              </entry>
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>DOCKER_IMAGE</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                  <value class="string">elice-bugshunters</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+              </entry>
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>PYTHONUNBUFFERED</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                  <value class="string">1</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+              </entry>
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>HEADLESS</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                  <value class="string">true</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+              </entry>
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>WDM_LOCAL</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                  <value class="string">1</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+              </entry>
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>WDM_CACHE</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-GStringValue>
+                  <value class="string">&quot;${WORKSPACE}/.wdm&quot;</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-GStringValue>
+              </entry>
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>HOME</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-GStringValue>
+                  <value class="string">&quot;${WORKSPACE}&quot;</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-GStringValue>
+              </entry>
+              <entry>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                  <key>PYTHONPATH</key>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-GStringValue>
+                  <value class="string">&quot;${WORKSPACE}:${PYTHONPATH}&quot;</value>
+                </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-GStringValue>
+              </entry>
+            </variables>
+          </environment>
+          <agent>
+            <agentType>
+              <key>any</key>
+            </agentType>
+          </agent>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef>
+      </pipelineDefs>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction>
+    <hudson.plugins.git.util.BuildData plugin="git@5.8.0">
+      <buildsByBranchName>
+        <entry>
+          <string>refs/remotes/origin/feature_AC</string>
+          <hudson.plugins.git.util.Build>
+            <marked plugin="git-client@6.4.0">
+              <sha1>4f6586a5ba3eb5751c1aa890ed1d2d64135c31a5</sha1>
+              <branches class="list">
+                <hudson.plugins.git.Branch>
+                  <sha1 reference="../../../sha1"/>
+                  <name>refs/remotes/origin/feature_AC</name>
+                </hudson.plugins.git.Branch>
+              </branches>
+            </marked>
+            <revision reference="../marked"/>
+            <hudsonBuildNumber>1</hudsonBuildNumber>
+          </hudson.plugins.git.util.Build>
+        </entry>
+      </buildsByBranchName>
+      <lastBuild reference="../buildsByBranchName/entry/hudson.plugins.git.util.Build"/>
+      <remoteUrls>
+        <string>https://github.com/minojj/Elice-BugsHunters</string>
+      </remoteUrls>
+    </hudson.plugins.git.util.BuildData>
+    <org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState plugin="workflow-scm-step@466.va_d69e602552b_">
+      <revisionStates>
+        <entry>
+          <string>git https://github.com/minojj/Elice-BugsHunters</string>
+          <hudson.scm.SCMRevisionState_-None/>
+        </entry>
+      </revisionStates>
+    </org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState>
+    <org.jenkinsci.plugins.workflow.cps.EnvActionImpl plugin="workflow-cps@4218.vff679a_5c0f3a_">
+      <env class="tree-map"/>
+    </org.jenkinsci.plugins.workflow.cps.EnvActionImpl>
+    <com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder plugin="credentials@1447.v4cb_b_539b_5321">
+      <boundCredentials class="concurrent-hash-map"/>
+    </com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder>
+    <jenkins.metrics.impl.SubTaskTimeInQueueAction plugin="metrics@4.2.37-489.vb_6db_69b_ce753">
+      <queuingDurationMillis>30</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>22</buildableDurationMillis>
+      <waitingDurationMillis>1</waitingDurationMillis>
+      <executingDurationMillis>316072</executingDurationMillis>
+      <workUnitCount>1</workUnitCount>
+    </jenkins.metrics.impl.SubTaskTimeInQueueAction>
+  </actions>
+  <queueId>1</queueId>
+  <timestamp>1763139376021</timestamp>
+  <startTime>1763139376043</startTime>
+  <result>FAILURE</result>
+  <duration>322978</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
+    <result>FAILURE</result>
+    <script>pipeline {
+    agent any
+
+    environment {
+        REPORT_DIR       = &quot;reports&quot;
+        SCREENSHOT_DIR   = &quot;screenshots&quot;
+        DOCKER_IMAGE     = &quot;elice-bugshunters&quot;
+        PYTHONUNBUFFERED = &quot;1&quot;
+        HEADLESS         = &quot;true&quot;
+        WDM_LOCAL        = &quot;1&quot;
+        WDM_CACHE        = &quot;${WORKSPACE}/.wdm&quot;
+        HOME             = &quot;${WORKSPACE}&quot;
+        PYTHONPATH       = &quot;${WORKSPACE}:${PYTHONPATH}&quot;
+    }
+
+    stages {
+        stage(&apos;Checkout&apos;) {
+            steps { checkout scm }
+        }
+
+        stage(&apos;Build Docker Image&apos;) {
+            steps {
+                script {
+                    sh &apos;&apos;&apos;
+                        docker builder prune -f || true
+                        docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} -f Dockerfile .
+                        docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest
+                    &apos;&apos;&apos;
+                }
+            }
+        }
+
+        stage(&apos;Run Tests in Container&apos;) {
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: &apos;login-id&apos;, usernameVariable: &apos;MAIN_EMAIL&apos;, passwordVariable: &apos;MAIN_PASSWORD&apos;),
+                    usernamePassword(credentialsId: &apos;sub-id&apos;,   usernameVariable: &apos;SUB_EMAIL&apos;,  passwordVariable: &apos;SUB_PASSWORD&apos;)
+                ]) {
+                    sh &apos;&apos;&apos;
+                        set -eux
+
+                        REPORT_DIR_HOST=&quot;${WORKSPACE}/${REPORT_DIR}&quot;
+                        REPORT_DIR_CONT=&quot;/app/${REPORT_DIR}&quot;
+                        SCREENSHOT_DIR_HOST=&quot;${WORKSPACE}/${SCREENSHOT_DIR}&quot;
+                        SCREENSHOT_DIR_CONT=&quot;/app/${SCREENSHOT_DIR}&quot;
+
+                        echo &quot;🧹 기존 리포트/스크린샷 정리&quot;
+                        rm -rf &quot;${REPORT_DIR_HOST}&quot; &quot;${SCREENSHOT_DIR_HOST}&quot;
+                        mkdir -p &quot;${REPORT_DIR_HOST}&quot; &quot;${SCREENSHOT_DIR_HOST}&quot;
+
+                        echo &quot;🐳 테스트 컨테이너 실행&quot;
+                        docker run --rm \
+                          --shm-size=2g \
+                          -e HEADLESS=true \
+                          -e WDM_SKIP=1 \
+                          -e CHROME_BIN=/usr/bin/chromium \
+                          -e CHROMEDRIVER=/usr/bin/chromedriver \
+                          -e WDM_CACHE=/app/.wdm \
+                          -e MAIN_EMAIL=&quot;${MAIN_EMAIL}&quot; \
+                          -e MAIN_PASSWORD=&quot;${MAIN_PASSWORD}&quot; \
+                          -e SUB_EMAIL=&quot;${SUB_EMAIL}&quot; \
+                          -e SUB_PASSWORD=&quot;${SUB_PASSWORD}&quot; \
+                          -v &quot;${WORKSPACE}/.wdm:/app/.wdm&quot; \
+                          -v &quot;${REPORT_DIR_HOST}:${REPORT_DIR_CONT}&quot; \
+                          -v &quot;${SCREENSHOT_DIR_HOST}:${SCREENSHOT_DIR_CONT}&quot; \
+                          ${DOCKER_IMAGE}:latest \
+                          tests -v \
+                            --junitxml=${REPORT_DIR_CONT}/test-results.xml \
+                            --html=${REPORT_DIR_CONT}/report.html \
+                            --self-contained-html \
+                            --tb=short
+
+                        echo &quot;📂 Jenkins 워크스페이스 리포트 디렉토리:&quot;
+                        ls -lah &quot;${REPORT_DIR_HOST}&quot; || true
+                    &apos;&apos;&apos;
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                echo &quot;📦 JUnit 리포트 수집 시도&quot;
+                try {
+                    junit &apos;reports/test-results.xml&apos;
+                } catch (err) {
+                    echo &quot;JUnit 리포트를 찾지 못했습니다: ${err}&quot;
+                }
+
+                echo &quot;📊 HTML 리포트 게시 시도&quot;
+                try {
+                    publishHTML(target: [
+                        allowMissing:          true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll:               true,
+                        reportDir:             &apos;reports&apos;,
+                        reportFiles:           &apos;report.html&apos;,
+                        reportName:            &apos;Pytest HTML Report&apos;
+                    ])
+                } catch (err) {
+                    echo &quot;HTML 리포트를 게시하지 못했습니다: ${err}&quot;
+                }
+
+                def reportExists = fileExists(&apos;reports/report.html&apos;)
+                echo &quot;리포트 파일 존재: ${reportExists}&quot;
+
+                if (reportExists) {
+                    archiveArtifacts(
+                        artifacts: &apos;reports/**/*,screenshots/**/*&apos;,
+                        allowEmptyArchive: true,
+                        fingerprint: true
+                    )
+                    echo &quot;✅ 리포트/스크린샷 아카이브 완료&quot;
+                    echo &quot;📊 HTML 리포트: ${BUILD_URL}artifact/reports/report.html&quot;
+                } else {
+                    echo &quot;❌ 리포트 파일이 생성되지 않았습니다&quot;
+                    echo &quot;테스트가 실패했거나 pytest-html 플러그인이 없을 수 있습니다&quot;
+                }
+            }
+
+            sh &apos;docker system prune -f || true&apos;
+        }
+    }
+}
+</script>
+    <loadedScripts class="linked-hash-map"/>
+    <durabilityHint>MAX_SURVIVABILITY</durabilityHint>
+    <timings class="map">
+      <entry>
+        <string>flowNode</string>
+        <long>446594494</long>
+      </entry>
+      <entry>
+        <string>classLoad</string>
+        <long>4790484595</long>
+      </entry>
+      <entry>
+        <string>runQueue</string>
+        <long>7140753547</long>
+      </entry>
+      <entry>
+        <string>run</string>
+        <long>17143643147</long>
+      </entry>
+      <entry>
+        <string>parse</string>
+        <long>1337187459</long>
+      </entry>
+      <entry>
+        <string>saveProgram</string>
+        <long>12372692383</long>
+      </entry>
+    </timings>
+    <internalCalls class="sorted-set">
+      <string>hudson.model.Result.fromString</string>
+      <string>org.jenkinsci.plugins.workflow.job.WorkflowRun.result</string>
+    </internalCalls>
+    <sandbox>true</sandbox>
+    <iota>61</iota>
+    <head>1:61</head>
+    <done>true</done>
+    <resumeBlocked>false</resumeBlocked>
+    <storageDir>workflow-completed</storageDir>
+  </execution>
+  <completed>true</completed>
+  <checkouts class="hudson.util.PersistedList">
+    <org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
+      <scm class="hudson.plugins.git.GitSCM" plugin="git@5.8.0">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+          <hudson.plugins.git.UserRemoteConfig>
+            <url>https://github.com/minojj/Elice-BugsHunters</url>
+          </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+          <hudson.plugins.git.BranchSpec>
+            <name>*/feature_AC</name>
+          </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="empty-list"/>
+        <extensions/>
+      </scm>
+      <node></node>
+      <workspace>/var/jenkins_home/workspace/elice_bugshunters</workspace>
+      <changelogFile>/var/jenkins_home/jobs/elice_bugshunters/builds/1/changelog9664177638816718065.xml</changelogFile>
+      <pollingBaseline class="hudson.scm.SCMRevisionState$None" reference="../../../actions/org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState/revisionStates/entry/hudson.scm.SCMRevisionState_-None"/>
+    </org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
+    <org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
+      <scm class="hudson.plugins.git.GitSCM" reference="../../org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout/scm"/>
+      <node></node>
+      <workspace>/var/jenkins_home/workspace/elice_bugshunters</workspace>
+      <pollingBaseline class="hudson.scm.SCMRevisionState$None" reference="../../../actions/org.jenkinsci.plugins.workflow.steps.scm.MultiSCMRevisionState/revisionStates/entry/hudson.scm.SCMRevisionState_-None"/>
+    </org.jenkinsci.plugins.workflow.job.WorkflowRun_-SCMCheckout>
+  </checkouts>
+</flow-build>

@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="36" skipped="0" tests="56" time="972.523" timestamp="2025-11-18T15:13:34.863760+00:00" hostname="30e130276183"><testcase classname="tests.test_account" name="test_ac_001_login" time="8.368" /><testcase classname="tests.test_account" name="test_ac_002_duplicate_email" time="2.773" /><testcase classname="tests.test_account" name="test_ac_003_negative_login" time="11.348" /><testcase classname="tests.test_account" name="test_ac_004_positive_login" time="15.927" /><testcase classname="tests.test_account" name="test_ac_005_login_with_non_email_format" time="6.945" /><testcase classname="tests.test_account" name="test_ac_006_login_with_spaces" time="6.274" /><testcase classname="tests.test_account" name="test_ac_007_logout" time="10.526" /><testcase classname="tests.test_billing_system" name="test_bu_001_credit_usage_section_exists" time="18.760" /><testcase classname="tests.test_billing_system" name="test_bu_002_danal_card_payment_iframe_appears" time="11.756"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_billing_system.py:31: in test_bu_002_danal_card_payment_iframe_appears
+    methods.click_register_method()
+src/pages/billing_page.py:48: in click_register_method
+    self.click_safely("register_method_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_billing_system" name="test_bu_003_click_usage_history" time="4.448"><failure message="AssertionError: ❌ Usage History 페이지로 이동 실패&#10;assert False&#10; +  where False = is_usage_history_page()&#10; +    where is_usage_history_page = &lt;src.pages.billing_page.UsagePage object at 0xffffaca82900&gt;.is_usage_history_page">tests/test_billing_system.py:52: in test_bu_003_click_usage_history
+    assert usage_page.is_usage_history_page(), "❌ Usage History 페이지로 이동 실패"
+E   AssertionError: ❌ Usage History 페이지로 이동 실패
+E   assert False
+E    +  where False = is_usage_history_page()
+E    +    where is_usage_history_page = &lt;src.pages.billing_page.UsagePage object at 0xffffaca82900&gt;.is_usage_history_page</failure></testcase><testcase classname="tests.test_billing_system" name="test_bu_004_click_ml_api" time="1.343" /><testcase classname="tests.test_billing_system" name="test_bu_005_click_severless_status" time="2.698" /><testcase classname="tests.test_billing_system" name="test_bu_006_click_api_key_manage" time="1.466"><failure message="assert False&#10; +  where False = is_api_key_manage_page()&#10; +    where is_api_key_manage_page = &lt;src.pages.billing_page.UsagePage object at 0xffffaca2b360&gt;.is_api_key_manage_page">tests/test_billing_system.py:69: in test_bu_006_click_api_key_manage
+    assert page.is_api_key_manage_page()
+E   assert False
+E    +  where False = is_api_key_manage_page()
+E    +    where is_api_key_manage_page = &lt;src.pages.billing_page.UsagePage object at 0xffffaca2b360&gt;.is_api_key_manage_page</failure></testcase><testcase classname="tests.test_chat_base" name="test_cb_001_ai_chat" time="45.890"><failure message="selenium.common.exceptions.TimeoutException: Message:">tests/test_chat_base.py:18: in test_cb_001_ai_chat
+    WebDriverWait(chat_page.driver, 30).until(
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message:</failure></testcase><testcase classname="tests.test_chat_base" name="test_cb_002_copy" time="1.824" /><testcase classname="tests.test_chat_base" name="test_cb_003_edit_message" time="31.183"><failure message="selenium.common.exceptions.TimeoutException: Message:">tests/test_chat_base.py:42: in test_cb_003_edit_message
+    WebDriverWait(chat_page.driver, 30).until(
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message:</failure></testcase><testcase classname="tests.test_chat_base" name="test_cb_004_scroll_and_click" time="39.441" /><testcase classname="tests.test_chat_base" name="test_cb_005_make_image" time="60.847"><failure message="AssertionError: 태극기 이미지를 찾을 수 없습니다&#10;assert None&#10; +  where None = check_image_exists()&#10; +    where check_image_exists = &lt;src.pages.chat_base_page.ChatPage object at 0xffffaca2bbb0&gt;.check_image_exists">tests/test_chat_base.py:60: in test_cb_005_make_image
+    assert chat_page.check_image_exists(), "태극기 이미지를 찾을 수 없습니다"
+E   AssertionError: 태극기 이미지를 찾을 수 없습니다
+E   assert None
+E    +  where None = check_image_exists()
+E    +    where check_image_exists = &lt;src.pages.chat_base_page.ChatPage object at 0xffffaca2bbb0&gt;.check_image_exists</failure></testcase><testcase classname="tests.test_chat_base" name="test_cb_006_upload_file" time="60.760"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_chat_base.py:66: in test_cb_006_upload_file
+    WebDriverWait(chat_page.driver, 30).until(
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_chat_base" name="test_cb_007_make_image" time="60.754"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_chat_base.py:79: in test_cb_007_make_image
+    WebDriverWait(chat_page.driver, 30).until(
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_001_quiz" time="15.539" /><testcase classname="tests.test_chat_expanse" name="test_ce_002_quiz_empty" time="18.963"><failure message="AssertionError: ✅CE-002 : 빈칸 퀴즈 생성이 허용되었습니다!&#10;assert False">tests/test_chat_expanse.py:19: in test_ce_002_quiz_empty
+    assert result, "✅CE-002 : 빈칸 퀴즈 생성이 허용되었습니다!"
+E   AssertionError: ✅CE-002 : 빈칸 퀴즈 생성이 허용되었습니다!
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_003_quiz_special_chars" time="19.173"><failure message="AssertionError: ✅CE-003 : 특수문자 퀴즈 생성이 허용되었습니다!&#10;assert False">tests/test_chat_expanse.py:24: in test_ce_003_quiz_special_chars
+    assert result, "✅CE-003 : 특수문자 퀴즈 생성이 허용되었습니다!"
+E   AssertionError: ✅CE-003 : 특수문자 퀴즈 생성이 허용되었습니다!
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_004_quiz_no_type" time="19.216"><failure message="AssertionError: ✅CE-004 : 난이도 혹은 주관식, 객관식을 명시하지 않은 퀴즈 생성이 허용되었습니다!&#10;assert False">tests/test_chat_expanse.py:29: in test_ce_004_quiz_no_type
+    assert result, "✅CE-004 : 난이도 혹은 주관식, 객관식을 명시하지 않은 퀴즈 생성이 허용되었습니다!"
+E   AssertionError: ✅CE-004 : 난이도 혹은 주관식, 객관식을 명시하지 않은 퀴즈 생성이 허용되었습니다!
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_005_ppt" time="19.248"><failure message="AssertionError: ❌ PPT 생성 및 전송 프로세스 실패&#10;assert False">tests/test_chat_expanse.py:34: in test_ce_005_ppt
+    assert result, "❌ PPT 생성 및 전송 프로세스 실패"
+E   AssertionError: ❌ PPT 생성 및 전송 프로세스 실패
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_006_image_text" time="19.233"><failure message="AssertionError: ❌ 이미지 생성 및 전송 프로세스 실패&#10;assert False">tests/test_chat_expanse.py:39: in test_ce_006_image_text
+    assert result, "❌ 이미지 생성 및 전송 프로세스 실패"
+E   AssertionError: ❌ 이미지 생성 및 전송 프로세스 실패
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_007_image_file" time="19.137"><failure message="AssertionError: ❌ 이미지 생성 및 전송 프로세스 실패&#10;assert False">tests/test_chat_expanse.py:44: in test_ce_007_image_file
+    assert result, "❌ 이미지 생성 및 전송 프로세스 실패"
+E   AssertionError: ❌ 이미지 생성 및 전송 프로세스 실패
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_008_google_search" time="19.281"><failure message="AssertionError: ❌ 구글 검색 및 전송 프로세스 실패&#10;assert False">tests/test_chat_expanse.py:49: in test_ce_008_google_search
+    assert result, "❌ 구글 검색 및 전송 프로세스 실패"
+E   AssertionError: ❌ 구글 검색 및 전송 프로세스 실패
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_009_deep_dive" time="19.169"><failure message="AssertionError: ❌ 심층 조사 및 전송 프로세스 실패&#10;assert False">tests/test_chat_expanse.py:54: in test_ce_009_deep_dive
+    assert result, "❌ 심층 조사 및 전송 프로세스 실패"
+E   AssertionError: ❌ 심층 조사 및 전송 프로세스 실패
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_010_file_upload" time="18.958"><failure message="AssertionError: ❌ 파일 업로드 및 전송 프로세스 실패&#10;assert False">tests/test_chat_expanse.py:59: in test_ce_010_file_upload
+    assert result, "❌ 파일 업로드 및 전송 프로세스 실패"
+E   AssertionError: ❌ 파일 업로드 및 전송 프로세스 실패
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_011_file_upload_expect_failure" time="19.161"><failure message="AssertionError: ❌ CE-011 실패: 위험 파일 업로드가 허용되었습니다!&#10;assert False is True">tests/test_chat_expanse.py:64: in test_ce_011_file_upload_expect_failure
+    assert result is True, "❌ CE-011 실패: 위험 파일 업로드가 허용되었습니다!"
+E   AssertionError: ❌ CE-011 실패: 위험 파일 업로드가 허용되었습니다!
+E   assert False is True</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_012_file_upload_new_chat" time="10.502"><failure message="AssertionError: ❌ 파일 업로드 및 전송 프로세스 실패&#10;assert False">tests/test_chat_expanse.py:69: in test_ce_012_file_upload_new_chat
+    assert result, "❌ 파일 업로드 및 전송 프로세스 실패"
+E   AssertionError: ❌ 파일 업로드 및 전송 프로세스 실패
+E   assert False</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_013_quiz_empty_new_chat" time="10.562"><failure message="AssertionError: ✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!&#10;assert False">tests/test_chat_expanse.py:74: in test_ce_013_quiz_empty_new_chat
+    assert result, "✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!"
+E   AssertionError: ✅CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!
+E   assert False</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_001_navigate_to_agent_create_form" time="16.362" /><testcase classname="tests.test_custom_agent" name="test_ca_002_validate_required_fields_behavior" time="4.814" /><testcase classname="tests.test_custom_agent" name="test_ca_003_1_create_private_agent_successfully" time="15.150"><failure message="selenium.common.exceptions.TimeoutException: Message:">tests/test_custom_agent.py:190: in test_ca_003_1_create_private_agent_successfully
+    create_agent_page.click_safely("create_btn")
+src/pages/base_page.py:40: in click_safely
+    wait.until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message:</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_003_2_create_organization_agent_successfully" time="14.674"><failure message="selenium.common.exceptions.TimeoutException: Message:">tests/test_custom_agent.py:231: in test_ca_003_2_create_organization_agent_successfully
+    create_agent_page.click_safely("create_btn")
+src/pages/base_page.py:40: in click_safely
+    wait.until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message:</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_004_test_create_with_chat_generates_ai_response" time="27.767" /><testcase classname="tests.test_custom_agent" name="test_ca_005_prevent_duplicate_agent_creation" time="14.871" /><testcase classname="tests.test_custom_agent" name="test_ca_006_display_created_agents_in_explorer" time="0.671"><failure message="AssertionError: ❌ CA_006_이전 테스트의 agent_id를 불러올 수 없습니다.&#10;assert (None or None)">tests/test_custom_agent.py:346: in test_ca_006_display_created_agents_in_explorer
+    assert private_id or org_id, "❌ CA_006_이전 테스트의 agent_id를 불러올 수 없습니다."
+E   AssertionError: ❌ CA_006_이전 테스트의 agent_id를 불러올 수 없습니다.
+E   assert (None or None)</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_007_display_agent_cards_in_my_agents" time="13.373"><failure message="AssertionError: ❌ CA_007_Organization 카드 없음&#10;assert False&#10; +  where False = has_cards('organization', minimum=1)&#10; +    where has_cards = &lt;src.pages.custom_agent_page.MyAgentsPage object at 0xffffaca4f460&gt;.has_cards">tests/test_custom_agent.py:375: in test_ca_007_display_agent_cards_in_my_agents
+    assert my_agent_page.has_cards("organization", minimum=1), "❌ CA_007_Organization 카드 없음"
+E   AssertionError: ❌ CA_007_Organization 카드 없음
+E   assert False
+E    +  where False = has_cards('organization', minimum=1)
+E    +    where has_cards = &lt;src.pages.custom_agent_page.MyAgentsPage object at 0xffffaca4f460&gt;.has_cards</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_008_update_existing_agent_successfully" time="23.956"><failure message="selenium.common.exceptions.TimeoutException: Message:">tests/test_custom_agent.py:398: in test_ca_008_update_existing_agent_successfully
+    create_agent_page.get_element("create_btn", "clickable").click() #수정 작업의 경우 publish로 텍스트만 변경됨
+src/pages/base_page.py:19: in get_element
+    wait.until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message:</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_009__publish_draft_agent_successfully" time="25.051"><failure message="selenium.common.exceptions.TimeoutException: Message:">tests/test_custom_agent.py:434: in test_ca_009__publish_draft_agent_successfully
+    create_btn = create_agent_page.get_element("create_btn", "clickable")
+src/pages/base_page.py:19: in get_element
+    wait.until(EC.element_to_be_clickable(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message:</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_010_autosave_draft_agent_persists_changes" time="23.376"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_custom_agent.py:480: in test_ca_010_autosave_draft_agent_persists_changes
+    expected_values = create_agent_page.fill_form_with_trigger(
+src/pages/custom_agent_page.py:259: in fill_form_with_trigger
+    type_and_trigger("name", name)
+src/pages/custom_agent_page.py:237: in type_and_trigger
+    el = self.get_element(key, "visible")
+src/pages/base_page.py:23: in get_element
+    wait.until(EC.visibility_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_011_cancel_agent_deletion_modal" time="12.878"><failure message="IndexError: organization 카드가 2개 미만입니다.">tests/test_custom_agent.py:538: in test_ca_011_cancel_agent_deletion_modal
+    my_agent_page.click_delete_button_by_card_type("organization", index=1)
+src/pages/custom_agent_page.py:784: in click_delete_button_by_card_type
+    raise IndexError(f"{card_type} 카드가 {index + 1}개 미만입니다.")
+E   IndexError: organization 카드가 2개 미만입니다.</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_012_delete_agent_permanently" time="12.342"><failure message="AssertionError: ❌ CA_012_Organization 카드가 2개 이상 필요합니다.&#10;assert 0 &gt; 1&#10; +  where 0 = len([])">tests/test_custom_agent.py:577: in test_ca_012_delete_agent_permanently
+    assert len(org_cards) &gt; 1, "❌ CA_012_Organization 카드가 2개 이상 필요합니다."
+E   AssertionError: ❌ CA_012_Organization 카드가 2개 이상 필요합니다.
+E   assert 0 &gt; 1
+E    +  where 0 = len([])</failure></testcase><testcase classname="tests.test_custom_agent" name="test_ca_013_prevent_deletion_of_default_agents" time="14.229" /><testcase classname="tests.test_custom_agent" name="test_ca_014_validate_file_upload_and_size_limit" time="4.081" /><testcase classname="tests.test_custom_agent" name="test_ca_015_private_agent_hidden_from_sub_account" time="17.712"><failure message="AssertionError: ❌ CA_015_private agent_id 누락&#10;assert None">tests/test_custom_agent.py:666: in test_ca_015_private_agent_hidden_from_sub_account
+    assert private_id, "❌ CA_015_private agent_id 누락"
+E   AssertionError: ❌ CA_015_private agent_id 누락
+E   assert None</failure></testcase><testcase classname="tests.test_history" name="test_ht_001_start_new_chat" time="27.628"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_history.py:32: in test_ht_001_start_new_chat
+    sidebar.click_new_chat()  # 내부에서 clickable 사용
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_002_search_history" time="12.550"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_history.py:72: in test_ht_002_search_history
+    sidebar.click_new_chat()      # 내부에서 clickable 대기
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_003_agent_search" time="5.415" /><testcase classname="tests.test_history" name="test_ht_004_chat_title_fix" time="12.897"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_history.py:123: in test_ht_004_chat_title_fix
+    sidebar.click_new_chat()  # clickable() 대기 포함
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_005_view_chat_history" time="12.189"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_history.py:203: in test_ht_005_view_chat_history
+    sidebar.click_new_chat()
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_006_delete_chat" time="13.066"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_history.py:259: in test_ht_006_delete_chat
+    sidebar.click_new_chat()
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase><testcase classname="tests.test_history" name="test_ht_007_chat_history_ordered_by_time" time="12.811"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;#0 0xaaaac9aa4c18 &lt;unknown&gt;&#10;#1 0xaaaac94ce0d0 &lt;unknown&gt;&#10;#2 0xaaaac9516f4c &lt;unknown&gt;&#10;#3 0xaaaac9552d3c &lt;unknown&gt;&#10;#4 0xaaaac950b998 &lt;unknown&gt;&#10;#5 0xaaaac9a6f79c &lt;unknown&gt;&#10;#6 0xaaaac9a7282c &lt;unknown&gt;&#10;#7 0xaaaac9a72408 &lt;unknown&gt;&#10;#8 0xaaaac9a5a620 &lt;unknown&gt;&#10;#9 0xaaaac9a72eac &lt;unknown&gt;&#10;#10 0xaaaac9a4493c &lt;unknown&gt;&#10;#11 0xaaaac9a91abc &lt;unknown&gt;&#10;#12 0xaaaac9a91cc8 &lt;unknown&gt;&#10;#13 0xaaaac9aa397c &lt;unknown&gt;&#10;#14 0xffffb14c202c &lt;unknown&gt;&#10;#15 0xffffb152bf18 &lt;unknown&gt;">tests/test_history.py:356: in test_ht_007_chat_history_ordered_by_time
+    sidebar.click_new_chat()            # 클릭 시 clickable()로 명시적 대기
+src/pages/history_page.py:116: in click_new_chat
+    self.click_safely("new_chat_btn")
+src/pages/base_page.py:39: in click_safely
+    element = wait.until(EC.presence_of_element_located(locator))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   #0 0xaaaac9aa4c18 &lt;unknown&gt;
+E   #1 0xaaaac94ce0d0 &lt;unknown&gt;
+E   #2 0xaaaac9516f4c &lt;unknown&gt;
+E   #3 0xaaaac9552d3c &lt;unknown&gt;
+E   #4 0xaaaac950b998 &lt;unknown&gt;
+E   #5 0xaaaac9a6f79c &lt;unknown&gt;
+E   #6 0xaaaac9a7282c &lt;unknown&gt;
+E   #7 0xaaaac9a72408 &lt;unknown&gt;
+E   #8 0xaaaac9a5a620 &lt;unknown&gt;
+E   #9 0xaaaac9a72eac &lt;unknown&gt;
+E   #10 0xaaaac9a4493c &lt;unknown&gt;
+E   #11 0xaaaac9a91abc &lt;unknown&gt;
+E   #12 0xaaaac9a91cc8 &lt;unknown&gt;
+E   #13 0xaaaac9aa397c &lt;unknown&gt;
+E   #14 0xffffb14c202c &lt;unknown&gt;
+E   #15 0xffffb152bf18 &lt;unknown&gt;</failure></testcase></testsuite></testsuites>

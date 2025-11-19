@@ -1,0 +1,10 @@
+commit 65372e8fc653da55bd5178698e3a64172abb32ec
+tree 6abdfef0be30806734b21e2756a1f3a5283668d0
+parent ab6043ac9548056500a62af179ef721213299f2f
+author junseoseki <dhfkapap@naver.com> 2025-11-16 17:50:29 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-16 17:50:29 +0900
+
+    Update Jenkinsfile
+
+
+:100644 100644 d4a7986ed784b7b64c40382c6e4224124f46781e 27036cd52d9d2a64b70635e4221b5c5c154ac847 M	Jenkinsfile

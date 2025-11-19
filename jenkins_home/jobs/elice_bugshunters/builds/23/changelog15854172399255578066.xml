@@ -1,0 +1,10 @@
+commit 58866f30b54a09700b681a25173c577bd526f095
+tree ad003ec83d7fbc8423430dd7a000386c8140cfb4
+parent 470147c04fbaf6251cfac2f2c522bad1083edcae
+author junseoseki <dhfkapap@naver.com> 2025-11-17 00:42:30 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-17 00:42:30 +0900
+
+    Update Dockerfile.jenkins
+
+
+:100644 100644 298251b8c33a392563205a464b7f26e9f34098e0 c9cfb00f46abe2f23320ddab78c65549c4c9d8b2 M	Dockerfile.jenkins

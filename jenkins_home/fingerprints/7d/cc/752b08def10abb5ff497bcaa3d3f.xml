@@ -1,0 +1,17 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<fingerprint>
+  <timestamp>2025-11-16 11:29:59.246 UTC</timestamp>
+  <original>
+    <name>elice_bugshunters</name>
+    <number>11</number>
+  </original>
+  <md5sum>7dcc752b08def10abb5ff497bcaa3d3f</md5sum>
+  <fileName>report.html</fileName>
+  <usages>
+    <entry>
+      <string>elice_bugshunters</string>
+      <ranges>11</ranges>
+    </entry>
+  </usages>
+  <facets/>
+</fingerprint>

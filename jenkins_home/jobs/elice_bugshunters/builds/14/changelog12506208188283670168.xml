@@ -1,0 +1,11 @@
+commit 2d45fabeb47e6cb00560d7f7dc34f80fff859fdc
+tree 28ba24fa899ced52727f3bf72ac115c056e8c869
+parent 2cf430de6b94453699ee3c275a097def134c2f86
+author junseoseki <dhfkapap@naver.com> 2025-11-16 21:32:57 +0900
+committer junseoseki <dhfkapap@naver.com> 2025-11-16 21:32:57 +0900
+
+    jira1
+
+
+:100644 100644 87abd8a20f33b2a88ed95b2cdb31c7993900ca39 a77b215ef8defbb87a1ff4e7538fb33d383f495e M	Jenkinsfile
+:100644 100644 a6416d133b39a83a7aedd86b3ef2bd986091f013 7feb563b7ccad7e8025a0f012d8fa04ff9a06fbc M	tools/report_failed_tests_to_jira.py

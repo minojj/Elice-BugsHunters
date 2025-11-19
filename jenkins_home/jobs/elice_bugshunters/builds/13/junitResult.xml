@@ -1,0 +1,603 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<result plugin="junit@1369.v15da_00283f06">
+  <suites>
+    <suite>
+      <file>/var/jenkins_home/workspace/elice_bugshunters/reports/test-results.xml</file>
+      <name>pytest</name>
+      <duration>64.401</duration>
+      <startTime>1763294425398</startTime>
+      <properties/>
+      <timestamp>2025-11-16T12:00:25.398307+00:00</timestamp>
+      <time>64.401</time>
+      <nodeId>43</nodeId>
+      <enclosingBlocks>
+        <string>39</string>
+      </enclosingBlocks>
+      <enclosingBlockNames>
+        <string>Declarative: Post Actions</string>
+      </enclosingBlockNames>
+      <cases>
+        <case>
+          <duration>5.723</duration>
+          <startTime>1763294425398</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_001_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>3.042</duration>
+          <startTime>1763294431121</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_002_duplicate_email</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>9.567</duration>
+          <startTime>1763294434163</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_003_negative_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>19.955</duration>
+          <startTime>1763294443730</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_004_positive_login</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>7.336</duration>
+          <startTime>1763294463685</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_005_login_with_non_email_format</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>7.126</duration>
+          <startTime>1763294471021</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_006_login_with_spaces</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>10.094</duration>
+          <startTime>1763294478147</startTime>
+          <className>tests.test_account</className>
+          <testName>test_ac_007_logout</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <properties/>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>0.876</duration>
+          <startTime>1763294488241</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_001</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators[&quot;email&quot;]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f&quot;/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);&quot;, self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {&quot;script&quot;: script, &quot;args&quot;: converted_args})[&quot;value&quot;]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 &lt;unknown&gt;
+E   #1 0xaaaabd13e0d0 &lt;unknown&gt;
+E   #2 0xaaaabd1448d8 &lt;unknown&gt;
+E   #3 0xaaaabd146bdc &lt;unknown&gt;
+E   #4 0xaaaabd1c39f0 &lt;unknown&gt;
+E   #5 0xaaaabd1c2d3c &lt;unknown&gt;
+E   #6 0xaaaabd17b998 &lt;unknown&gt;
+E   #7 0xaaaabd6df79c &lt;unknown&gt;
+E   #8 0xaaaabd6e282c &lt;unknown&gt;
+E   #9 0xaaaabd6e2408 &lt;unknown&gt;
+E   #10 0xaaaabd6ca620 &lt;unknown&gt;
+E   #11 0xaaaabd6e2eac &lt;unknown&gt;
+E   #12 0xaaaabd6b493c &lt;unknown&gt;
+E   #13 0xaaaabd701abc &lt;unknown&gt;
+E   #14 0xaaaabd701cc8 &lt;unknown&gt;
+E   #15 0xaaaabd71397c &lt;unknown&gt;
+E   #16 0xffff95e4202c &lt;unknown&gt;
+E   #17 0xffff95eabf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>failed on setup with &quot;selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 &lt;unknown&gt;
+#1 0xaaaabd13e0d0 &lt;unknown&gt;
+#2 0xaaaabd1448d8 &lt;unknown&gt;
+#3 0xaaaabd146bdc &lt;unknown&gt;
+#4 0xaaaabd1c39f0 &lt;unknown&gt;
+#5 0xaaaabd1c2d3c &lt;unknown&gt;
+#6 0xaaaabd17b998 &lt;unknown&gt;
+#7 0xaaaabd6df79c &lt;unknown&gt;
+#8 0xaaaabd6e282c &lt;unknown&gt;
+#9 0xaaaabd6e2408 &lt;unknown&gt;
+#10 0xaaaabd6ca620 &lt;unknown&gt;
+#11 0xaaaabd6e2eac &lt;unknown&gt;
+#12 0xaaaabd6b493c &lt;unknown&gt;
+#13 0xaaaabd701abc &lt;unknown&gt;
+#14 0xaaaabd701cc8 &lt;unknown&gt;
+#15 0xaaaabd71397c &lt;unknown&gt;
+#16 0xffff95e4202c &lt;unknown&gt;
+#17 0xffff95eabf18 &lt;unknown&gt;&quot;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>0.001</duration>
+          <startTime>1763294489117</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_002</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators[&quot;email&quot;]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f&quot;/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);&quot;, self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {&quot;script&quot;: script, &quot;args&quot;: converted_args})[&quot;value&quot;]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 &lt;unknown&gt;
+E   #1 0xaaaabd13e0d0 &lt;unknown&gt;
+E   #2 0xaaaabd1448d8 &lt;unknown&gt;
+E   #3 0xaaaabd146bdc &lt;unknown&gt;
+E   #4 0xaaaabd1c39f0 &lt;unknown&gt;
+E   #5 0xaaaabd1c2d3c &lt;unknown&gt;
+E   #6 0xaaaabd17b998 &lt;unknown&gt;
+E   #7 0xaaaabd6df79c &lt;unknown&gt;
+E   #8 0xaaaabd6e282c &lt;unknown&gt;
+E   #9 0xaaaabd6e2408 &lt;unknown&gt;
+E   #10 0xaaaabd6ca620 &lt;unknown&gt;
+E   #11 0xaaaabd6e2eac &lt;unknown&gt;
+E   #12 0xaaaabd6b493c &lt;unknown&gt;
+E   #13 0xaaaabd701abc &lt;unknown&gt;
+E   #14 0xaaaabd701cc8 &lt;unknown&gt;
+E   #15 0xaaaabd71397c &lt;unknown&gt;
+E   #16 0xffff95e4202c &lt;unknown&gt;
+E   #17 0xffff95eabf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>failed on setup with &quot;selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 &lt;unknown&gt;
+#1 0xaaaabd13e0d0 &lt;unknown&gt;
+#2 0xaaaabd1448d8 &lt;unknown&gt;
+#3 0xaaaabd146bdc &lt;unknown&gt;
+#4 0xaaaabd1c39f0 &lt;unknown&gt;
+#5 0xaaaabd1c2d3c &lt;unknown&gt;
+#6 0xaaaabd17b998 &lt;unknown&gt;
+#7 0xaaaabd6df79c &lt;unknown&gt;
+#8 0xaaaabd6e282c &lt;unknown&gt;
+#9 0xaaaabd6e2408 &lt;unknown&gt;
+#10 0xaaaabd6ca620 &lt;unknown&gt;
+#11 0xaaaabd6e2eac &lt;unknown&gt;
+#12 0xaaaabd6b493c &lt;unknown&gt;
+#13 0xaaaabd701abc &lt;unknown&gt;
+#14 0xaaaabd701cc8 &lt;unknown&gt;
+#15 0xaaaabd71397c &lt;unknown&gt;
+#16 0xffff95e4202c &lt;unknown&gt;
+#17 0xffff95eabf18 &lt;unknown&gt;&quot;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>0.0</duration>
+          <startTime>1763294489118</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_003</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators[&quot;email&quot;]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f&quot;/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);&quot;, self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {&quot;script&quot;: script, &quot;args&quot;: converted_args})[&quot;value&quot;]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 &lt;unknown&gt;
+E   #1 0xaaaabd13e0d0 &lt;unknown&gt;
+E   #2 0xaaaabd1448d8 &lt;unknown&gt;
+E   #3 0xaaaabd146bdc &lt;unknown&gt;
+E   #4 0xaaaabd1c39f0 &lt;unknown&gt;
+E   #5 0xaaaabd1c2d3c &lt;unknown&gt;
+E   #6 0xaaaabd17b998 &lt;unknown&gt;
+E   #7 0xaaaabd6df79c &lt;unknown&gt;
+E   #8 0xaaaabd6e282c &lt;unknown&gt;
+E   #9 0xaaaabd6e2408 &lt;unknown&gt;
+E   #10 0xaaaabd6ca620 &lt;unknown&gt;
+E   #11 0xaaaabd6e2eac &lt;unknown&gt;
+E   #12 0xaaaabd6b493c &lt;unknown&gt;
+E   #13 0xaaaabd701abc &lt;unknown&gt;
+E   #14 0xaaaabd701cc8 &lt;unknown&gt;
+E   #15 0xaaaabd71397c &lt;unknown&gt;
+E   #16 0xffff95e4202c &lt;unknown&gt;
+E   #17 0xffff95eabf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>failed on setup with &quot;selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 &lt;unknown&gt;
+#1 0xaaaabd13e0d0 &lt;unknown&gt;
+#2 0xaaaabd1448d8 &lt;unknown&gt;
+#3 0xaaaabd146bdc &lt;unknown&gt;
+#4 0xaaaabd1c39f0 &lt;unknown&gt;
+#5 0xaaaabd1c2d3c &lt;unknown&gt;
+#6 0xaaaabd17b998 &lt;unknown&gt;
+#7 0xaaaabd6df79c &lt;unknown&gt;
+#8 0xaaaabd6e282c &lt;unknown&gt;
+#9 0xaaaabd6e2408 &lt;unknown&gt;
+#10 0xaaaabd6ca620 &lt;unknown&gt;
+#11 0xaaaabd6e2eac &lt;unknown&gt;
+#12 0xaaaabd6b493c &lt;unknown&gt;
+#13 0xaaaabd701abc &lt;unknown&gt;
+#14 0xaaaabd701cc8 &lt;unknown&gt;
+#15 0xaaaabd71397c &lt;unknown&gt;
+#16 0xffff95e4202c &lt;unknown&gt;
+#17 0xffff95eabf18 &lt;unknown&gt;&quot;</errorDetails>
+          <properties/>
+          <failedSince>13</failedSince>
+        </case>
+        <case>
+          <duration>0.0</duration>
+          <startTime>1763294489118</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_004</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators[&quot;email&quot;]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f&quot;/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);&quot;, self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {&quot;script&quot;: script, &quot;args&quot;: converted_args})[&quot;value&quot;]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 &lt;unknown&gt;
+E   #1 0xaaaabd13e0d0 &lt;unknown&gt;
+E   #2 0xaaaabd1448d8 &lt;unknown&gt;
+E   #3 0xaaaabd146bdc &lt;unknown&gt;
+E   #4 0xaaaabd1c39f0 &lt;unknown&gt;
+E   #5 0xaaaabd1c2d3c &lt;unknown&gt;
+E   #6 0xaaaabd17b998 &lt;unknown&gt;
+E   #7 0xaaaabd6df79c &lt;unknown&gt;
+E   #8 0xaaaabd6e282c &lt;unknown&gt;
+E   #9 0xaaaabd6e2408 &lt;unknown&gt;
+E   #10 0xaaaabd6ca620 &lt;unknown&gt;
+E   #11 0xaaaabd6e2eac &lt;unknown&gt;
+E   #12 0xaaaabd6b493c &lt;unknown&gt;
+E   #13 0xaaaabd701abc &lt;unknown&gt;
+E   #14 0xaaaabd701cc8 &lt;unknown&gt;
+E   #15 0xaaaabd71397c &lt;unknown&gt;
+E   #16 0xffff95e4202c &lt;unknown&gt;
+E   #17 0xffff95eabf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>failed on setup with &quot;selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 &lt;unknown&gt;
+#1 0xaaaabd13e0d0 &lt;unknown&gt;
+#2 0xaaaabd1448d8 &lt;unknown&gt;
+#3 0xaaaabd146bdc &lt;unknown&gt;
+#4 0xaaaabd1c39f0 &lt;unknown&gt;
+#5 0xaaaabd1c2d3c &lt;unknown&gt;
+#6 0xaaaabd17b998 &lt;unknown&gt;
+#7 0xaaaabd6df79c &lt;unknown&gt;
+#8 0xaaaabd6e282c &lt;unknown&gt;
+#9 0xaaaabd6e2408 &lt;unknown&gt;
+#10 0xaaaabd6ca620 &lt;unknown&gt;
+#11 0xaaaabd6e2eac &lt;unknown&gt;
+#12 0xaaaabd6b493c &lt;unknown&gt;
+#13 0xaaaabd701abc &lt;unknown&gt;
+#14 0xaaaabd701cc8 &lt;unknown&gt;
+#15 0xaaaabd71397c &lt;unknown&gt;
+#16 0xffff95e4202c &lt;unknown&gt;
+#17 0xffff95eabf18 &lt;unknown&gt;&quot;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>0.0</duration>
+          <startTime>1763294489118</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_005</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators[&quot;email&quot;]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f&quot;/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);&quot;, self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {&quot;script&quot;: script, &quot;args&quot;: converted_args})[&quot;value&quot;]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 &lt;unknown&gt;
+E   #1 0xaaaabd13e0d0 &lt;unknown&gt;
+E   #2 0xaaaabd1448d8 &lt;unknown&gt;
+E   #3 0xaaaabd146bdc &lt;unknown&gt;
+E   #4 0xaaaabd1c39f0 &lt;unknown&gt;
+E   #5 0xaaaabd1c2d3c &lt;unknown&gt;
+E   #6 0xaaaabd17b998 &lt;unknown&gt;
+E   #7 0xaaaabd6df79c &lt;unknown&gt;
+E   #8 0xaaaabd6e282c &lt;unknown&gt;
+E   #9 0xaaaabd6e2408 &lt;unknown&gt;
+E   #10 0xaaaabd6ca620 &lt;unknown&gt;
+E   #11 0xaaaabd6e2eac &lt;unknown&gt;
+E   #12 0xaaaabd6b493c &lt;unknown&gt;
+E   #13 0xaaaabd701abc &lt;unknown&gt;
+E   #14 0xaaaabd701cc8 &lt;unknown&gt;
+E   #15 0xaaaabd71397c &lt;unknown&gt;
+E   #16 0xffff95e4202c &lt;unknown&gt;
+E   #17 0xffff95eabf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>failed on setup with &quot;selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 &lt;unknown&gt;
+#1 0xaaaabd13e0d0 &lt;unknown&gt;
+#2 0xaaaabd1448d8 &lt;unknown&gt;
+#3 0xaaaabd146bdc &lt;unknown&gt;
+#4 0xaaaabd1c39f0 &lt;unknown&gt;
+#5 0xaaaabd1c2d3c &lt;unknown&gt;
+#6 0xaaaabd17b998 &lt;unknown&gt;
+#7 0xaaaabd6df79c &lt;unknown&gt;
+#8 0xaaaabd6e282c &lt;unknown&gt;
+#9 0xaaaabd6e2408 &lt;unknown&gt;
+#10 0xaaaabd6ca620 &lt;unknown&gt;
+#11 0xaaaabd6e2eac &lt;unknown&gt;
+#12 0xaaaabd6b493c &lt;unknown&gt;
+#13 0xaaaabd701abc &lt;unknown&gt;
+#14 0xaaaabd701cc8 &lt;unknown&gt;
+#15 0xaaaabd71397c &lt;unknown&gt;
+#16 0xffff95e4202c &lt;unknown&gt;
+#17 0xffff95eabf18 &lt;unknown&gt;&quot;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>0.0</duration>
+          <startTime>1763294489118</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_006</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators[&quot;email&quot;]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f&quot;/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);&quot;, self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {&quot;script&quot;: script, &quot;args&quot;: converted_args})[&quot;value&quot;]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 &lt;unknown&gt;
+E   #1 0xaaaabd13e0d0 &lt;unknown&gt;
+E   #2 0xaaaabd1448d8 &lt;unknown&gt;
+E   #3 0xaaaabd146bdc &lt;unknown&gt;
+E   #4 0xaaaabd1c39f0 &lt;unknown&gt;
+E   #5 0xaaaabd1c2d3c &lt;unknown&gt;
+E   #6 0xaaaabd17b998 &lt;unknown&gt;
+E   #7 0xaaaabd6df79c &lt;unknown&gt;
+E   #8 0xaaaabd6e282c &lt;unknown&gt;
+E   #9 0xaaaabd6e2408 &lt;unknown&gt;
+E   #10 0xaaaabd6ca620 &lt;unknown&gt;
+E   #11 0xaaaabd6e2eac &lt;unknown&gt;
+E   #12 0xaaaabd6b493c &lt;unknown&gt;
+E   #13 0xaaaabd701abc &lt;unknown&gt;
+E   #14 0xaaaabd701cc8 &lt;unknown&gt;
+E   #15 0xaaaabd71397c &lt;unknown&gt;
+E   #16 0xffff95e4202c &lt;unknown&gt;
+E   #17 0xffff95eabf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>failed on setup with &quot;selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 &lt;unknown&gt;
+#1 0xaaaabd13e0d0 &lt;unknown&gt;
+#2 0xaaaabd1448d8 &lt;unknown&gt;
+#3 0xaaaabd146bdc &lt;unknown&gt;
+#4 0xaaaabd1c39f0 &lt;unknown&gt;
+#5 0xaaaabd1c2d3c &lt;unknown&gt;
+#6 0xaaaabd17b998 &lt;unknown&gt;
+#7 0xaaaabd6df79c &lt;unknown&gt;
+#8 0xaaaabd6e282c &lt;unknown&gt;
+#9 0xaaaabd6e2408 &lt;unknown&gt;
+#10 0xaaaabd6ca620 &lt;unknown&gt;
+#11 0xaaaabd6e2eac &lt;unknown&gt;
+#12 0xaaaabd6b493c &lt;unknown&gt;
+#13 0xaaaabd701abc &lt;unknown&gt;
+#14 0xaaaabd701cc8 &lt;unknown&gt;
+#15 0xaaaabd71397c &lt;unknown&gt;
+#16 0xffff95e4202c &lt;unknown&gt;
+#17 0xffff95eabf18 &lt;unknown&gt;&quot;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+        <case>
+          <duration>0.105</duration>
+          <startTime>1763294489118</startTime>
+          <className>tests.test_history</className>
+          <testName>test_ht_007</testName>
+          <skipped>false</skipped>
+          <keepTestNames>false</keepTestNames>
+          <errorStackTrace>tests/conftest.py:117: in logged_in_driver
+    login_page.login(
+src/pages/login_page.py:59: in login
+    email_input = wait.until(EC.element_to_be_clickable(self.locators[&quot;email&quot;]))
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/wait.py:96: in until
+    value = method(self._driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:364: in _predicate
+    element = visibility_of(target)(driver)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:173: in _predicate
+    return _element_if_visible(element)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/support/expected_conditions.py:179: in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webelement.py:252: in is_displayed
+    return self.parent.execute_script(f&quot;/* isDisplayed */return ({isDisplayed_js}).apply(null, arguments);&quot;, self)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:414: in execute_script
+    return self.execute(command, {&quot;script&quot;: script, &quot;args&quot;: converted_args})[&quot;value&quot;]
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+/usr/local/lib/python3.14/site-packages/selenium/webdriver/remote/errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   #0 0xaaaabd714c18 &lt;unknown&gt;
+E   #1 0xaaaabd13e0d0 &lt;unknown&gt;
+E   #2 0xaaaabd1448d8 &lt;unknown&gt;
+E   #3 0xaaaabd146bdc &lt;unknown&gt;
+E   #4 0xaaaabd1c39f0 &lt;unknown&gt;
+E   #5 0xaaaabd1c2d3c &lt;unknown&gt;
+E   #6 0xaaaabd17b998 &lt;unknown&gt;
+E   #7 0xaaaabd6df79c &lt;unknown&gt;
+E   #8 0xaaaabd6e282c &lt;unknown&gt;
+E   #9 0xaaaabd6e2408 &lt;unknown&gt;
+E   #10 0xaaaabd6ca620 &lt;unknown&gt;
+E   #11 0xaaaabd6e2eac &lt;unknown&gt;
+E   #12 0xaaaabd6b493c &lt;unknown&gt;
+E   #13 0xaaaabd701abc &lt;unknown&gt;
+E   #14 0xaaaabd701cc8 &lt;unknown&gt;
+E   #15 0xaaaabd71397c &lt;unknown&gt;
+E   #16 0xffff95e4202c &lt;unknown&gt;
+E   #17 0xffff95eabf18 &lt;unknown&gt;</errorStackTrace>
+          <errorDetails>failed on setup with &quot;selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=142.0.7444.162); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+Stacktrace:
+#0 0xaaaabd714c18 &lt;unknown&gt;
+#1 0xaaaabd13e0d0 &lt;unknown&gt;
+#2 0xaaaabd1448d8 &lt;unknown&gt;
+#3 0xaaaabd146bdc &lt;unknown&gt;
+#4 0xaaaabd1c39f0 &lt;unknown&gt;
+#5 0xaaaabd1c2d3c &lt;unknown&gt;
+#6 0xaaaabd17b998 &lt;unknown&gt;
+#7 0xaaaabd6df79c &lt;unknown&gt;
+#8 0xaaaabd6e282c &lt;unknown&gt;
+#9 0xaaaabd6e2408 &lt;unknown&gt;
+#10 0xaaaabd6ca620 &lt;unknown&gt;
+#11 0xaaaabd6e2eac &lt;unknown&gt;
+#12 0xaaaabd6b493c &lt;unknown&gt;
+#13 0xaaaabd701abc &lt;unknown&gt;
+#14 0xaaaabd701cc8 &lt;unknown&gt;
+#15 0xaaaabd71397c &lt;unknown&gt;
+#16 0xffff95e4202c &lt;unknown&gt;
+#17 0xffff95eabf18 &lt;unknown&gt;&quot;</errorDetails>
+          <properties/>
+          <failedSince>7</failedSince>
+        </case>
+      </cases>
+    </suite>
+  </suites>
+  <duration>64.401</duration>
+  <skipOldReports>false</skipOldReports>
+  <startTime>1763294425398</startTime>
+  <stdioRetention>NONE</stdioRetention>
+  <keepTestNames>false</keepTestNames>
+  <keepProperties>false</keepProperties>
+</result>
