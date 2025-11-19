@@ -6,7 +6,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 
 # POM 컴포넌트들
-from src.pages.history_pages_all_in_one import (
+from src.pages.history_page import (
     MainPage,
     ChatSidebar,
     Composer,
@@ -14,8 +14,6 @@ from src.pages.history_pages_all_in_one import (
     SearchOverlay,
     AgentExplorerPage,
 )
-
-
 
 
 def test_ht_001_start_new_chat(logged_in_driver):
