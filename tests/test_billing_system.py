@@ -44,6 +44,7 @@ def test_bu_002_danal_card_payment_iframe_appears(logged_in_driver):
 
 
 
+
 def test_bu_003_click_usage_history(logged_in_driver):
     driver = logged_in_driver
     usage_page = UsagePage(driver)
@@ -52,8 +53,11 @@ def test_bu_003_click_usage_history(logged_in_driver):
 
     if len(driver.window_handles) > 1:
         driver.switch_to.window(driver.window_handles[-1])
+    
+    driver.save_screenshot("/tmp/🔥after_usage_click.png")
 
     assert usage_page.is_usage_history_page(), "❌ Usage History 페이지로 이동 실패"
+
 
 
 def test_bu_004_click_ml_api(usage_page_loaded):

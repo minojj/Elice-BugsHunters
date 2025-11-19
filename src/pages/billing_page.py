@@ -96,7 +96,10 @@ class UsagePage(BasePage):
 
     locators = {
         "settings_btn": (By.CSS_SELECTOR, "svg[data-testid='gearIcon']"),
-        "usage_history_menu": (By.CSS_SELECTOR, "a.MuiMenuItem-root"),
+        "usage_history_menu": (
+            By.XPATH,
+            "//span[normalize-space()='Usage History']/ancestor::a[contains(@class,'MuiMenuItem-root')]"
+        ),
         "usage_history_title": (By.CSS_SELECTOR, "h4.MuiTypography-h4"),
         "ml_api_tab": (By.CSS_SELECTOR, "button[id$='T-ml_api']"),
         "ml_api_table": (By.CSS_SELECTOR, "table.MuiTable-root"),
@@ -104,7 +107,6 @@ class UsagePage(BasePage):
         "serverless_header": (By.CSS_SELECTOR, "h4.MuiTypography-h4"),
         "api_key_manage": (By.CSS_SELECTOR, "a[href='/cloud/mlapi/keys']"),
         "api_key_manage_header": (By.CSS_SELECTOR, "h4.MuiTypography-h4"),
-
     }
     
 
@@ -119,14 +121,23 @@ class UsagePage(BasePage):
     
     def click_settings_button(self):
         self.driver.get("https://qaproject.elice.io")
-        svg = self.get_element("settings_btn", wait_type="clickable")
+
+        # gear 아이콘이 로드될 때까지 기다리기
+        svg = self.get_element("settings_btn", wait_type="clickable", timeout=15)
         button = svg.find_element(By.XPATH, "./ancestor::button")
         button.click()
 
+        # 🔥🔥 Docker에서 MUI Menu가 안 떠서 강제로 열기
+        self.driver.execute_script("""
+            const evt = new MouseEvent('click', { bubbles: true });
+            document.querySelector('svg[data-testid="gearIcon"]').dispatchEvent(evt);
+        """)
+
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(self.locators["usage_history_menu"]))
 
     def usage_history_click(self):
         self.click_settings_button()
-        self.get_element("usage_history_menu", wait_type="clickable", timeout=5)
+        self.get_element("usage_history_menu", wait_type="clickable", timeout=10)
         self.click_safely("usage_history_menu")
 
 
