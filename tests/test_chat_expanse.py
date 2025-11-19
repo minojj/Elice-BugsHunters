@@ -63,12 +63,12 @@ def test_ce_011_file_upload_expect_failure(driver):
     result = page.upload_file_expect_failure(str(TEST_EXENAME.absolute()),)
     assert result is True, "❌ CE-011 실패: 위험 파일 업로드가 허용되었습니다!"
 
-def test_ce_012_file_upload_new_chat(driver):
-    page = ChatExpansePage(driver)
+def test_ce_012_file_upload_new_chat(logged_in_driver):
+    page = ChatExpansePage(logged_in_driver)
     result = page.upload_file_and_send_new_chat(str(TEST_FILENAME.absolute()),)
     assert result, "❌ 파일 업로드 및 전송 프로세스 실패"
 
-def test_ce_013_quiz_empty_new_chat(driver):
-    page = ChatExpansePage(driver)
+def test_ce_013_quiz_empty_new_chat(logged_in_driver):
+    page = ChatExpansePage(logged_in_driver)
     result = page.create_quiz_and_send_empty_new_chat()
     assert result , "❌CE-013 : 빈칸 퀴즈 생성이 허용되었습니다!"
