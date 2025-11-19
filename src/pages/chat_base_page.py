@@ -135,17 +135,34 @@ class ChatPage(BasePage):
 
     def scroll_to_top(self):
         try:
-            first_message = self.get_element("first_article", wait_type="presence", timeout=10)
-
-            self.driver.execute_script(
-                "arguments[0].scrollIntoView({behavior: 'smooth', block: 'start'});",
-                first_message
-            )
-            time.sleep(1)
-
+            # 방법 1: 페이지 전체를 맨 위로 스크롤
+            self.driver.execute_script("window.scrollTo({top: 0, behavior: 'auto'});")
+            time.sleep(0.5)
+            
+            # 방법 2: 채팅 컨테이너 찾아서 스크롤 (overflow 있는 요소)
+            self.driver.execute_script("""
+                const scrollableElements = document.querySelectorAll('[style*="overflow"], [class*="scroll"]');
+                scrollableElements.forEach(el => {
+                    if (el.scrollHeight > el.clientHeight) {
+                        el.scrollTop = 0;
+                    }
+                });
+            """)
+            time.sleep(0.5)
+            
+            # 방법 3: 첫 번째 메시지가 있다면 그것으로 스크롤
+            try:
+                first_message = self.driver.find_element(*self.locators["first_article"])
+                self.driver.execute_script("arguments[0].scrollIntoView({behavior: 'auto', block: 'start'});", first_message)
+                time.sleep(1)
+            except NoSuchElementException:
+                pass  # 첫 번째 메시지가 없어도 스크롤 시도는 완료
+                
+            print(" 상단으로 스크롤 완료")
             return True
-
-        except:
+            
+        except Exception as e:
+            print(f" 스크롤 실패: {e}")
             return False
 
     def click_scroll_to_latest_button(self):

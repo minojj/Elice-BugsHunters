@@ -18,7 +18,8 @@ def test_cb_001_ai_chat(logged_in_driver):
     WebDriverWait(chat_page.driver, 30).until(
         lambda d: len(d.find_elements(By.XPATH, "//div[@role='article']")) > count_before
     )
-    print("테스트 완료")
+    ai_response = chat_page.get_ai_response("안녕")
+    assert ai_response, "AI 응답을 찾을 수 없습니다"
 
 
 def test_cb_002_copy(driver):
@@ -42,6 +43,8 @@ def test_cb_003_edit_message(driver):
     WebDriverWait(chat_page.driver, 30).until(
         lambda d: len(d.find_elements(By.XPATH, "//div[@role='article']")) > count_before
     )
+    ai_response = chat_page.get_ai_response("애국가")
+    assert ai_response, "AI 응답을 찾을 수 없습니다"
 
 
 def test_cb_004_scroll_and_click(driver):
@@ -50,7 +53,8 @@ def test_cb_004_scroll_and_click(driver):
     sleep(3)
     chat_page.scroll_to_top()
     sleep(2)  # 스크롤 후 충분한 대기
-    chat_page.click_scroll_to_latest_button()
+    result = chat_page.click_scroll_to_latest_button()
+    assert result, "최신 답변으로 이동 버튼 클릭 실패"
     sleep(3)  # 버튼 클릭 후 충분한 대기
 
 
@@ -71,6 +75,9 @@ def test_cb_006_upload_file(logged_in_driver):
     WebDriverWait(chat_page.driver, 30).until(
         lambda d: len(d.find_elements(By.XPATH, "//div[@role='article']")) > count_before
     )
+    # AI 응답 확인
+    ai_response = chat_page.get_ai_response("요약")
+    assert ai_response, "AI 응답을 찾을 수 없습니다"
 
 
 def test_cb_007_make_image(driver):
