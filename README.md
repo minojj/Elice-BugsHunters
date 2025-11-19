@@ -18,7 +18,7 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
 
 ## 🧰 Tech Stack
 
-- **Language**: Python (3.14+ 권장)
+- **Language**: Python (3.14 권장)
 - **Test Framework**: pytest 8.3.3
 - **Browser Automation**: Selenium WebDriver 4.25.0 (Chrome)
 - **CI/CD**: Jenkins
