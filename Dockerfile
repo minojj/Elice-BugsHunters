@@ -17,4 +17,4 @@ COPY requirements.txt .
 RUN python -m pip install --upgrade pip && pip install -r requirements.txt
 COPY . .
 ENTRYPOINT ["pytest"]
-CMD ["tests","-v","--maxfail=1","--tb=short"]
+CMD ["tests","-v","--tb=short"]
