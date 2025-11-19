@@ -216,60 +216,67 @@ class ChatExpansePage(BasePage):
 
     def click_new_chat_button(self):
         """새 대화 버튼 클릭 (강화된 대기 및 폴백)"""
+        # Step 1: 백드롭 대기
+        self.wait_for_backdrop_disappear()
+        
+        # Step 2: 새 대화 버튼 클릭 (폴백 포함)
+        new_chat_success = False
+        
+        # 방법 1: 기본 XPath
         try:
-            # Step 1: 백드롭 대기
-            self.wait_for_backdrop_disappear()
-            print("   ✅ 백드롭 사라짐")
-            
-            # Step 2: 새 대화 버튼 클릭 (2가지 방식)
-            try:
-                print("   [새 대화] 방법 1: click_safely...")
-                self.click_safely("new_chat_btn")
-                print("   ✅ 새 대화 버튼 클릭 (방법 1) 성공")
-            except Exception as e:
-                print(f"   ⚠️ 방법 1 실패: {str(e)[:50]}, 방법 2 시도")
-                try:
-                    btn = self.get_element("new_chat_btn", wait_type="clickable", timeout=10)
-                    self.driver.execute_script("arguments[0].click();", btn)
-                    print("   ✅ 새 대화 버튼 클릭 (방법 2) 성공")
-                except Exception as e2:
-                    print(f"   ❌ 방법 2도 실패: {str(e2)[:50]}")
-                    raise
-            
-            # Step 3: 채팅 입력창 대기
-            print("   대기 중: 채팅 입력창...")
-            WebDriverWait(self.driver, 30).until(
-                EC.presence_of_element_located(self.locators["chat_input"])
-            )
-            print("   ✅ 채팅 입력창 발견")
-            
-            # Step 4: 백드롭 재확인
-            self.wait_for_backdrop_disappear()
-            print("   ✅ 백드롭 재확인 완료")
-            
-            # Step 5: 플러스 버튼 클릭 가능 대기
-            print("   대기 중: 플러스 버튼...")
-            WebDriverWait(self.driver, 30).until(
-                EC.element_to_be_clickable(self.locators["plus_btn"])
-            )
-            print("   ✅ 플러스 버튼 클릭 가능")
-            
-            # Step 6: 페이지 로드 완료 확인
-            print("   대기 중: 페이지 로드...")
-            WebDriverWait(self.driver, 10).until(
-                lambda d: d.execute_script("return document.readyState") == "complete"
-            )
-            print("   ✅ 페이지 로드 완료")
-            
-            print("   ✅ 새 대화창 진입 성공!\n")
-            
-        except TimeoutException as e:
-            print(f"   ❌ 타임아웃 오류: {str(e)[:50]}")
-            print(f"   현재 URL: {self.get_current_url()}")
-            raise
+            self.click_safely("new_chat_btn", timeout=10)
+            new_chat_success = True
         except Exception as e:
-            print(f"   ❌ 오류: {type(e).__name__} - {str(e)[:50]}")
-            raise
+            print(f"      ⚠️ 방법 1 실패: {type(e).__name__}")
+        
+        # 방법 2: 버튼이 포함된 더 넓은 XPath
+        if not new_chat_success:
+            try:
+                btn = WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'MuiButton')] | //div[contains(text(), '새 대화')]"))
+                )
+                self.driver.execute_script("arguments[0].click();", btn)
+                new_chat_success = True
+            except Exception as e:
+                print(f"      ⚠️ 방법 2 실패: {type(e).__name__}")
+        
+        # 방법 3: 모든 span 중에서 찾기
+        if not new_chat_success:
+            try:
+                print("      방법 3: 모든 span 중 '새 대화' 찾기...")
+                spans = self.driver.find_elements(By.XPATH, "//span")
+                for span in spans:
+                    try:
+                        if '새 대화' in span.text:
+                            btn = span.find_element(By.XPATH, "ancestor::button")
+                            self.driver.execute_script("arguments[0].click();", btn)
+                            new_chat_success = True
+                            break
+                    except:
+                        continue
+            except Exception as e:
+                print(f"      ⚠️ 방법 3 실패: {type(e).__name__}")
+        
+        if not new_chat_success:
+            raise TimeoutException("새 대화 버튼을 찾을 수 없습니다 (모든 방법 실패)")
+        
+        # Step 3: 채팅 입력창 대기
+        WebDriverWait(self.driver, 30).until(
+            EC.presence_of_element_located(self.locators["chat_input"])
+        )
+        
+        # Step 4: 백드롭 재확인
+        self.wait_for_backdrop_disappear()
+        
+        # Step 5: 플러스 버튼 클릭 가능 대기
+        WebDriverWait(self.driver, 30).until(
+            EC.element_to_be_clickable(self.locators["plus_btn"])
+        )
+        
+        # Step 6: 페이지 로드 완료 확인
+        WebDriverWait(self.driver, 10).until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )
 
     def upload_file_and_send(self, filepath):
         try:
@@ -298,61 +305,76 @@ class ChatExpansePage(BasePage):
     def upload_file_and_send_new_chat(self, filepath):
         """새 대화에서 파일 업로드 및 전송"""
         try:
-            print(f"\n=== 새 대화 파일 업로드 시작 ===")
             
             # Step 1: 새 대화 진입
-            print("1️⃣ 새 대화 버튼 클릭...")
-            self.click_new_chat_button()
+            try:
+                self.click_new_chat_button()
+            except Exception as e:
+                print(f"   ❌ 새 대화 진입 실패: {type(e).__name__} - {str(e)[:80]}")
+                raise
             
             # Step 2: 플러스 버튼 클릭
-            print("2️⃣ 플러스 버튼 클릭...")
-            self.click_plus_button()
-            print("   ✅ 플러스 버튼 클릭 완료")
+            try:
+                self.click_plus_button()
+            except Exception as e:
+                print(f"   ❌ 플러스 버튼 클릭 실패: {type(e).__name__}")
+                raise
             
             # Step 3: 파일 업로드 메뉴 클릭
-            print("3️⃣ 파일 업로드 메뉴 클릭...")
-            self.click_file_upload_menu()
-            print("   ✅ 파일 업로드 메뉴 클릭 완료")
+            try:
+                self.click_file_upload_menu()
+            except Exception as e:
+                print(f"   ❌ 파일 업로드 메뉴 클릭 실패: {type(e).__name__}")
+                raise
             
             # Step 4: 파일 업로드
-            print("4️⃣ 파일 업로드...")
-            self.upload_file(filepath)
-            print("   ✅ 파일 업로드 완료")
+            try:
+                self.upload_file(filepath)
+            except Exception as e:
+                print(f"   ❌ 파일 업로드 실패: {type(e).__name__}")
+                raise
             
             # Step 5: 파일 탐색 대화 닫기
-            print("5️⃣ 파일 탐색 대화 닫기...")
-            self.close_file_dialog()
-            print("   ✅ 파일 탐색 대화 닫기 완료")
+            try:
+                self.close_file_dialog()
+            except Exception as e:
+                print(f"   ❌ 파일 탐색 대화 닫기 실패: {type(e).__name__}")
+                raise
             
             # Step 6: 백드롭 대기
-            print("6️⃣ 백드롭 대기...")
-            self.wait_for_backdrop_disappear()
-            print("   ✅ 백드롭 사라짐")
+            try:
+                self.wait_for_backdrop_disappear()
+            except Exception as e:
+                print(f"   ❌ 백드롭 대기 실패: {type(e).__name__}")
+                raise
             
             # Step 7: 메시지 전송
-            print("7️⃣ 메시지 전송...")
-            self.send_message_with_enter()
-            print("   ✅ 메시지 전송 완료")
+            try:
+                self.send_message_with_enter()
+            except Exception as e:
+                print(f"   ❌ 메시지 전송 실패: {type(e).__name__}")
+                raise
             
             # Step 8: 응답 대기
-            print("8️⃣ AI 응답 대기...")
-            self.wait_for_response()
-            print("   ✅ 응답 대기 완료")
+            try:
+                self.wait_for_response()
+            except Exception as e:
+                print(f"   ❌ 응답 대기 실패: {type(e).__name__}")
+                raise
             
-            print("=== 새 대화 파일 업로드 성공 ===\n")
             return True
 
         except TimeoutException as e:
-            print(f"\n❌ 타임아웃 오류: {str(e)[:50]}")
+            print(f"\n❌ [TimeoutException] {str(e)[:80]}")
             print(f"   현재 URL: {self.get_current_url()}")
             return False
 
         except NoSuchElementException as e:
-            print(f"\n❌ 요소를 찾을 수 없음: {str(e)[:50]}")
+            print(f"\n❌ [NoSuchElementException] {str(e)[:80]}")
             return False
 
         except Exception as e:
-            print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)[:50]}")
+            print(f"\n❌ [{type(e).__name__}] {str(e)[:80]}")
             import traceback
             traceback.print_exc()
             return False
