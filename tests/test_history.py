@@ -194,14 +194,15 @@ def test_ht_005_view_chat_history(logged_in_driver):
     drv = logged_in_driver
     main = MainPage(drv)
     main.open()
-
+    time.sleep(2)
+    
     sidebar = ChatSidebar(drv)
     composer = Composer(drv)
     test_str = "테스트시작"
 
     # --- 1) 첫 번째 스레드 생성 ---
     sidebar.click_new_chat()
-
+    time.sleep(2)  # 스레드 생성 대기
     # 첫 번째 메시지
     composer.send(test_str)
     time.sleep(3)  # 응답 대기
@@ -220,7 +221,7 @@ def test_ht_005_view_chat_history(logged_in_driver):
 
     # --- 3) 첫 번째 스레드로 돌아가기 ---
     sidebar.click_second_thread()
-
+    time.sleep(3)  # 스레드 전환 대기
     # 이 시점에서 첫 번째 스레드의 메시지들이 다시 로딩될 때까지 대기
     try:
         first_msg = WebDriverWait(drv, 15).until(
