@@ -18,8 +18,11 @@ def test_bu_001_credit_usage_section_exists(logged_in_driver):
     billing = BillingPage(drv)
 
     billing.open()
-    billing.wait_usage_table_loaded(timeout=20)
-    assert True
+
+    table_el = billing.wait_usage_table_loaded(timeout=20)
+
+    assert table_el is not None
+    assert table_el.tag_name.lower() == "table"
 
     
 def test_bu_002_danal_card_payment_iframe_appears(logged_in_driver):
@@ -47,7 +50,8 @@ def test_bu_003_click_usage_history(logged_in_driver):
 
     usage_page.usage_history_click()
 
-    driver.switch_to.window(driver.window_handles[-1])
+    if len(driver.window_handles) > 1:
+        driver.switch_to.window(driver.window_handles[-1])
 
     assert usage_page.is_usage_history_page(), "❌ Usage History 페이지로 이동 실패"
 

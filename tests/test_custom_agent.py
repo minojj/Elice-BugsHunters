@@ -390,6 +390,7 @@ def test_ca_008_update_existing_agent_successfully(my_agents_page_loaded):
     #1️⃣ 첫 번째 Private 카드의 edit 버튼 클릭(organization으로 변경 가능)
     my_agent_page.load_all_cards()
     my_agent_page.click_edit_button_by_card_type("private")
+    create_agent_page.get_element("name", wait_type="visible", timeout=10)
 
     #2️⃣ 수정 작업
     name_field = create_agent_page.get_element("name")
