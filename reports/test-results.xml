@@ -1,1 +1,74 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="6" time="35.870" timestamp="2025-11-18T17:20:39.394731+09:00" hostname="DESKTOP-C5O80FQ"><testcase classname="tests.test_billing_system" name="test_bu_001_credit_usage_section_exists" time="19.233" /><testcase classname="tests.test_billing_system" name="test_bu_002_danal_card_payment_iframe_appears" time="3.456" /><testcase classname="tests.test_billing_system" name="test_bu_003_click_usage_history" time="3.794" /><testcase classname="tests.test_billing_system" name="test_bu_004_click_ml_api" time="0.728" /><testcase classname="tests.test_billing_system" name="test_bu_005_click_severless_status" time="1.223" /><testcase classname="tests.test_billing_system" name="test_bu_006_click_api_key_manage" time="3.347" /></testsuite></testsuites>
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="56" time="625.335" timestamp="2025-11-19T11:48:45.805123+09:00" hostname="DESKTOP-C5O80FQ"><testcase classname="tests.test_account" name="test_ac_001_login" time="3.995" /><testcase classname="tests.test_account" name="test_ac_002_duplicate_email" time="1.379" /><testcase classname="tests.test_account" name="test_ac_003_negative_login" time="8.845" /><testcase classname="tests.test_account" name="test_ac_004_positive_login" time="13.961" /><testcase classname="tests.test_account" name="test_ac_005_login_with_non_email_format" time="5.909" /><testcase classname="tests.test_account" name="test_ac_006_login_with_spaces" time="5.912" /><testcase classname="tests.test_account" name="test_ac_007_logout" time="10.093" /><testcase classname="tests.test_billing_system" name="test_bu_001_credit_usage_section_exists" time="13.670" /><testcase classname="tests.test_billing_system" name="test_bu_002_danal_card_payment_iframe_appears" time="3.658" /><testcase classname="tests.test_billing_system" name="test_bu_003_click_usage_history" time="3.271" /><testcase classname="tests.test_billing_system" name="test_bu_004_click_ml_api" time="0.704" /><testcase classname="tests.test_billing_system" name="test_bu_005_click_severless_status" time="1.181" /><testcase classname="tests.test_billing_system" name="test_bu_006_click_api_key_manage" time="1.185" /><testcase classname="tests.test_chat_base" name="test_cb_001_ai_chat" time="15.511" /><testcase classname="tests.test_chat_base" name="test_cb_002_copy" time="1.579" /><testcase classname="tests.test_chat_base" name="test_cb_003_edit_message" time="2.920" /><testcase classname="tests.test_chat_base" name="test_cb_004_scroll_and_click" time="39.270" /><testcase classname="tests.test_chat_base" name="test_cb_005_make_image" time="12.038" /><testcase classname="tests.test_chat_base" name="test_cb_006_upload_file" time="1.147" /><testcase classname="tests.test_chat_base" name="test_cb_007_make_image" time="30.388"><failure message="selenium.common.exceptions.TimeoutException: Message: &#10;Stacktrace:&#10;Symbols not available. Dumping unresolved backtrace:&#10;&#09;0xcd4103&#10;&#09;0xcd4144&#10;&#09;0xade71d&#10;&#09;0xb2a03d&#10;&#09;0xb2a41b&#10;&#09;0xb717f2&#10;&#09;0xb4c954&#10;&#09;0xb6ee17&#10;&#09;0xb4c706&#10;&#09;0xb1da30&#10;&#09;0xb1ed54&#10;&#09;0xf457b4&#10;&#09;0xf4098a&#10;&#09;0xcfc392&#10;&#09;0xcec4c8&#10;&#09;0xcf324d&#10;&#09;0xcdc478&#10;&#09;0xcdc63c&#10;&#09;0xcc67ca&#10;&#09;0x75915d49&#10;&#09;0x7722d6db&#10;&#09;0x7722d661">tests\test_chat_base.py:79: in test_cb_007_make_image
+    WebDriverWait(chat_page.driver, 30).until(
+venv\Lib\site-packages\selenium\webdriver\support\wait.py:105: in until
+    raise TimeoutException(message, screen, stacktrace)
+E   selenium.common.exceptions.TimeoutException: Message: 
+E   Stacktrace:
+E   Symbols not available. Dumping unresolved backtrace:
+E   	0xcd4103
+E   	0xcd4144
+E   	0xade71d
+E   	0xb2a03d
+E   	0xb2a41b
+E   	0xb717f2
+E   	0xb4c954
+E   	0xb6ee17
+E   	0xb4c706
+E   	0xb1da30
+E   	0xb1ed54
+E   	0xf457b4
+E   	0xf4098a
+E   	0xcfc392
+E   	0xcec4c8
+E   	0xcf324d
+E   	0xcdc478
+E   	0xcdc63c
+E   	0xcc67ca
+E   	0x75915d49
+E   	0x7722d6db
+E   	0x7722d661</failure></testcase><testcase classname="tests.test_chat_expanse" name="test_ce_001_quiz" time="13.652" /><testcase classname="tests.test_chat_expanse" name="test_ce_002_quiz_empty" time="5.458" /><testcase classname="tests.test_chat_expanse" name="test_ce_003_quiz_special_chars" time="8.516" /><testcase classname="tests.test_chat_expanse" name="test_ce_004_quiz_no_type" time="2.326" /><testcase classname="tests.test_chat_expanse" name="test_ce_005_ppt" time="8.883" /><testcase classname="tests.test_chat_expanse" name="test_ce_006_image_text" time="4.839" /><testcase classname="tests.test_chat_expanse" name="test_ce_007_image_file" time="75.058" /><testcase classname="tests.test_chat_expanse" name="test_ce_008_google_search" time="2.820" /><testcase classname="tests.test_chat_expanse" name="test_ce_009_deep_dive" time="7.991" /><testcase classname="tests.test_chat_expanse" name="test_ce_010_file_upload" time="10.576" /><testcase classname="tests.test_chat_expanse" name="test_ce_011_file_upload_expect_failure" time="10.966" /><testcase classname="tests.test_chat_expanse" name="test_ce_012_file_upload_new_chat" time="6.384" /><testcase classname="tests.test_chat_expanse" name="test_ce_013_quiz_empty_new_chat" time="2.861" /><testcase classname="tests.test_custom_agent" name="test_ca_001_navigate_to_agent_create_form" time="14.383" /><testcase classname="tests.test_custom_agent" name="test_ca_002_validate_required_fields_behavior" time="2.414" /><testcase classname="tests.test_custom_agent" name="test_ca_003_1_create_private_agent_successfully" time="17.567" /><testcase classname="tests.test_custom_agent" name="test_ca_003_2_create_organization_agent_successfully" time="16.240" /><testcase classname="tests.test_custom_agent" name="test_ca_004_test_create_with_chat_generates_ai_response" time="5.820" /><testcase classname="tests.test_custom_agent" name="test_ca_005_prevent_duplicate_agent_creation" time="6.520" /><testcase classname="tests.test_custom_agent" name="test_ca_006_display_created_agents_in_explorer" time="1.816" /><testcase classname="tests.test_custom_agent" name="test_ca_007_display_agent_cards_in_my_agents" time="12.418" /><testcase classname="tests.test_custom_agent" name="test_ca_008_update_existing_agent_successfully" time="16.590" /><testcase classname="tests.test_custom_agent" name="test_ca_009__publish_draft_agent_successfully" time="17.753" /><testcase classname="tests.test_custom_agent" name="test_ca_010_autosave_draft_agent_persists_changes" time="15.489" /><testcase classname="tests.test_custom_agent" name="test_ca_011_cancel_agent_deletion_modal" time="14.050" /><testcase classname="tests.test_custom_agent" name="test_ca_012_delete_agent_permanently" time="12.951" /><testcase classname="tests.test_custom_agent" name="test_ca_013_prevent_deletion_of_default_agents" time="12.597" /><testcase classname="tests.test_custom_agent" name="test_ca_014_validate_file_upload_and_size_limit" time="2.606" /><testcase classname="tests.test_custom_agent" name="test_ca_015_private_agent_hidden_from_sub_account" time="33.742" /><testcase classname="tests.test_history" name="test_ht_001_start_new_chat" time="23.455" /><testcase classname="tests.test_history" name="test_ht_002_search_history" time="7.045" /><testcase classname="tests.test_history" name="test_ht_003_agent_search" time="2.800" /><testcase classname="tests.test_history" name="test_ht_004_chat_title_fix" time="11.351" /><testcase classname="tests.test_history" name="test_ht_005_view_chat_history" time="18.351"><failure message="AssertionError: 첫 메시지 텍스트가 예상과 다름: 예상=테스트시작, 실제=이름변경테스트_원본&#10;assert '테스트시작' in '이름변경테스트_원본'">tests\test_history.py:238: in test_ht_005_view_chat_history
+    assert test_str in text, (
+E   AssertionError: 첫 메시지 텍스트가 예상과 다름: 예상=테스트시작, 실제=이름변경테스트_원본
+E   assert '테스트시작' in '이름변경테스트_원본'</failure></testcase><testcase classname="tests.test_history" name="test_ht_006_delete_chat" time="6.158"><failure message="selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame&#10;  (Session info: chrome=142.0.7444.164); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception&#10;Stacktrace:&#10;Symbols not available. Dumping unresolved backtrace:&#10;&#09;0xcd4103&#10;&#09;0xcd4144&#10;&#09;0xade71d&#10;&#09;0xae5493&#10;&#09;0xae7864&#10;&#09;0xae78f8&#10;&#09;0xb2d16e&#10;&#09;0xb2b124&#10;&#09;0xb1fd65&#10;&#09;0xb4c90c&#10;&#09;0xb1f7c4&#10;&#09;0xb4cac4&#10;&#09;0xb6ee17&#10;&#09;0xb4c706&#10;&#09;0xb1da30&#10;&#09;0xb1ed54&#10;&#09;0xf457b4&#10;&#09;0xf4098a&#10;&#09;0xcfc392&#10;&#09;0xcec4c8&#10;&#09;0xcf324d&#10;&#09;0xcdc478&#10;&#09;0xcdc63c&#10;&#09;0xcc67ca&#10;&#09;0x75915d49&#10;&#09;0x7722d6db&#10;&#09;0x7722d661">tests\test_history.py:310: in test_ht_006_delete_chat
+    sidebar.click_menu_delete()
+src\pages\history_page.py:224: in click_menu_delete
+    item.click()
+venv\Lib\site-packages\selenium\webdriver\remote\webelement.py:94: in click
+    self._execute(Command.CLICK_ELEMENT)
+venv\Lib\site-packages\selenium\webdriver\remote\webelement.py:395: in _execute
+    return self._parent.execute(command, params)
+venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py:354: in execute
+    self.error_handler.check_response(response)
+venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py:229: in check_response
+    raise exception_class(message, screen, stacktrace)
+E   selenium.common.exceptions.StaleElementReferenceException: Message: stale element reference: stale element not found in the current frame
+E     (Session info: chrome=142.0.7444.164); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#stale-element-reference-exception
+E   Stacktrace:
+E   Symbols not available. Dumping unresolved backtrace:
+E   	0xcd4103
+E   	0xcd4144
+E   	0xade71d
+E   	0xae5493
+E   	0xae7864
+E   	0xae78f8
+E   	0xb2d16e
+E   	0xb2b124
+E   	0xb1fd65
+E   	0xb4c90c
+E   	0xb1f7c4
+E   	0xb4cac4
+E   	0xb6ee17
+E   	0xb4c706
+E   	0xb1da30
+E   	0xb1ed54
+E   	0xf457b4
+E   	0xf4098a
+E   	0xcfc392
+E   	0xcec4c8
+E   	0xcf324d
+E   	0xcdc478
+E   	0xcdc63c
+E   	0xcc67ca
+E   	0x75915d49
+E   	0x7722d6db
+E   	0x7722d661</failure></testcase><testcase classname="tests.test_history" name="test_ht_007_chat_history_ordered_by_time" time="11.289" /></testsuite></testsuites>
