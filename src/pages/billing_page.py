@@ -22,7 +22,7 @@ class BillingPage(BasePage):
         self.wait.until(lambda d: "/admin/org/billing/payments/credit" in d.current_url)
 
     def wait_usage_table_loaded(self, timeout: int = 20):
-        self.get_element("usage_table", wait_type="presence", timeout=timeout)
+        return self.get_element("usage_table", wait_type="presence", timeout=timeout)
 
 
 
