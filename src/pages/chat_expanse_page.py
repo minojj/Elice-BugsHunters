@@ -215,28 +215,61 @@ class ChatExpansePage(BasePage):
             pass
 
     def click_new_chat_button(self):
-        self.wait_for_backdrop_disappear()
-        self.click_safely("new_chat_btn")
-
-        chat_input = WebDriverWait(self.driver, 20).until(  # 10 → 20초
-            EC.presence_of_element_located(self.locators["chat_input"])
-        )
-
-        self.wait_for_backdrop_disappear()
-        WebDriverWait(self.driver, 15).until(
-            EC.element_to_be_clickable(self.locators["plus_btn"])
-        )
-
+        """새 대화 버튼 클릭 (강화된 대기 및 폴백)"""
         try:
-            WebDriverWait(self.driver, 20).until(  # 15 → 20초
+            # Step 1: 백드롭 대기
+            self.wait_for_backdrop_disappear()
+            print("   ✅ 백드롭 사라짐")
+            
+            # Step 2: 새 대화 버튼 클릭 (2가지 방식)
+            try:
+                print("   [새 대화] 방법 1: click_safely...")
+                self.click_safely("new_chat_btn")
+                print("   ✅ 새 대화 버튼 클릭 (방법 1) 성공")
+            except Exception as e:
+                print(f"   ⚠️ 방법 1 실패: {str(e)[:50]}, 방법 2 시도")
+                try:
+                    btn = self.get_element("new_chat_btn", wait_type="clickable", timeout=10)
+                    self.driver.execute_script("arguments[0].click();", btn)
+                    print("   ✅ 새 대화 버튼 클릭 (방법 2) 성공")
+                except Exception as e2:
+                    print(f"   ❌ 방법 2도 실패: {str(e2)[:50]}")
+                    raise
+            
+            # Step 3: 채팅 입력창 대기
+            print("   대기 중: 채팅 입력창...")
+            WebDriverWait(self.driver, 30).until(
+                EC.presence_of_element_located(self.locators["chat_input"])
+            )
+            print("   ✅ 채팅 입력창 발견")
+            
+            # Step 4: 백드롭 재확인
+            self.wait_for_backdrop_disappear()
+            print("   ✅ 백드롭 재확인 완료")
+            
+            # Step 5: 플러스 버튼 클릭 가능 대기
+            print("   대기 중: 플러스 버튼...")
+            WebDriverWait(self.driver, 30).until(
                 EC.element_to_be_clickable(self.locators["plus_btn"])
             )
-        except TimeoutException:
-            print("⚠️ 새 대화 후 plus 버튼 대기 중 타임아웃 — 무시하고 진행")
-            raise Exception
-        WebDriverWait(self.driver, 10).until(
-            lambda d: d.execute_script("return document.readyState") == "complete"
-        )
+            print("   ✅ 플러스 버튼 클릭 가능")
+            
+            # Step 6: 페이지 로드 완료 확인
+            print("   대기 중: 페이지 로드...")
+            WebDriverWait(self.driver, 10).until(
+                lambda d: d.execute_script("return document.readyState") == "complete"
+            )
+            print("   ✅ 페이지 로드 완료")
+            
+            print("   ✅ 새 대화창 진입 성공!\n")
+            
+        except TimeoutException as e:
+            print(f"   ❌ 타임아웃 오류: {str(e)[:50]}")
+            print(f"   현재 URL: {self.get_current_url()}")
+            raise
+        except Exception as e:
+            print(f"   ❌ 오류: {type(e).__name__} - {str(e)[:50]}")
+            raise
 
     def upload_file_and_send(self, filepath):
         try:
@@ -263,34 +296,65 @@ class ChatExpansePage(BasePage):
             return False
 
     def upload_file_and_send_new_chat(self, filepath):
+        """새 대화에서 파일 업로드 및 전송"""
         try:
-            self.wait_for_backdrop_disappear()
-            self.click_safely("new_chat_btn")
-            self.get_element("chat_input", wait_type="presence")
-
-            self.wait_for_backdrop_disappear()
-            self.get_element("plus_btn", wait_type="clickable", timeout=15).click()
-
+            print(f"\n=== 새 대화 파일 업로드 시작 ===")
+            
+            # Step 1: 새 대화 진입
+            print("1️⃣ 새 대화 버튼 클릭...")
+            self.click_new_chat_button()
+            
+            # Step 2: 플러스 버튼 클릭
+            print("2️⃣ 플러스 버튼 클릭...")
+            self.click_plus_button()
+            print("   ✅ 플러스 버튼 클릭 완료")
+            
+            # Step 3: 파일 업로드 메뉴 클릭
+            print("3️⃣ 파일 업로드 메뉴 클릭...")
             self.click_file_upload_menu()
+            print("   ✅ 파일 업로드 메뉴 클릭 완료")
+            
+            # Step 4: 파일 업로드
+            print("4️⃣ 파일 업로드...")
             self.upload_file(filepath)
+            print("   ✅ 파일 업로드 완료")
+            
+            # Step 5: 파일 탐색 대화 닫기
+            print("5️⃣ 파일 탐색 대화 닫기...")
             self.close_file_dialog()
+            print("   ✅ 파일 탐색 대화 닫기 완료")
+            
+            # Step 6: 백드롭 대기
+            print("6️⃣ 백드롭 대기...")
             self.wait_for_backdrop_disappear()
-
+            print("   ✅ 백드롭 사라짐")
+            
+            # Step 7: 메시지 전송
+            print("7️⃣ 메시지 전송...")
             self.send_message_with_enter()
+            print("   ✅ 메시지 전송 완료")
+            
+            # Step 8: 응답 대기
+            print("8️⃣ AI 응답 대기...")
             self.wait_for_response()
+            print("   ✅ 응답 대기 완료")
+            
+            print("=== 새 대화 파일 업로드 성공 ===\n")
             return True
 
         except TimeoutException as e:
-            print(f"❌ 타임아웃 오류: {str(e)}")
+            print(f"\n❌ 타임아웃 오류: {str(e)[:50]}")
             print(f"   현재 URL: {self.get_current_url()}")
             return False
 
         except NoSuchElementException as e:
-            print(f"❌ 요소를 찾을 수 없음: {str(e)}")
+            print(f"\n❌ 요소를 찾을 수 없음: {str(e)[:50]}")
             return False
 
         except Exception as e:
-            print(f"❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)[:50]}")
+            import traceback
+            traceback.print_exc()
             return False
 
     def check_for_alert_or_error(self, timeout=5):
