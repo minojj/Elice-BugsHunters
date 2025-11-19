@@ -215,25 +215,65 @@ class ChatExpansePage(BasePage):
             pass
 
     def click_new_chat_button(self):
+        """새 대화 버튼 클릭 (강화된 대기 및 폴백)"""
+        # Step 1: 백드롭 대기
         self.wait_for_backdrop_disappear()
-        self.click_safely("new_chat_btn")
-
-        chat_input = WebDriverWait(self.driver, 20).until(  # 10 → 20초
+        
+        # Step 2: 새 대화 버튼 클릭 (폴백 포함)
+        new_chat_success = False
+        
+        # 방법 1: 기본 XPath
+        try:
+            self.click_safely("new_chat_btn", timeout=10)
+            new_chat_success = True
+        except Exception as e:
+            print(f"      ⚠️ 방법 1 실패: {type(e).__name__}")
+        
+        # 방법 2: 버튼이 포함된 더 넓은 XPath
+        if not new_chat_success:
+            try:
+                btn = WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'MuiButton')] | //div[contains(text(), '새 대화')]"))
+                )
+                self.driver.execute_script("arguments[0].click();", btn)
+                new_chat_success = True
+            except Exception as e:
+                print(f"      ⚠️ 방법 2 실패: {type(e).__name__}")
+        
+        # 방법 3: 모든 span 중에서 찾기
+        if not new_chat_success:
+            try:
+                print("      방법 3: 모든 span 중 '새 대화' 찾기...")
+                spans = self.driver.find_elements(By.XPATH, "//span")
+                for span in spans:
+                    try:
+                        if '새 대화' in span.text:
+                            btn = span.find_element(By.XPATH, "ancestor::button")
+                            self.driver.execute_script("arguments[0].click();", btn)
+                            new_chat_success = True
+                            break
+                    except:
+                        continue
+            except Exception as e:
+                print(f"      ⚠️ 방법 3 실패: {type(e).__name__}")
+        
+        if not new_chat_success:
+            raise TimeoutException("새 대화 버튼을 찾을 수 없습니다 (모든 방법 실패)")
+        
+        # Step 3: 채팅 입력창 대기
+        WebDriverWait(self.driver, 30).until(
             EC.presence_of_element_located(self.locators["chat_input"])
         )
-
+        
+        # Step 4: 백드롭 재확인
         self.wait_for_backdrop_disappear()
-        WebDriverWait(self.driver, 15).until(
+        
+        # Step 5: 플러스 버튼 클릭 가능 대기
+        WebDriverWait(self.driver, 30).until(
             EC.element_to_be_clickable(self.locators["plus_btn"])
         )
-
-        try:
-            WebDriverWait(self.driver, 20).until(  # 15 → 20초
-                EC.element_to_be_clickable(self.locators["plus_btn"])
-            )
-        except TimeoutException:
-            print("⚠️ 새 대화 후 plus 버튼 대기 중 타임아웃 — 무시하고 진행")
-            raise Exception
+        
+        # Step 6: 페이지 로드 완료 확인
         WebDriverWait(self.driver, 10).until(
             lambda d: d.execute_script("return document.readyState") == "complete"
         )
@@ -263,34 +303,80 @@ class ChatExpansePage(BasePage):
             return False
 
     def upload_file_and_send_new_chat(self, filepath):
+        """새 대화에서 파일 업로드 및 전송"""
         try:
-            self.wait_for_backdrop_disappear()
-            self.click_safely("new_chat_btn")
-            self.get_element("chat_input", wait_type="presence")
-
-            self.wait_for_backdrop_disappear()
-            self.get_element("plus_btn", wait_type="clickable", timeout=15).click()
-
-            self.click_file_upload_menu()
-            self.upload_file(filepath)
-            self.close_file_dialog()
-            self.wait_for_backdrop_disappear()
-
-            self.send_message_with_enter()
-            self.wait_for_response()
+            
+            # Step 1: 새 대화 진입
+            try:
+                self.click_new_chat_button()
+            except Exception as e:
+                print(f"   ❌ 새 대화 진입 실패: {type(e).__name__} - {str(e)[:80]}")
+                raise
+            
+            # Step 2: 플러스 버튼 클릭
+            try:
+                self.click_plus_button()
+            except Exception as e:
+                print(f"   ❌ 플러스 버튼 클릭 실패: {type(e).__name__}")
+                raise
+            
+            # Step 3: 파일 업로드 메뉴 클릭
+            try:
+                self.click_file_upload_menu()
+            except Exception as e:
+                print(f"   ❌ 파일 업로드 메뉴 클릭 실패: {type(e).__name__}")
+                raise
+            
+            # Step 4: 파일 업로드
+            try:
+                self.upload_file(filepath)
+            except Exception as e:
+                print(f"   ❌ 파일 업로드 실패: {type(e).__name__}")
+                raise
+            
+            # Step 5: 파일 탐색 대화 닫기
+            try:
+                self.close_file_dialog()
+            except Exception as e:
+                print(f"   ❌ 파일 탐색 대화 닫기 실패: {type(e).__name__}")
+                raise
+            
+            # Step 6: 백드롭 대기
+            try:
+                self.wait_for_backdrop_disappear()
+            except Exception as e:
+                print(f"   ❌ 백드롭 대기 실패: {type(e).__name__}")
+                raise
+            
+            # Step 7: 메시지 전송
+            try:
+                self.send_message_with_enter()
+            except Exception as e:
+                print(f"   ❌ 메시지 전송 실패: {type(e).__name__}")
+                raise
+            
+            # Step 8: 응답 대기
+            try:
+                self.wait_for_response()
+            except Exception as e:
+                print(f"   ❌ 응답 대기 실패: {type(e).__name__}")
+                raise
+            
             return True
 
         except TimeoutException as e:
-            print(f"❌ 타임아웃 오류: {str(e)}")
+            print(f"\n❌ [TimeoutException] {str(e)[:80]}")
             print(f"   현재 URL: {self.get_current_url()}")
             return False
 
         except NoSuchElementException as e:
-            print(f"❌ 요소를 찾을 수 없음: {str(e)}")
+            print(f"\n❌ [NoSuchElementException] {str(e)[:80]}")
             return False
 
         except Exception as e:
-            print(f"❌ 테스트 실패: {type(e).__name__} - {str(e)}")
+            print(f"\n❌ [{type(e).__name__}] {str(e)[:80]}")
+            import traceback
+            traceback.print_exc()
             return False
 
     def check_for_alert_or_error(self, timeout=5):
@@ -610,87 +696,6 @@ class ChatExpansePage(BasePage):
             generate_btn.click()
         except ElementClickInterceptedException:
             self.driver.execute_script("arguments[0].click();", generate_btn)
-
-    def input_slide_count(self, slide_count: int):
-        """슬라이드 수 입력 (JavaScript 사용)"""
-        try:
-            slide_locator = self.locators["ppt_slide_count"]
-            
-            for attempt in range(3):
-                try:
-                    # 요소 대기
-                    WebDriverWait(self.driver, 10).until(
-                        EC.presence_of_element_located(slide_locator)
-                    )
-                    
-                    # ✅ JavaScript로 직접 값 설정 (Stale 방지)
-                    self.driver.execute_script(f"""
-                        const input = document.querySelector('input[type="number"][min="3"][max="50"]');
-                        if (input) {{
-                            input.value = '{slide_count}';
-                            input.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                            input.dispatchEvent(new Event('change', {{ bubbles: true }}));
-                        }}
-                    """)
-                    
-                    # 값 확인
-                    time.sleep(0.3)
-                    WebDriverWait(self.driver, 5).until(
-                        lambda d: d.find_element(*slide_locator).get_attribute("value") == str(slide_count)
-                    )
-                    
-                    return True
-                    
-                except Exception as e:
-                    print(f"   ⚠️ 시도 {attempt + 1} 실패: {str(e)}")
-                    if attempt == 2:
-                        raise
-                    time.sleep(0.5)
-            
-            return False
-            
-        except Exception as e:
-            print(f"❌ 슬라이드 수 입력 중 오류: {str(e)}")
-            return False
-
-    def input_section_count(self, section_count: int):
-        """섹션 수 입력 (JavaScript 사용)"""
-        try:
-            section_locator = self.locators["ppt_section_count"]
-            
-            for attempt in range(3):
-                try:
-                    WebDriverWait(self.driver, 10).until(
-                        EC.presence_of_element_located(section_locator)
-                    )
-                    
-                    self.driver.execute_script(f"""
-                        const input = document.querySelector('input[type="number"][min="1"][max="8"]');
-                        if (input) {{
-                            input.value = '{section_count}';
-                            input.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                            input.dispatchEvent(new Event('change', {{ bubbles: true }}));
-                        }}
-                    """)
-                    
-                    time.sleep(0.3)
-                    WebDriverWait(self.driver, 5).until(
-                        lambda d: d.find_element(*section_locator).get_attribute("value") == str(section_count)
-                    )
-                    
-                    return True
-                    
-                except Exception as e:
-                    print(f"   ⚠️ 시도 {attempt + 1} 실패: {str(e)}")
-                    if attempt == 2:
-                        raise
-                    time.sleep(0.5)
-            
-            return False
-            
-        except Exception as e:
-            print(f"❌ 섹션 수 입력 중 오류: {str(e)}")
-            return False
 
     def create_ppt_and_send(self, wait_time=60, max_retries=3):
         try:
