@@ -150,22 +150,22 @@ pipeline {
             ]) {
                 sh '''
                     set -eux
-                    echo "🐞 JIRA 이슈 자동 동기화 시작 (Jenkins 컨테이너 내부 실행)"
-                    pwd
-                    ls -lah reports || true
-                    ls -lah tools || true
+                echo "🐞 JIRA 이슈 자동 동기화 시작 (Jenkins 컨테이너 내부 실행)"
+                pwd
+                ls -lah reports || true
+                ls -lah tools || true
 
-                    export JIRA_URL="${JIRA_URL}"
-                    export JIRA_PROJECT="${JIRA_PROJECT}"
-                    export JIRA_USER="${JIRA_USER}"
-                    export JIRA_API_TOKEN="${JIRA_API_TOKEN}"
-                    export JUNIT_PATH="reports/test-results.xml"
-                    export JENKINS_JOB_NAME="${JOB_NAME}"
-                    export JENKINS_BUILD_NUMBER="${BUILD_NUMBER}"
-                    export JENKINS_BRANCH_NAME="${BRANCH_NAME:-unknown}"
-                    export JENKINS_BUILD_URL="${BUILD_URL}"
+                export JIRA_URL="${JIRA_URL}"
+                export JIRA_PROJECT="${JIRA_PROJECT}"
+                export JIRA_USER="${JIRA_USER}"
+                export JIRA_API_TOKEN="${JIRA_API_TOKEN}"
+                export JUNIT_PATH="reports/test-results.xml"
+                export JENKINS_JOB_NAME="${JOB_NAME}"
+                export JENKINS_BUILD_NUMBER="${BUILD_NUMBER}"
+                export JENKINS_BRANCH_NAME="${BRANCH_NAME:-unknown}"
+                export JENKINS_BUILD_URL="${BUILD_URL}"
 
-                    python3 tools/report_failed_tests_to_jira.py || echo "⚠️ JIRA 스크립트 실행 중 오류 발생 (무시)"
+                python3 tools/report_failed_tests_to_jira.py || echo "⚠️ JIRA 스크립트 실행 중 오류 발생 (무시)"
 
                 '''
             }

@@ -1,3 +1,4 @@
+from socket import timeout
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -67,8 +68,6 @@ class ChatExpansePage(BasePage):
         super().__init__(driver)
         self.base_url = "https://qaproject.elice.io/ai-helpy-chat"
 
-
-
     def open(self):
         self.driver.get(self.base_url)
         self.wait.until(
@@ -87,28 +86,18 @@ class ChatExpansePage(BasePage):
         except TimeoutException:
             print("⚠️ 백드롭 대기 중 오류 — 무시하고 진행")
 
-
-
     def click_plus_button(self):
-        
         self.wait_for_backdrop_disappear()
 
         try:
-            btn = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable(self.locators["plus_btn"])
-            )
-            btn.click()
+            self.get_element("plus_btn", wait_type="clickable", timeout=15).click()
             return
-        except:
-            pass  
-
-        try:
+        except (TimeoutException, NoSuchElementException):
             self.click_new_chat_button()
-        except:
-            pass
-
-        btn = self.get_element("plus_btn", wait_type="clickable", timeout=5)
-        btn.click()
+            self.wait_for_backdrop_disappear()
+            self.get_element("plus_btn", wait_type="clickable", timeout=15).click()
+            return
+            
 
     def click_file_upload_menu(self):
         btn = self.get_element("file_upload_menu_css", wait_type="clickable")
@@ -161,8 +150,6 @@ class ChatExpansePage(BasePage):
         except TimeoutException:
             print("⚠️ 파일 제출 버튼이 나타나지 않음 — 무시하고 진행")
 
-  
-
     def send_message_with_enter(self):
         chat_input = self.get_element("chat_input", wait_type="presence")
         chat_input.click()
@@ -173,8 +160,10 @@ class ChatExpansePage(BasePage):
         chat_input = self.get_element("chat_input", wait_type="clickable")
         chat_input.click()
         chat_input.send_keys(message)
-        self.wait.until(lambda d: chat_input.get_attribute("value") == message)
-        chat_input.send_keys(Keys.RETURN)
+        self.wait.until(
+        lambda d: d.find_element(*self.locators["chat_input"]).get_attribute("value") == message
+    )
+        self.get_element("chat_input", wait_type="clickable").send_keys(Keys.RETURN)
 
     def wait_for_response(self, timeout: int = 60):
         loading_locator = self.locators.get("loading_indicator")
@@ -199,18 +188,10 @@ class ChatExpansePage(BasePage):
         except Exception:
             pass
 
-
     def click_new_chat_button(self):
-        """새 대화 버튼 클릭 (백드롭 정리 후, 인터셉트 방지)"""
         self.wait_for_backdrop_disappear()
-        btn = self.get_element("new_chat_btn", wait_type="clickable")
-        try:
-            btn.click()
-        except ElementClickInterceptedException:
-            self.driver.execute_script("arguments[0].click();", btn)
+        self.click_safely("new_chat_btn")
         self.get_element("chat_input", wait_type="presence")
-
- 
 
     def upload_file_and_send(self, filepath):
         try:
@@ -234,19 +215,22 @@ class ChatExpansePage(BasePage):
 
         except Exception as e:
             print(f"❌ 테스트 실패: {type(e).__name__} - {str(e)}")
-            import traceback
-
-            traceback.print_exc()
             return False
 
     def upload_file_and_send_new_chat(self, filepath):
         try:
-            self.click_new_chat_button()
-            self.click_plus_button()
+            self.wait_for_backdrop_disappear()
+            self.click_safely("new_chat_btn")
+            self.get_element("chat_input", wait_type="presence")
+
+            self.wait_for_backdrop_disappear()
+            self.get_element("plus_btn", wait_type="clickable", timeout=15).click()
+
             self.click_file_upload_menu()
             self.upload_file(filepath)
             self.close_file_dialog()
             self.wait_for_backdrop_disappear()
+
             self.send_message_with_enter()
             self.wait_for_response()
             return True
@@ -262,14 +246,9 @@ class ChatExpansePage(BasePage):
 
         except Exception as e:
             print(f"❌ 테스트 실패: {type(e).__name__} - {str(e)}")
-            import traceback
-
-            traceback.print_exc()
             return False
 
-
     def check_for_alert_or_error(self, timeout=5):
-
         try:
             WebDriverWait(self.driver, 2).until(EC.alert_is_present())
             alert = self.driver.switch_to.alert
@@ -317,11 +296,7 @@ class ChatExpansePage(BasePage):
             
         except Exception as e:
             print(f"❌ 테스트 실패: {type(e).__name__} - {str(e)}")
-            import traceback
-            traceback.print_exc()
             return False
-
-
 
     def click_quiz_create_menu(self):
         try:
@@ -335,8 +310,13 @@ class ChatExpansePage(BasePage):
     def _clear_chat_input(self):
         chat_input = self.get_element("chat_input", wait_type="clickable")
         chat_input.clear()
-        self.wait.until(lambda d: chat_input.get_attribute("value") == "")
-        return chat_input
+
+        chat_locator = self.locators["chat_input"]
+        self.wait.until(
+        lambda d: d.find_element(*chat_locator).get_attribute("value") == ""
+    )
+        
+        return self.get_element("chat_input", wait_type="clickable")
 
     def create_quiz_and_send(self, wait_time=10):
         try:
@@ -402,21 +382,19 @@ class ChatExpansePage(BasePage):
                 raise Exception("퀴즈 생성 메뉴를 클릭할 수 없습니다.")
 
             self.wait_for_backdrop_disappear()
-
             self._clear_chat_input()
             self.send_message_with_enter()
             self.wait_for_response()
+            
             return True
 
         except TimeoutException as e:
             print(f"\n❌ 타임아웃 오류: {str(e)}")
             print(f"   현재 URL: {self.driver.current_url}")
-            self.driver.save_screenshot("timeout_error.png")
             return False
 
         except NoSuchElementException as e:
             print(f"\n❌ 요소를 찾을 수 없음: {str(e)}")
-            self.driver.save_screenshot("element_error.png")
             return False
 
     def create_quiz_and_send_special_chars(self):
@@ -629,7 +607,6 @@ class ChatExpansePage(BasePage):
         except Exception as e:
             print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
             return False
-
   
     def click_image_create_menu(self):
         try:
@@ -668,28 +645,27 @@ class ChatExpansePage(BasePage):
             print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
             return False
 
-
-    def wait_for_image_load(self, timeout=60):
-        """img.inline-image 태그를 polling 방식으로 탐지"""
+    def wait_for_image_load(self, timeout=60, initial_wait=1, max_wait=10):
         end = time.time() + timeout
-
+        wait_time = initial_wait
+    
         while time.time() < end:
             try:
-                imgs = self.driver.find_elements(By.CSS_SELECTOR, "img.inline-image")
+                imgs = self.driver.find_elements(*self.locators["image_generation_indicator"])
                 if imgs:
                     loaded = self.driver.execute_script(
                         "return arguments[0].complete && arguments[0].naturalWidth > 0;",
                         imgs[0]
                     )
-                    if loaded:
-                        return True
+                if loaded:
+                    return True
             except:
                 pass
-
-            time.sleep(5)
-
+        
+            time.sleep(wait_time)
+            wait_time = min(wait_time * 5, max_wait)  # 지수적으로 증가, 최대값 제한
+    
         return False
-
 
     def create_image_and_send_file(self, filepath):
         try:
@@ -706,10 +682,10 @@ class ChatExpansePage(BasePage):
                 long_wait.until(
                     EC.presence_of_element_located(self.locators["image_generation_indicator"])
                 )
-                time.sleep(15)
-                self.wait_for_response()
+                
+                self.wait_for_image_load()
             except TimeoutException:                
-                self.wait_for_response()
+                self.wait_for_image_load()
             return True
     
         except NoSuchElementException as e:
@@ -756,11 +732,9 @@ class ChatExpansePage(BasePage):
             print(f"\n❌ 테스트 실패: {type(e).__name__} - {str(e)}")
             return False
 
-
     def click_deep_dive_menu(self):
         try:
-            btn = self.get_element("deep_dive_menu", wait_type="clickable")
-            btn.click()
+            self.click_safely("deep_dive_menu")
         except Exception as e:
             raise Exception("심층 조사 메뉴를 클릭할 수 없습니다.") from e
 
@@ -769,8 +743,7 @@ class ChatExpansePage(BasePage):
         chat_input.send_keys(topic)
 
     def click_create_deep_dive_button(self):
-        btn = self.get_element("deep_dive_create_btn", wait_type="clickable")
-        btn.click()
+        self.click_safely("deep_dive_create_btn")
 
     def deep_dive_and_send(self, wait_time=30):
         try:
