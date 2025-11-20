@@ -13,12 +13,9 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
   - 명시적 대기를 활용한 안정적인 테스트
   - CI 환경(Jenkins, Docker) 연동
 
-## 🏗️ 프로젝트 구조
-<img src="./images/스크린샷 2025-11-19 135759.png" width="300" />
-
 ## 🧰 Tech Stack
 
-- **Language**: Python (3.14 권장)
+- **Language**: Python (3.14+ 권장)
 - **Test Framework**: pytest 8.3.3
 - **Browser Automation**: Selenium WebDriver 4.25.0 (Chrome)
 - **CI/CD**: Jenkins
@@ -33,7 +30,8 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
   <img src="https://img.shields.io/badge/jenkins-pipeline-D24939?logo=jenkins&logoColor=white" />
 </p>
 
-
+## 🏗️ 프로젝트 구조
+<img src="./images/스크린샷 2025-11-19 135759.png" width="650" />
 
 ## 🏗 Architecture (Page Object Model)
 
@@ -53,23 +51,18 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
 
 - `tests/` : 위 POM을 조합해서 E2E 시나리오 정의
 
-## 🧪 Test Scenarios
+## 🧪 주요 테스트 시나리오
+<img src="./images/스크린샷 2025-11-20 110058.png" width="650" />
 
-| ID        | 영역            | 설명                                                |
-|-----------|-----------------|-----------------------------------------------------|
-| HT_001    | 히스토리        | 새 대화 생성 시 사이드바 최상단에 스레드 추가 검증 |
-| HT_002    | 히스토리 검색   | 검색 오버레이에서 키워드로 스레드 검색            |
-| HT_003    | 에이전트 탐색   | 에이전트 검색 시 결과 필터링 확인                 |
-| BU_001    | 빌링/크레딧     | 크레딧 사용 섹션 로드 여부 확인                   |
-| ...       | ...             | ...                                                 |
 
 
 ## 📝 테스트케이스 관리
 
-<img src="./images/스크린샷 2025-11-19 105457.png" width="300" />
-<img src="./images/스크린샷 2025-11-19 110155.png" width="300" />
+<img src="./images/스크린샷 2025-11-19 105457.png" width="650" />
+<img src="./images/스크린샷 2025-11-19 110155.png" width="650" />
 
 JIRA를 통해 관리
+
 
 ## 🚀 시작하기 (Getting Started)
 
@@ -83,57 +76,39 @@ git checkout develop
 ### 2) 가상환경 생성 및 의존성 설치
 ```bash
 python -m venv .venv
+
+# Windows
+.\.venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
+
+pip install -r requirements.txt
 ```
 ## ⚙️ 환경 변수 설정 (.env)
 프로젝트 루트에 .env 파일을 생성하고 다음과 같이 설정합니다.
 ```bash
-python -m venv .venv
-```
-## 🧪 테스트 실행 방법
+MAIN_EMAIL=...
+MAIN_PASSWORD=...
 
-### 1) 전체테스트 실행
+
+SUB_EMAIL=...
+SUB_PASSWORD=...
+```
+## 🖥️ 테스트 실행 방법
+
+### 전체테스트 실행
 ```bash
-python -m venv .venv
+pytest
 ```
-
-## 🧱 주요 테스트 시나리오
-- 계정/조직
-
-    - 회원가입, 로그인, 로그아웃 기능 확인
-
-- 빌링 & 이용내역
-
-    - 크레딧 사용 섹션이 정상적으로 로드되는지 확인
-    - 결제창이 로딩될 때까지 presence 기반 대기
-
-- 채팅 히스토리
-
-    - 새 대화 생성 시 사이드바에 스레드가 시간순으로 추가되는지 검증
-    - 스레드 이름 변경 및 삭제 기능 검증
-
-- 채팅 기본기능
-
-    - 자연어로 AI와 실시간 질문/답변 대화 검증
-    - AI 답변에 대한 좋아요/싫어요 평가 검증
-
-- 채팅 고급기능
-
-    - 문서, 이미지 등 파일을 업로드하여 AI가 분석 검증
-    - 주제와 조건에 따른 프레젠테이션 슬라이드 자동 생성 검증
-
-- 맞춤화기능
-
-    - 채팅으로 에이전트 생성 검증
-    - 에이전트 제거 검증
-
-
-## 🐳 Docker / CI
-
 ### Docker로 실행
 ```bash
-python -m venv .venv
+docker build -t elice-bugshunters .
+docker run --rm elice-test
 ```
-
+## 📋 테스트결과 요약
+pytest로 실행: 56개 케이스 중 56개 pass<br>
+docker로 실행: 56개 케이스 중 47개 pass 9개 fail
 
 ## 👥 Members
 
@@ -141,4 +116,3 @@ python -m venv .venv
 |:------:|:------:|:------:|:------:|:------:|
 | <img src="https://avatars.githubusercontent.com/u/240609214?v=4" width="150"/> | <img src="https://avatars.githubusercontent.com/u/240632153?v=4" width="150"/> | <img src="https://avatars.githubusercontent.com/u/146753764?v=4" width="150"/> | <img src="https://avatars.githubusercontent.com/u/240609114?v=4" width="150"/> | <img src="https://avatars.githubusercontent.com/u/147461911?v=4" width="150"/> |
 | [![GitHub](https://img.shields.io/badge/GitHub-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/minojj) | [![GitHub](https://img.shields.io/badge/GitHub-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yejin1024) | [![GitHub](https://img.shields.io/badge/GitHub-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/junseoseki) | [![GitHub](https://img.shields.io/badge/GitHub-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nwweiit) | [![GitHub](https://img.shields.io/badge/GitHub-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/dlxorud1256) |
-| [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:user1@example.com) | [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:user2@example.com) | [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:user3@example.com) | [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:user4@example.com) | [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:user5@example.com) |
