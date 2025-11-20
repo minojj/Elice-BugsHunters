@@ -31,7 +31,8 @@ class MainPage(BasePage):
         self.driver.get(self.URL)
         # 메인 도착 확인: Composer 준비될 때까지 대기
         composer = Composer(self.driver)
-        composer.wait_ready(sec=10)
+        composer.wait_ready(sec=15)
+        time.sleep(3)  # aside 및 전체 UI 렌더링 대기 (Docker 헤드리스 환경용)
 
     def wait_ready(self, sec=10):
         """외부에서 main.wait_ready()로도 쓸 수 있게 헬퍼 하나 추가"""
@@ -79,9 +80,8 @@ class ChatSidebar(BasePage):
             "aside a[href^='/ai-helpy-chat/thread/'][data-index='1']",
         ),
         "sidebar_search_btn": (
-            By.XPATH,
-            "//aside//div[@role='button'][.//span[normalize-space()='검색'] "
-            "or .//span[normalize-space()='Search']]",
+            By.CSS_SELECTOR,
+            "button.MuiButton-containedPrimary[type='button']",
         ),
         "sidebar_search_icon": (
             By.CSS_SELECTOR,
@@ -113,7 +113,79 @@ class ChatSidebar(BasePage):
 
     # --- 1) 새 대화 버튼 ---
     def click_new_chat(self):
-        self.click_safely("new_chat_btn")
+        """새 대화 버튼 클릭 (4-방법 fallback)"""
+        success = False
+        last_error = None
+        
+        # 방법 1: 원래 XPath (aside 포함)
+        try:
+            self.click_safely("new_chat_btn", timeout=8)
+            success = True
+            return
+        except Exception as e:
+            last_error = e
+            pass
+        
+        # 방법 2: aside 없이 더 넓은 범위로 검색
+        if not success:
+            try:
+                btn = WebDriverWait(self.driver, 8).until(
+                    EC.element_to_be_clickable((By.XPATH, 
+                        "//div[@role='button'][.//span[normalize-space()='새 대화'] "
+                        "or .//span[normalize-space()='New chat']]"))
+                )
+                self.driver.execute_script("arguments[0].click();", btn)
+                success = True
+                return
+            except Exception as e:
+                last_error = e
+                pass
+        
+        # 방법 3: 모든 span 중 '새 대화' 또는 'New chat' 텍스트 찾기
+        if not success:
+            try:
+                end = time.time() + 10
+                while time.time() < end:
+                    spans = self.driver.find_elements(By.XPATH, "//span")
+                    for span in spans:
+                        try:
+                            text = span.text.strip()
+                            if text in ['새 대화', 'New chat']:
+                                # 부모 button 또는 div[role='button'] 찾기
+                                try:
+                                    btn = span.find_element(By.XPATH, "ancestor::button[1]")
+                                except:
+                                    btn = span.find_element(By.XPATH, "ancestor::div[@role='button'][1]")
+                                self.driver.execute_script("arguments[0].click();", btn)
+                                success = True
+                                return
+                        except:
+                            continue
+                    if not success:
+                        time.sleep(0.5)
+            except Exception as e:
+                last_error = e
+                pass
+        
+        # 방법 4: JavaScript로 텍스트 기반 클릭
+        if not success:
+            try:
+                self.driver.execute_script("""
+                    const spans = Array.from(document.querySelectorAll('span'));
+                    const target = spans.find(s => s.textContent.trim() === '새 대화' || s.textContent.trim() === 'New chat');
+                    if (target) {
+                        let btn = target.closest('button') || target.closest('[role="button"]');
+                        if (btn) btn.click();
+                    }
+                """)
+                success = True
+                return
+            except Exception as e:
+                last_error = e
+                pass
+        
+        if not success:
+            raise TimeoutException(f"새 대화 버튼을 찾을 수 없습니다")
 
     # --- 2) 최상단 스레드 href ---
     def top_thread_href(self):
@@ -227,23 +299,81 @@ class ChatSidebar(BasePage):
 
     # --- 7) 사이드바 검색 버튼 ---
     def click_search_button(self):
-        # 1차 시도: 텍스트 버튼
-        try:
-            self.click_safely("sidebar_search_btn", timeout=5)
-            return
-        except TimeoutException:
-            pass
+        """검색 버튼 클릭 (overlay 확인 포함)"""
+        end = time.time() + 30  # 최대 30초 시도
+        last_error = None
+        
+        while time.time() < end:
+            success = False
+            
+            # 1차 시도: 텍스트 기반 버튼
+            try:
+                self.click_safely("sidebar_search_btn", timeout=3)
+                success = True
+            except TimeoutException:
+                pass
 
-        # 2차 시도: 아이콘 → 부모 div[role='button']
-        icon = self.present("sidebar_search_icon", sec=5)
-        btn = icon.find_element(By.XPATH, "./ancestor::div[@role='button'][1]")
-        self.scroll_center(btn)
+            # 2차 시도: 아이콘 → 부모 div[role='button']
+            if not success:
+                try:
+                    icon = self.present("sidebar_search_icon", sec=3)
+                    btn = icon.find_element(By.XPATH, "./ancestor::div[@role='button'][1]")
+                    self.scroll_center(btn)
+                    self.js_click(btn)
+                    success = True
+                except Exception:
+                    pass
 
-        try:
-            WebDriverWait(self.driver, 2).until(lambda d: btn.is_enabled())
-            btn.click()
-        except Exception:
-            self.js_click(btn)
+            # 3차 시도: 모든 span 중 '검색' 텍스트 찾기
+            if not success:
+                try:
+                    spans = self.driver.find_elements(By.XPATH, "//aside//span")
+                    for span in spans:
+                        try:
+                            text = span.text.strip()
+                            if text in ['검색', 'Search']:
+                                btn = span.find_element(By.XPATH, "ancestor::div[@role='button'][1]")
+                                self.js_click(btn)
+                                success = True
+                                break
+                        except:
+                            continue
+                except Exception:
+                    pass
+
+            # 4차 시도: JavaScript로 검색
+            if not success:
+                try:
+                    self.driver.execute_script("""
+                        const spans = Array.from(document.querySelectorAll('span'));
+                        const target = spans.find(s => s.textContent.trim() === '검색' || s.textContent.trim() === 'Search');
+                        if (target) {
+                            let btn = target.closest('[role="button"]');
+                            if (btn) btn.click();
+                        }
+                    """)
+                    success = True
+                except Exception as e:
+                    last_error = e
+                    pass
+            
+            if success:
+                # 검색 overlay가 실제로 나타났는지 확인
+                try:
+                    WebDriverWait(self.driver, 5).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "input[cmdk-input]"))
+                    )
+                    # overlay가 나타났으면 성공!
+                    return
+                except TimeoutException:
+                    # overlay가 안 나타났으면 다시 시도
+                    time.sleep(1)
+                    continue
+            
+            # 클릭 자체에 실패했으면 잠시 대기 후 재시도
+            time.sleep(0.5)
+        
+        raise TimeoutException(f"검색 overlay를 열 수 없습니다 (30초 타임아웃). 마지막 에러: {last_error}")
 
     # --- 8) 두 번째 스레드 클릭 ---
     def click_second_thread(self):
@@ -300,10 +430,21 @@ class Composer(BasePage):
                 text,
             )
 
-        # submit 버튼 클릭 (명시적 대기 후 클릭)
+        # submit 버튼 클릭 (명시적 대위 후 클릭)
         WebDriverWait(self.driver, 20).until(
             EC.element_to_be_clickable(self.locators["submit_enabled"])
         ).click()
+        
+        # Docker 헤드리스 환경에서 안정성 향상
+        time.sleep(1)  # 메시지 전송 후 1초 대기
+        
+        # textarea가 다시 활성화될 때까지 대기 (응답 완료 신호)
+        try:
+            WebDriverWait(self.driver, 30).until(
+                EC.presence_of_element_located(self.locators["textarea"])
+            )
+        except:
+            pass
   
 
 
@@ -401,8 +542,15 @@ class SearchOverlay(BasePage):
 
     # --- 검색어 입력 ---
     def type_query(self, text, sec=10):
-        # key 문자열로 사용
+        """검색어 입력 (overlay 확인 포함)"""
+        # 먼저 overlay가 나타났는지 확인 대기
+        WebDriverWait(self.driver, sec).until(
+            EC.presence_of_element_located(self.locators["search_input_strict"])
+        )
+        
+        # input 찾기 (더 긴 timeout)
         inp = self.visible("search_input_strict", sec=sec)
+        time.sleep(0.5)
 
         # 클릭 (안 되면 JS 클릭)
         try:
