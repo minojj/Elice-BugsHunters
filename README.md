@@ -31,7 +31,7 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
 </p>
 
 ## 🏗️ 프로젝트 구조
-<img src="./images/스크린샷 2025-11-19 135759.png" width="650" />
+<img src="./images/스크린샷 2025-11-19 135759.png" width="800" />
 
 ## 🏗 Architecture (Page Object Model)
 
@@ -52,14 +52,14 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
 - `tests/` : 위 POM을 조합해서 E2E 시나리오 정의
 
 ## 🧪 주요 테스트 시나리오
-<img src="./images/스크린샷 2025-11-20 110058.png" width="650" />
+<img src="./images/스크린샷 2025-11-20 110058.png" width="800" />
 
 
 
 ## 📝 테스트케이스 관리
 
-<img src="./images/스크린샷 2025-11-19 105457.png" width="650" />
-<img src="./images/스크린샷 2025-11-19 110155.png" width="650" />
+<img src="./images/스크린샷 2025-11-19 105457.png" width="800" />
+<img src="./images/스크린샷 2025-11-19 110155.png" width="800" />
 
 JIRA를 통해 관리
 
