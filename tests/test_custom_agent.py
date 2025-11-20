@@ -341,6 +341,7 @@ def test_ca_006_display_created_agents_in_explorer(explorer_page_loaded, request
     explorer_page = AgentExplorerPage(driver)
 
     #1️⃣ 이전에 저장된 두 개의 ID 가져오기
+    explorer_page.load_all_cards_in_explorer()
     private_id = request.config.cache.get("private_agent_id", None)
     org_id = request.config.cache.get("organization_agent_id", None)
     assert private_id or org_id, "❌ CA_006_이전 테스트의 agent_id를 불러올 수 없습니다."

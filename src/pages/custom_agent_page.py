@@ -169,6 +169,54 @@ class AgentExplorerPage(BasePage):
         return False
     
 
+    def load_all_cards_in_explorer(self, timeout=20):
+        """Virtuoso 기반 Agent Explorer 페이지에서 전체 카드 로드"""
+
+        wait = WebDriverWait(self.driver, timeout)
+
+        # Virtuoso 스크롤러
+        scroller = self.driver.find_element(
+            By.CSS_SELECTOR, '[data-testid="virtuoso-scroller"]'
+        )
+
+        last_index = -1  # 마지막 data-index 값
+
+        while True:
+            # 현재 보이는 아이템들
+            items = self.driver.find_elements(By.CSS_SELECTOR, '[data-index]')
+            if not items:
+                break
+
+            # 현재 마지막 아이템의 index
+            current_last = int(items[-1].get_attribute("data-index"))
+
+            # index 증가 없음 → 더 이상 로드할 카드 없음
+            if current_last == last_index:
+                break
+
+            last_index = current_last
+
+            # 스크롤 아래로 이동 (scrollHeight까지)
+            self.driver.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollHeight",
+                scroller
+            )
+
+            # 다음 아이템 로드될 때까지 대기
+            try:
+                wait.until(
+                    lambda d: int(
+                        d.find_elements(By.CSS_SELECTOR, "[data-index]")[-1]
+                        .get_attribute("data-index")
+                    ) > current_last
+                )
+            except Exception:
+                # 더 이상 증가 없음
+                break
+
+        # 맨 위로 스크롤
+        self.driver.execute_script("arguments[0].scrollTop = 0", scroller)
+
 
 
 
