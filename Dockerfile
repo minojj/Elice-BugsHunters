@@ -11,6 +11,8 @@ RUN set -eux; \
 
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROMEDRIVER=/usr/bin/chromedriver
+ENV HEADLESS=true
+ENV TMPDIR=/tmp
 
 WORKDIR /app
 COPY requirements.txt .

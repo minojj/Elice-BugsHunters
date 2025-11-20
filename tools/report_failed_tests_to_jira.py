@@ -212,57 +212,112 @@ def create_or_comment_issue(session, test):
 
 
 def close_passed_issues(session, passed_tests):
-    """✅ 통과된 테스트의 Sub-task 닫기"""
+    """✅ 통과된 테스트의 Sub-task 닫기 (개선 버전)"""
+    print(f"\n[INFO] === 통과된 테스트 처리 시작 ({len(passed_tests)}개) ===")
+    
+    closed_count = 0
+    
     for test in passed_tests:
         test_identifier = f"{test['classname']} {test['name']}"
         escaped_identifier = escape_jql_value(test_identifier)
         
-        # ✅ Q31-174의 Sub-task 검색
+        # ✅ Q31-174의 열린 Sub-task 검색
         jql = (
             f'parent = {JIRA_EPIC_KEY} '
             f'AND summary ~ "{escaped_identifier}" '
-            f'AND statusCategory != Done '
+            f'AND statusCategory != Done '  # Done이 아닌 것만
             f'ORDER BY created DESC'
         )
         
+        print(f"\n[INFO] 테스트 확인: {test['classname']}::{test['name']}")
         issues = jira_search_issues(session, jql)
+
+        if not issues:
+            print(f"[INFO] → 열린 Sub-task 없음 (이미 완료되었거나 존재하지 않음)")
+            continue
 
         for issue in issues:
             issue_key = issue.get("key")
             if not issue_key:
                 continue
-                
-            print(f"[INFO] ✅ 테스트 통과 — Sub-task {issue_key} 닫기")
+            
+            current_status = issue.get("fields", {}).get("status", {}).get("name", "Unknown")
+            print(f"[INFO] → Sub-task 발견: {issue_key} (현재 상태: {current_status})")
 
-            # 코멘트 추가
+            # 1. 코멘트 추가
             comment_text = (
                 f"✅ 자동화 테스트가 통과했습니다!\n\n"
                 f"테스트: {test['classname']}::{test['name']}\n"
                 f"빌드: {JOB_NAME} #{BUILD_NUMBER}\n"
+                f"브랜치: {BRANCH_NAME}\n"
                 f"링크: {BUILD_URL}\n\n"
-                f"이전 실패 Sub-task를 자동으로 닫습니다."
+                f"이전 실패 이슈를 자동으로 닫습니다."
             )
+            
             comment_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/comment"
             try:
-                session.post(comment_url, json={"body": make_adf_text(comment_text)}, timeout=30)
+                resp = session.post(comment_url, json={"body": make_adf_text(comment_text)}, timeout=30)
+                if resp.status_code >= 400:
+                    print(f"[WARN] 코멘트 추가 실패 ({issue_key}): {resp.status_code}")
+                else:
+                    print(f"[INFO] → 코멘트 추가 완료")
             except requests.exceptions.RequestException as e:
-                print(f"[WARN] 코멘트 추가 실패: {e}")
+                print(f"[WARN] 코멘트 추가 중 오류: {e}")
 
-            # 상태 전환 (Done)
+            # 2. 사용 가능한 전환(transition) 조회
             transition_url = f"{JIRA_URL}/rest/api/3/issue/{issue_key}/transitions"
             try:
                 trans_resp = session.get(transition_url, timeout=30)
-                if trans_resp.status_code == 200:
-                    transitions = trans_resp.json().get("transitions", [])
-                    done_transition = next((t for t in transitions if "Done" in t["name"]), None)
+                
+                if trans_resp.status_code != 200:
+                    print(f"[ERROR] 전환 옵션 조회 실패 ({issue_key}): {trans_resp.status_code}")
+                    continue
+                
+                transitions = trans_resp.json().get("transitions", [])
+                print(f"[DEBUG] 사용 가능한 전환: {[t['name'] for t in transitions]}")
+                
+                # Done, Close, Resolve, Complete 등 완료 상태 찾기
+                done_keywords = ["Done", "Close", "Closed", "Resolve", "Resolved", "Complete", "Completed", "완료"]
+                done_transition = None
+                
+                for keyword in done_keywords:
+                    done_transition = next(
+                        (t for t in transitions if keyword.lower() in t["name"].lower()), 
+                        None
+                    )
                     if done_transition:
-                        transition_id = done_transition["id"]
-                        session.post(transition_url, json={"transition": {"id": transition_id}}, timeout=30)
-                        print(f"[INFO] 🔒 Sub-task {issue_key} → Done")
+                        break
+                
+                if done_transition:
+                    transition_id = done_transition["id"]
+                    transition_name = done_transition["name"]
+                    
+                    # 3. 상태 전환 실행
+                    transition_payload = {
+                        "transition": {"id": transition_id}
+                    }
+                    
+                    trans_post_resp = session.post(
+                        transition_url, 
+                        json=transition_payload, 
+                        timeout=30
+                    )
+                    
+                    if trans_post_resp.status_code >= 400:
+                        print(f"[ERROR] 상태 전환 실패 ({issue_key}): {trans_post_resp.status_code}")
+                        print(f"[ERROR] 응답: {trans_post_resp.text}")
                     else:
-                        print(f"[WARN] Done 상태 전환 옵션 없음 ({issue_key})")
+                        print(f"[INFO] 🔒 Sub-task {issue_key} → {transition_name}")
+                        closed_count += 1
+                else:
+                    print(f"[WARN] 완료 상태 전환 옵션을 찾을 수 없음 ({issue_key})")
+                    print(f"[WARN] 사용 가능한 전환: {[t['name'] for t in transitions]}")
+                    
             except requests.exceptions.RequestException as e:
-                print(f"[WARN] 상태 전환 실패: {e}")
+                print(f"[ERROR] 상태 전환 중 오류 ({issue_key}): {e}")
+    
+    print(f"\n[INFO] === 통과 처리 완료: {closed_count}개 이슈 닫음 ===\n")
+    return closed_count
 
 # 🚀 메인 실행
 if __name__ == "__main__":
@@ -271,18 +326,31 @@ if __name__ == "__main__":
         print("[ERROR] JIRA_URL, JIRA_PROJECT, JIRA_USER, JIRA_API_TOKEN, JIRA_EPIC_KEY 확인 필요")
         sys.exit(1)
     
-    print(f"[INFO] Epic {JIRA_EPIC_KEY} 내에서 모든 활동이 이루어집니다")
+    print(f"\n{'='*60}")
+    print(f"[INFO] Jira 자동 이슈 관리 시작")
+    print(f"[INFO] Epic: {JIRA_EPIC_KEY}")
+    print(f"[INFO] Job: {JOB_NAME} #{BUILD_NUMBER}")
+    print(f"[INFO] Branch: {BRANCH_NAME}")
+    print(f"{'='*60}\n")
     
     failed_tests, passed_tests = parse_junit_results(JUNIT_PATH)
     session = make_jira_session()
 
+    # 실패한 테스트 처리
     if failed_tests:
-        print(f"[INFO] 🚨 {len(failed_tests)}개의 실패 테스트 이슈 생성/갱신 중... (Epic: {JIRA_EPIC_KEY})")
+        print(f"[INFO] 🚨 {len(failed_tests)}개의 실패 테스트 처리 중...")
         for t in failed_tests:
             create_or_comment_issue(session, t)
     else:
-        print("[INFO] 실패한 테스트 없음")
+        print("[INFO] ✅ 실패한 테스트 없음")
 
+    # 통과한 테스트 처리
     if passed_tests:
-        print(f"[INFO] ✅ {len(passed_tests)}개의 통과 테스트 이슈 닫기 중...")
-        close_passed_issues(session, passed_tests)
+        closed = close_passed_issues(session, passed_tests)
+        print(f"[INFO] 최종: {closed}개 이슈 닫음")
+    else:
+        print("[INFO] 통과한 테스트 없음")
+    
+    print(f"\n{'='*60}")
+    print(f"[INFO] 완료!")
+    print(f"{'='*60}\n")
