@@ -56,7 +56,7 @@ Selenium + pytest 기반 E2E 테스트와 Docker/Jenkins 기반 CI 환경을 포
   - 동적 UI 요소와 사용자 편의성 검증
 
 - Chat History (HT)
-  - 히스토리 검색, 
+  - 새 채팅 시작, 히스토리 검색, 에이전트 탐색, 대화목록 조회, 히스토리 제목 수정, 히스토리 시간순 확인
 
 ## 😎 Challenges & Solutions 
 
